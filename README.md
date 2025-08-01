@@ -21,7 +21,13 @@ Key highlights include:
 
 <hr>
 
+<hr>
 
+## 📊 Development Activity
+
+Track real-time coding progress:
+[![wakatime](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4.svg)](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4)
+<hr>
 
 ## 👥 Target Audience
 *   History Enthusiasts

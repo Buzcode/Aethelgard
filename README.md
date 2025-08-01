@@ -19,6 +19,15 @@ Key highlights include:
 
 <hr>
 
+<hr>
+
+## 📊 Development Activity
+
+Track real-time coding progress:
+[![wakatime](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8.svg)](https://wakatime.com/@f76851eb-d69c-4349-9076-432483fb64b8)
+
+<hr>
+
 ## 👥 Target Audience
 *   History Enthusiasts
 *   Students (High School & University)

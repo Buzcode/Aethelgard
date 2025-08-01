@@ -3,6 +3,11 @@
 Aethelgard is an immersive, content-driven history portal built with React (frontend) and Laravel (backend), enhanced by a conversational AI.
 <hr>
 
+## 📌 Project Overview
+
+Aethelgard is a rich, content-driven web platform that serves as a gateway to the past. Designed with a focus on deep engagement, it allows users to navigate through interconnected histories of iconic People, Places, and Events. The centerpiece of Aethelgard is its "Living History" AI, which enables users to hold conversations with detailed historical personas, making learning not just informative, but truly unforgettable.
+<hr>
+
 ## 🎯 Objective
 
 The primary goal of Aethelgard is to architect a scalable, content-driven web application that revolutionizes historical education by merging a deeply interconnected database with an advanced conversational AI. The platform is designed to deconstruct complex historical narratives into an intuitive and interactive user experience, moving beyond static data to create a truly immersive learning ecosystem.
@@ -87,17 +92,37 @@ The platform will incorporate a dynamic, map-based interface allowing users to v
 ## 🛠 Technology Stack
 
 ### ⬅️ Backend
-*   **Laravel 10 (RESTful API):** A modern PHP framework for building the secure, scalable back-end.
-*   **Sanctum (Authentication):** Laravel's lightweight system for API token-based authentication.
-*   **MySQL (Database):** A robust, open-source relational database for storing all historical and user data.
-*   **OpenAI API (AI Layer):** Integrated directly via Laravel's HTTP client to power the conversational AI engine.
+*   **Laravel 10 (RESTful API):** 
+*   **Sanctum (Authentication):** 
+*   **MySQL (Database):** 
+*   **OpenAI API (AI Layer):** 
 
 ### 🌐 Frontend
-*   **React.js:** The core JavaScript library for building the dynamic and interactive user interface.
-*   **React Router:** For handling all client-side routing and navigation between pages.
-*   **Axios (API calls):** A promise-based client for communicating with the Laravel back-end API.
-*   **TailwindCSS / Material UI (MUI):** For crafting a clean, responsive, and modern design system.
+*   **React.js:** 
+*   **React Router:** 
+*   **Axios (API calls):** 
+*   **TailwindCSS / Material UI (MUI):** 
 
 ### ⚙️ Rendering Method
 *   **Client-Side Rendering (CSR):**
     The entire frontend is rendered in the user's browser using React, consuming historical data and AI responses from the Laravel back-end API.
+    <hr>
+
+## 📷 Key Screens
+*   **Login & Registration:** Secure authentication screens for user and administrator access.
+*   **The Discovery Dashboard:** A dynamic, personalized hub showcasing trending topics, featured content, and recommendations.
+*   **Interactive Content Pages:** Detailed pages for each Person, Place, and Event, featuring the integrated AI persona chat.
+*   **Comprehensive Admin Panel:** A secure back-office with full CRUD control over all site content and user management.
+
+<hr>
+
+## 👩‍💻 Contributors
+*   Rehnuma Tarannum Ramisha (ID - 20220204063)
+*   Sumona Islam Zerin (ID - 20220204072)
+*   Jannatul Mawa (ID - 20220204074)
+*   Siddika Sultana Mitu (ID - 20220204078)
+
+<hr>
+
+## 📄 License
+This project is intended for academic and educational purposes. Feel free to fork and modify for your own use.

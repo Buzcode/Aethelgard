@@ -19,9 +19,6 @@ Key highlights include:
 
 <hr>
 
-<hr>
-
-<hr>
 
 ## 📊 Development Activity
 

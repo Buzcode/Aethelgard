@@ -123,6 +123,12 @@ The platform will incorporate a dynamic, map-based interface allowing users to v
 
 <hr>
 
+## 🔗 UI Design Prototype (Figma)
+View the full design on Figma:
+[🔗 Aethelgard Figma Design](https://www.figma.com/design/WTwOHx4wF8CMn2VrnSePlp/AETHELGARD?node-id=0-1&p=f&t=F7H56o5M2qUA7LJ9-0)
+
+<hr>
+
 ## 👩‍💻 Contributors
 *   Rehnuma Tarannum Ramisha (ID - 20220204063)
 *   Sumona Islam Zerin (ID - 20220204072)

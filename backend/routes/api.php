@@ -17,5 +17,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // New Route for People CRUD
-    Route::apiResource('people', PersonController::class); 
-});
+    Route::apiResource('people', PersonController::class)->middleware('is.admin');
+}); 

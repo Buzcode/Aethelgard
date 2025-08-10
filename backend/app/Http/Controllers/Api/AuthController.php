@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /** 
+    /**  
      * Handle user registration.
      */
     public function register(Request $request)
@@ -21,6 +21,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
+    
 
         // If validation fails, return the errors
         if ($validator->fails()) {
@@ -41,4 +42,39 @@ class AuthController extends Controller
             'user' => $user
         ], 201); // 201 means "Created"
     }
+        /**
+     * Handle user login.
+     */
+    public function login(Request $request)
+    {
+        // 1. Validate the incoming data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // 2. Attempt to authenticate the user
+        if (!auth()->attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401); // 401 means "Unauthorized"
+        }
+
+        // 3. Get the authenticated user
+        $user = User::where('email', $request->email)->first();
+
+        // 4. Create and return the API token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ]);
+    } 
 }

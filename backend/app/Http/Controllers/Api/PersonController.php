@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends Controller
-{
+{ 
     /**
      * Display a listing of the resource.
      */
@@ -75,9 +75,9 @@ class PersonController extends Controller
         // Update the person's data
         $person->update($request->all());
 
-        // Return the updated person data
+        // Return the updated person data 
         return response()->json($person);
-    }   
+    }    
     /**    
      * Remove the specified resource from storage.
      */
@@ -87,8 +87,7 @@ class PersonController extends Controller
         $person->delete();
 
         // We return a response with a success message and a 200 OK status.
-        // While 204 is technically correct, 200 with a message is often
-        // easier to debug on the frontend.
+       
         return response()->json(['message' => 'Person deleted successfully.']);
     }
 }

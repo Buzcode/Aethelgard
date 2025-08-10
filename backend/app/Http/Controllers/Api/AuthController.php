@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
-{
+{ 
     /**   
-     * Handle user registration.
+     * Handle user registration. 
      */
     public function register(Request $request)
     {

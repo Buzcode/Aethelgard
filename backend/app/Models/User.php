@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens; 
-
+  
     /** 
      * The attributes that are mass assignable.
      *
@@ -38,8 +38,8 @@ class User extends Authenticatable
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
-     */
-    protected function casts(): array
+     */   
+    protected function casts(): array   
     {
         return [
             'email_verified_at' => 'datetime',

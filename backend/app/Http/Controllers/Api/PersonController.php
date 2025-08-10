@@ -77,12 +77,12 @@ class PersonController extends Controller
 
         // Return the updated person data
         return response()->json($person);
-    }
-    /**
+    }   
+    /**    
      * Remove the specified resource from storage.
      */
     public function destroy(Person $person)
-    { 
+    {  
         // First, we ensure we have the model instance, then we delete it.
         $person->delete();
 

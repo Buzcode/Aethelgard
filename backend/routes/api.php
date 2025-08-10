@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // New Route for People CRUD
     Route::apiResource('people', PersonController::class)->middleware('is.admin');
-}); 
+});  

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /**  
+    /**   
      * Handle user registration.
      */
     public function register(Request $request)
@@ -52,7 +52,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+ 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -89,4 +89,4 @@ class AuthController extends Controller
             'message' => 'Logged out successfully'
         ]);
     }
-} 
+}  

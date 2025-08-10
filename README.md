@@ -23,9 +23,11 @@ Key highlights include:
 ## 📊 Development Activity
 
 Track real-time coding progress:
+Jannatul Mawa:
 [![wakatime](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4.svg)](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4)
 <hr>
-
+Siddika Sultana Mitu:
+[![wakatime](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4.svg)](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4)
 ## 👥 Target Audience
 *   History Enthusiasts
 *   Students (High School & University)

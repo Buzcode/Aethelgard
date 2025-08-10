@@ -28,6 +28,7 @@ Jannatul Mawa:
 <hr>
 Siddika Sultana Mitu:
 [![wakatime](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4.svg)](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4)
+
 ## 👥 Target Audience
 *   History Enthusiasts
 *   Students (High School & University)

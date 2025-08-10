@@ -25,9 +25,13 @@ Key highlights include:
 Track real-time coding progress:
 Jannatul Mawa:
 [![wakatime](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4.svg)](https://wakatime.com/badge/user/f76851eb-d69c-4349-9076-432483fb64b8/project/7efb2184-4e45-436c-91b9-eaaf27a076c4)
-<hr>
+<br>
 Siddika Sultana Mitu:
 [![wakatime](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4.svg)](https://wakatime.com/badge/user/477f582d-9b20-4035-93b6-873e173f480d/project/65c6bb7f-1d8c-4d44-9d61-cef1e7ed51f4)
+<br>
+Sumona Islam Zerin:
+[![wakatime](https://wakatime.com/badge/user/52089f7d-d32f-4e33-a533-7f9c53414b7a/project/2f9eea8c-2fe6-45e0-b8fd-494cefff0f7b.svg)](https://wakatime.com/badge/user/52089f7d-d32f-4e33-a533-7f9c53414b7a/project/2f9eea8c-2fe6-45e0-b8fd-494cefff0f7b)
+
 ## 👥 Target Audience
 *   History Enthusiasts
 *   Students (High School & University)

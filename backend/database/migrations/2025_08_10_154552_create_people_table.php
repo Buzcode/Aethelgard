@@ -19,14 +19,14 @@ return new class extends Migration
             $table->text('bio')->nullable(); // A longer text field for the biography
             $table->string('portrait_url')->nullable(); // A URL to an image
             $table->timestamps(); // Creates `created_at` and `updated_at` columns
-        });
+        });   
     } 
 
     /**
-     * Reverse the migrations. 
+     * Reverse the migrations.
      */ 
     public function down(): void
     {
         Schema::dropIfExists('people');
-    }
-};
+    } 
+}; 

@@ -1,9 +1,10 @@
-<?php 
+<?php
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\PersonController; 
+use App\Http\Controllers\Api\PersonController;
+use App\Http\Controllers\Api\EventController; // <-- CORRECTED: Import EventController
 
 // --- Public Routes ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -16,6 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // New Route for People CRUD
-    Route::apiResource('people', PersonController::class)->middleware('is.admin');
-});  
+    // --- Admin Protected Routes ---
+    Route::middleware('is.admin')->group(function () {
+        Route::apiResource('people', PersonController::class);
+        Route::apiResource('events', EventController::class); // <-- ADDED: The missing events route
+    });
+});

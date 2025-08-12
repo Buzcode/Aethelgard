@@ -32,12 +32,16 @@ Siddika Sultana Mitu:
 Sumona Islam Zerin:
 [![wakatime](https://wakatime.com/badge/user/52089f7d-d32f-4e33-a533-7f9c53414b7a/project/2f9eea8c-2fe6-45e0-b8fd-494cefff0f7b.svg)](https://wakatime.com/badge/user/52089f7d-d32f-4e33-a533-7f9c53414b7a/project/2f9eea8c-2fe6-45e0-b8fd-494cefff0f7b)
 
+Rehnuma Tarannum Ramisha:
+[![wakatime](https://wakatime.com/badge/user/867df651-7e86-4c3e-9056-757055655484/project/9926df57-4d8a-408c-af99-42dc0bf8e4ec.svg)](https://wakatime.com/badge/user/867df651-7e86-4c3e-9056-757055655484/project/9926df57-4d8a-408c-af99-42dc0bf8e4ec)
+<br>
+
 ## 👥 Target Audience
 *   History Enthusiasts
 *   Students (High School & University)
 *   The Casually Curious & Lifelong Learners
 
-<hr>
+</hr>
 
 ## ✨ Core Features & Platform Modules
 

@@ -8,8 +8,8 @@ import PlacesPage from './pages/PlacesPage';
 import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-function App() {
-  return (
+function App() { 
+  return ( 
     <Routes>
       {/* All pages using the MainLayout will be nested inside this Route */}
       <Route path="/" element={<MainLayout />}>

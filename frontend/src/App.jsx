@@ -7,7 +7,9 @@ import PeoplePage from './pages/PeoplePage';
 import PlacesPage from './pages/PlacesPage';
 import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import LoginPage from './pages/LoginPage';
 
+ 
 function App() { 
   return ( 
     <Routes>
@@ -17,6 +19,7 @@ function App() {
         <Route path="people" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
+        <Route path="login" element={<LoginPage />} /> 
       </Route>
 
       {/* This route is for the 404 page and does not use the MainLayout */}

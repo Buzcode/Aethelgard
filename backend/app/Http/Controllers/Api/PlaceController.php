@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator; // Import Validator
+use Illuminate\Support\Facades\Validator; 
 
 class PlaceController extends Controller
 {
@@ -16,9 +16,7 @@ class PlaceController extends Controller
         return Place::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+  
     public function store(Request $request)
     {
         // 1. Validate incoming data, expecting a 'place_image' file
@@ -27,7 +25,7 @@ class PlaceController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'description' => 'nullable|string',
-            'place_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Expects a file named 'place_image'
+            'place_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
 
         if ($validator->fails()) {
@@ -35,7 +33,7 @@ class PlaceController extends Controller
         }
         
         // 2. Handle the file upload
-        $data = $request->except('place_image'); // Get all data except the image file itself
+        $data = $request->except('place_image'); 
 
         if ($request->hasFile('place_image')) {
             // Store the image in 'public/places' directory
@@ -49,17 +47,13 @@ class PlaceController extends Controller
         return response()->json($place, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+  
     public function show(Place $place)
     {
         return $place;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(Request $request, Place $place)
     {
         // 3. Update validation for the update method
@@ -94,9 +88,6 @@ class PlaceController extends Controller
         return response()->json($place);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Place $place)
     {
         // 5. Delete the associated image file from storage when a place is deleted

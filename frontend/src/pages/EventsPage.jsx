@@ -14,7 +14,6 @@ const EventsPage = () => {
     // Define the async function to fetch data
     const fetchEvents = async () => {
       try {
-        // Make the GET request to the /events endpoint
         const response = await axiosClient.get('/events');
         // Update the events state with the data from the response
         setEvents(response.data);
@@ -33,7 +32,7 @@ const EventsPage = () => {
     fetchEvents();
   }, []); // The empty dependency array ensures this runs only once on mount
 
-  // We will add the JSX to display the data in the next step
+  
   return (
     <div style={{ padding: '20px' }}>
       <h1>Historical Events</h1>
@@ -47,14 +46,24 @@ const EventsPage = () => {
       {/* Display data only if not loading and no error */}
       {!loading && !error && (
         <>
-          {/* Check if there are events to display */}
           {events.length > 0 ? (
             <ul>
               {/* Map over the events array and display each one */}
               {events.map((event) => (
-                <li key={event.id} style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '15px' }}>
+                <li key={event.id} style={{ marginBottom: '1.5rem', listStyle: 'none', borderBottom: '1px solid #444', paddingBottom: '1rem', overflow: 'hidden' }}>
+                  
+                  {/* Conditionally render the image if event.picture exists */}
+                  {event.picture && (
+                    <img 
+                      src={`http://127.0.0.1:8000/storage/${event.picture}`}  
+                      alt={`Image of ${event.name}`} 
+                      style={{ width: '100px', height: '100px', objectFit: 'cover', marginRight: '1rem', float: 'left', borderRadius: '5px' }} 
+                    />
+                  )}
+
                   <h2>{event.name}</h2>
                   <p>
+                    {/* --- THIS IS THE CORRECTED LINE --- */}
                     <strong>Date:</strong> {new Date(event.event_date).toLocaleDateString()}
                   </p>
                   <p>{event.description}</p>
@@ -62,7 +71,6 @@ const EventsPage = () => {
               ))}
             </ul>
           ) : (
-            // Display message if no events are found
             <p>No historical events found.</p>
           )}
         </>

@@ -11,7 +11,8 @@ use App\Http\Controllers\Api\EventController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// --- Public Read-Only Content Routes ---
+// --- Public Content Routes ---
+// Read-Only
 Route::get('/people', [PersonController::class, 'index']);
 Route::get('/people/{person}', [PersonController::class, 'show']);
 
@@ -20,6 +21,11 @@ Route::get('/places/{place}', [PlaceController::class, 'show']);
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
+
+// MOVED FOR TESTING: Temporarily made public to allow adding test data.
+Route::post('/places', [PlaceController::class, 'store']);
+Route::post('/events', [EventController::class, 'store']);
+
 
 // --- Protected Admin & User Routes ---
 Route::middleware('auth:sanctum')->group(function () {
@@ -36,12 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/people/{person}', [PersonController::class, 'destroy']);
         
         // Places
-        Route::post('/places', [PlaceController::class, 'store']);
+        // The POST route was moved to the public section for testing.
         Route::put('/places/{place}', [PlaceController::class, 'update']);
         Route::delete('/places/{place}', [PlaceController::class, 'destroy']);
         
         // Events
-        Route::post('/events', [EventController::class, 'store']);
+        // The POST route was moved to the public section for testing.
         Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
     });

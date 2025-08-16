@@ -1,11 +1,12 @@
 import { createContext, useState } from 'react';
 import axiosClient from '../api/axiosClient';
 
-// 1. Create the context
+// 1. Create the context with a default shape
 const AuthContext = createContext({
   user: null,
   token: null,
   login: () => {},
+  register: () => {}, // Add register to the default shape
   logout: () => {},
 });
 
@@ -33,16 +34,26 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
+  // --- NEW REGISTER FUNCTION ---
+  const register = async (name, email, password) => {
+    // 1. Call the backend register endpoint
+    await axiosClient.post('/register', { name, email, password });
+    
+    // 2. After successful registration, immediately log the user in
+    //    to get their data and a token.
+    await login(email, password);
+  };
+
   const logout = () => {
     // We will implement the API call for logout later
     setUser(null);
     _setToken(null);
   };
 
+  // --- PROVIDE THE NEW REGISTER FUNCTION IN THE VALUE ---
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-;  

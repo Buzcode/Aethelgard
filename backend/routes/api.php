@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PersonController;
-use App\Http\Controllers\Api\PlaceController; 
-use App\Http\Controllers\Api\EventController; 
+use App\Http\Controllers\Api\PlaceController;
+use App\Http\Controllers\Api\EventController;
 
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);

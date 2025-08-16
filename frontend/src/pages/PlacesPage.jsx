@@ -1,4 +1,70 @@
+import { useState, useEffect } from 'react';
+import axiosClient from '../api/axiosClient';
+
 const PlacesPage = () => {
-  return <h1>Historical Places</h1>;
+  // State for storing the list of places
+  const [places, setPlaces] = useState([]);
+  // State for tracking the loading status
+  const [loading, setLoading] = useState(true);
+  // State for storing any potential errors
+  const [error, setError] = useState(null);
+
+  // useEffect hook to fetch data when the component mounts
+  useEffect(() => {
+    // Define the async function to fetch data
+    const fetchPlaces = async () => {
+      try {
+        // Make the GET request to the /places endpoint
+        const response = await axiosClient.get('/places');
+        // Update the places state with the data from the response
+        setPlaces(response.data);
+        // Set loading to false as the data has been fetched
+        setLoading(false);
+      } catch (err) {
+        // If an error occurs, store the error message
+        setError('Error fetching historical places. Please try again later.');
+        // Set loading to false even if there's an error
+        setLoading(false);
+        console.error('API Error:', err);
+      }
+    };
+
+    // Call the function to fetch data
+    fetchPlaces();
+  }, []); // The empty dependency array ensures this runs only once on mount
+
+   return (
+    <div style={{ padding: '20px' }}>
+      <h1>Historical Places</h1>
+
+      {/* Display loading message */}
+      {loading && <p>Loading...</p>}
+
+      {/* Display error message */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {/* Display data only if not loading and no error */}
+      {!loading && !error && (
+        <>
+          {/* Check if there are places to display */}
+          {places.length > 0 ? (
+            <ul>
+              {/* Map over the places array and display each one */}
+              {places.map((place) => (
+                <li key={place.id} style={{ marginBottom: '15px' }}>
+                  <h2>{place.name}</h2>
+                  <p>{place.description}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            // Display message if no places are found
+            <p>No historical places found.</p>
+          )}
+        </>
+      )}
+    </div>
+  );
 };
-export default PlacesPage; 
+
+export default PlacesPage;

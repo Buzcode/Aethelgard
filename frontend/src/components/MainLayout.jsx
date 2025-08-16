@@ -30,8 +30,13 @@ const MainLayout = () => {
                 <span style={{ marginRight: '1rem' }}>Welcome, {user.name}!</span>
                 <button onClick={handleLogout}>Logout</button>
               </>
-            ) : (
-              <Link to="/login">Login</Link>
+            ) : ( 
+              
+              <>
+                <Link to="/login" style={{ marginRight: '1rem' }}>Login</Link>
+                <Link to="/register">Register</Link>
+              </>
+           
             )}
           </div>
         </nav>

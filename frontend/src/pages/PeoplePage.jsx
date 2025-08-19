@@ -40,7 +40,7 @@ const PeoplePage = () => {
 
   // Render the list of people
   return (
-    <div>
+    <div>  
       <h1>Historical People</h1>
       {people.length > 0 ? (
         <ul>

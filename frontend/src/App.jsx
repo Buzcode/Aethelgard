@@ -9,6 +9,8 @@ import EventsPage from './pages/EventsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
  
 function App() { 
@@ -22,6 +24,8 @@ function App() {
         <Route path="events" element={<EventsPage />} />
         <Route path="login" element={<LoginPage />} /> 
         <Route path="register" element={<RegisterPage />} />
+         <Route path="about" element={<AboutPage />} />    
+        <Route path="contact" element={<ContactPage />} /> 
       </Route> 
 
       {/* This route is for the 404 page and does not use the MainLayout */}

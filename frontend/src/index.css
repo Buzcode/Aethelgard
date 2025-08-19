@@ -82,7 +82,7 @@ a:hover {
     align-items: flex-start;
     width: 100%;
   }
-  
+   
   .main-nav a {
     margin-left: 0;
     padding: 0.5rem 0; /* Add vertical spacing */
@@ -96,7 +96,7 @@ a:hover {
     padding-top: 1rem;
     width: 100%;
   }
-  
+   
 }
 
 /* 4. Main Content Area */

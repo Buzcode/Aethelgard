@@ -21,88 +21,47 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        // 1. Validate incoming data, expecting an 'event_image' file
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'event_date' => 'required|date',
-            'event_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+    // In EventController.php
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'event_date' => 'nullable|string|max:255',
+        'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        
-        $data = $request->except('event_image');
-
-        if ($request->hasFile('event_image')) {
-            // Store the image in 'public/events' directory
-            $path = $request->file('event_image')->store('events', 'public');
-            // Save the path to the 'picture' field in the database
-            $data['picture'] = $path;
-        }
-
-        $event = Event::create($data);
-
-        return response()->json($event, 201);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Event $event)
-    {
-        return $event;
+    $data = $request->except('picture');
+
+    if ($request->hasFile('picture')) {
+        $path = $request->file('picture')->store('events', 'public');
+        $data['picture'] = $path;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event)
-    {
-        // 3. Update validation for the update method
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|nullable|string',
-            'event_date' => 'sometimes|required|date',
-            'event_image' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+    $event = Event::create($data);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+    return response()->json($event, 201);
+}
 
-        // 4. Handle the file update logic
-        $data = $request->except('event_image');
+public function update(Request $request, Event $event)
+{
+    // Validation...
+    $data = $request->except('picture');
 
-        if ($request->hasFile('event_image')) {
-            if ($event->picture) {
-                Storage::disk('public')->delete($event->picture);
-            }
-            $path = $request->file('event_image')->store('events', 'public');
-            $data['picture'] = $path;
-        }
-
-        $event->update($data);
-
-        return response()->json($event);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        // 5. Delete the associated image file from storage
+    if ($request->hasFile('picture')) {
         if ($event->picture) {
             Storage::disk('public')->delete($event->picture);
         }
-        
-        $event->delete();
-
-        return response()->json(null, 204);
+        $path = $request->file('picture')->store('events', 'public');
+        $data['picture'] = $path;
     }
+
+    $event->update($data);
+    return response()->json($event);
+}
 }

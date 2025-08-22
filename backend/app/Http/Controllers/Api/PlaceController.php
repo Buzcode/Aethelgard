@@ -83,6 +83,10 @@ class PlaceController extends Controller
         
         $place->delete();
 
+<<<<<<< HEAD
+    return response()->json(null, 204);                                              
+=======
         return response()->json(null, 204);
+>>>>>>> 83aa9546bd10c43a912ca01bdd8457b729a80e58
     }
 }

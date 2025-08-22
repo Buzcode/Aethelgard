@@ -1,0 +1,35 @@
+.app-Mainlayout {
+  display: grid;
+  /* Defines the 3 columns: Left sidebar, main content, right sidebar */
+  grid-template-columns: 260px 1fr 300px;
+  height: 100vh; /* Full height of the screen */
+  background-color: #f4f4f9;
+}
+
+.main-content {
+  overflow-y: auto; /* Allow only the main content to scroll if needed */
+}
+
+/* --- Responsive design for tablets and mobile --- */
+@media (max-width: 1024px) {
+  /* On tablets, hide the right sidebar */
+  .app-layout {
+    grid-template-columns: 260px 1fr;
+  }
+  .right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile, stack everything vertically */
+  .app-layout {
+    grid-template-columns: 1fr; /* A single column */
+    height: auto;
+  }
+  /* You might add a mobile menu button to toggle the sidebar later */
+  .left-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+}

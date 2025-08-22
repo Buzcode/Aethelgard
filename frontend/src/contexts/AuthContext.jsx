@@ -39,6 +39,16 @@ const register = async (userData) => {
   await login(userData.email, userData.password);
 };
 
+  // --- NEW REGISTER FUNCTION ---
+  const register = async (name, email, password) => {
+    // 1. Call the backend register endpoint
+    await axiosClient.post('/register', { name, email, password });
+    
+    // 2. After successful registration, immediately log the user in
+    //    to get their data and a token.
+    await login(email, password);
+  };
+
   const logout = () => {
     // We will implement the API call for logout later
     setUser(null);

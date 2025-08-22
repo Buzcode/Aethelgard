@@ -3,11 +3,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState(null);
 
   const { register } = useAuth();
@@ -17,30 +15,16 @@ const RegisterPage = () => {
     event.preventDefault();
     setError(null);
 
-    // Frontend password match check
-    if (password !== passwordConfirmation) {
-      setError('Passwords do not match.');
-      return;
-    }
-
     try {
-      await register({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        password: password,
-        password_confirmation: passwordConfirmation,
-      });
-      navigate('/');
+      await register(name, email, password);
+      navigate('/'); // Redirect to homepage on successful registration and login
     } catch (err) {
       console.error(err);
+      // Check for specific validation errors from Laravel
       if (err.response && err.response.status === 422) {
-        // A more specific error for email validation
-        if (err.response.data.email && err.response.data.email[0].includes('gmail.com')) {
-            setError('Registration is only allowed with a gmail.com address.');
-        } else {
-            setError('Registration failed. Please check your input.');
-        }
+        // For simplicity, we'll just show a generic message.
+        // A more advanced implementation could list the specific errors.
+        setError('Registration failed. Please check your input.');
       } else {
         setError('An unexpected error occurred.');
       }
@@ -78,4 +62,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage; 
+export default RegisterPage;

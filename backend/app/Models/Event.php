@@ -18,5 +18,6 @@ class Event extends Model
         'name',
         'description',
         'event_date',
+        'picture',
     ];
 }

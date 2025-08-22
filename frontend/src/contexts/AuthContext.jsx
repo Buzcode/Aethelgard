@@ -32,17 +32,12 @@ export const AuthProvider = ({ children }) => {
     setUser(response.data.user);
     _setToken(response.data.access_token);
     return response;
-  };
+  }; 
 
-  // --- NEW REGISTER FUNCTION ---
-  const register = async (name, email, password) => {
-    // 1. Call the backend register endpoint
-    await axiosClient.post('/register', { name, email, password });
-    
-    // 2. After successful registration, immediately log the user in
-    //    to get their data and a token.
-    await login(email, password);
-  };
+const register = async (userData) => {
+  await axiosClient.post('/register', userData);
+  await login(userData.email, userData.password);
+};
 
   const logout = () => {
     // We will implement the API call for logout later

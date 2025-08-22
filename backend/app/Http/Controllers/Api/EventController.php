@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
@@ -19,50 +21,47 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'event_date' => 'nullable|string|max:255',
-        ]);
+    // In EventController.php
 
-        $event = Event::create($validatedData);
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'event_date' => 'nullable|string|max:255',
+        'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        return response()->json($event, 201);
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Event $event)
-    {
-        return $event;
+    $data = $request->except('picture');
+
+    if ($request->hasFile('picture')) {
+        $path = $request->file('picture')->store('events', 'public');
+        $data['picture'] = $path;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event)
-    {
-        $validatedData = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|nullable|string',
-            'event_date' => 'sometimes|nullable|string|max:255',
-        ]);
+    $event = Event::create($data);
 
-        $event->update($validatedData);
+    return response()->json($event, 201);
+}
 
-        return response()->json($event);
+public function update(Request $request, Event $event)
+{
+    // Validation...
+    $data = $request->except('picture');
+
+    if ($request->hasFile('picture')) {
+        if ($event->picture) {
+            Storage::disk('public')->delete($event->picture);
+        }
+        $path = $request->file('picture')->store('events', 'public');
+        $data['picture'] = $path;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        $event->delete();
-
-        return response()->json(null, 204);
-    }
+    $event->update($data);
+    return response()->json($event);
+}
 }

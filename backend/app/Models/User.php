@@ -18,12 +18,30 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
+   protected $fillable = [
+    'first_name',
+    'last_name',
+    'email',
+    'password',
+]; 
+/**
+ * Get the user's full name.
+ *
+ * @return \Illuminate\Database\Eloquent\Casts\Attribute
+ */
+/**
+ * Get the user's full name.
+ */
+public function getNameAttribute()
+{
+    return $this->first_name . ' ' . $this->last_name;
+}
+/**
+ * The accessors to append to the model's array form.
+ *
+ * @var array
+ */
+protected $appends = ['name'];
     /**
      * The attributes that should be hidden for serialization.
      *

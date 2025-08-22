@@ -65,6 +65,6 @@ class PlaceController extends Controller
     {
          $place->delete();
 
-    return response()->json(null, 204);
+    return response()->json(null, 204);                                              
     }
 }

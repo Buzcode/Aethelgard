@@ -11,7 +11,7 @@ class Place extends Model
         'name',
         'latitude',
         'longitude',
-        'description',
+        'description',                                                                                                                     
         'picture',
     ];                                                                                                                           
 }                                                                                                                                                   

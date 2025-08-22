@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Dependencies
+/node_modules
+/backend/vendor
+
+# IDE files
+.vscode

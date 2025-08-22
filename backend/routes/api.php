@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
- 
+use App\Http\Controllers\Api\ChatController; // <-- ADDED THIS IMPORT
+
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -27,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    // Chat route for any authenticated user
+    Route::post('/chat', [ChatController::class, 'chat']); // <-- ADDED THIS ROUTE
 
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {

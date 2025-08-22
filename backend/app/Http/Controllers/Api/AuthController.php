@@ -69,8 +69,8 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'user' => $user
         ]);
-    }
-
+    } 
+  
     /**
      * Handle user logout.
      */
@@ -82,4 +82,4 @@ class AuthController extends Controller
             'message' => 'Logged out successfully'
         ]);
     }
-}
+} 

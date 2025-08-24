@@ -27,35 +27,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  const login = async (email, password) => {
-    const response = await axiosClient.post('/login', { email, password });
+  const login = async (credentials) => {
+    // Assuming credentials is an object like { email, password }
+    const response = await axiosClient.post('/login', credentials);
     setUser(response.data.user);
     _setToken(response.data.access_token);
     return response;
   }; 
 
-const register = async (userData) => {
-  await axiosClient.post('/register', userData);
-  await login(userData.email, userData.password);
-};
-
-  // --- NEW REGISTER FUNCTION ---
-  const register = async (name, email, password) => {
-    // 1. Call the backend register endpoint
-    await axiosClient.post('/register', { name, email, password });
+  // --- THIS IS THE CORRECT, FINAL VERSION OF THE REGISTER FUNCTION ---
+  const register = async (userData) => {
+    // 1. Call the backend to create the user
+    await axiosClient.post('/register', userData);
     
-    // 2. After successful registration, immediately log the user in
-    //    to get their data and a token.
-    await login(email, password);
+    // 2. After successful registration, immediately log them in
+    //    to get their user data and set the token.
+    await login({ email: userData.email, password: userData.password });
   };
 
   const logout = () => {
-    // We will implement the API call for logout later
     setUser(null);
     _setToken(null);
   };
 
-  // --- PROVIDE THE NEW REGISTER FUNCTION IN THE VALUE ---
   return (
     <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}

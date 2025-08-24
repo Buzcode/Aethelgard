@@ -17,7 +17,7 @@
     grid-template-columns: 260px 1fr;
   }
   .right-sidebar {
-    display: none;
+    display: none;  
   }
 }
 
@@ -27,9 +27,157 @@
     grid-template-columns: 1fr; /* A single column */
     height: auto;
   }
-  /* You might add a mobile menu button to toggle the sidebar later */
+  /* You might add a mobile menu button to toggle the sidebar later */ 
   .left-sidebar {
     border-right: none;
     border-bottom: 1px solid #e0e0e0;
   }
+}
+
+.profile-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* The button that holds the small profile picture in the header */
+.profile-button {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 20;
+  cursor: pointer;
+  display: block;
+  border-radius: 60%;
+}
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 60%;
+  object-fit: cover;
+}
+.dropdown-arrow {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  background-color: #e4e6eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  color: #050505;
+}
+
+/* The main dropdown card that appears on click */
+.dropdown-card-fb {
+  position: absolute;
+  top: 100%; /* Position it below the icon with 12px of space */
+  right: 0; 
+  margin-top: 8px;
+  width: 250px;
+  max-width: 90vw; /* choto screen e overflow korbe na */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Space between the info boxes and the button */
+}
+
+/* Container for the logout button */
+.logout-container {
+  margin-top: 0.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+/* The red logout button */
+.logout-button-red {
+  display: block;
+  width: 80%; /* Changed from 80% to fill the container */
+  background-color: #e53e3e; /* Standard red */
+  color: white; /* Changed from black to white for readability */
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left; /* Match other menu items */
+  transition: background-color 0.2s ease-in-out;
+}
+.logout-button-red:hover {
+  background-color: #c53030; /* Darker red on hover */
+}
+  
+/* This is for the rectangular info boxes */
+.info-box {
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+/* The label text (e.g., "First Name") */
+.info-box label {
+  display: block;
+  font-size: 0.80rem;
+  color: #282626;
+  margin-bottom: 0.2rem;
+  font-weight: 550;
+}
+
+/* The actual user data */
+.info-box span {
+  font-size: 0.9rem;
+  color: #111;
+  word-wrap: break-word; /* Prevents long emails from overflowing */
+}
+
+/* --- ADD THIS NEW CSS to the bottom of MainLayout.css --- */
+
+/* Style for the buttons on the initial menu (e.g., "Personal Information") */
+.dropdown-menu-item {
+  display: block;
+  width: 80%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.999rem;
+  color: #02030b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.dropdown-menu-item:hover {
+  background-color: #f0f2f5;
+}
+
+/* Style for the "Back" button on the details view */
+.dropdown-back-button {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #252424;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.dropdown-back-button:hover {
+  text-decoration: underline;
+}
+
+/* Adjust the main card padding to be more flexible */
+.dropdown-card-fb {
+  padding: 0.75rem;
 }

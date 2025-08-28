@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // Import Layout and Page components
 import MainLayout from './components/MainLayout';
+import Chat from './components/Chat'; 
 import HomePage from './pages/HomePage';
 import PeoplePage from './pages/PeoplePage';
 import PlacesPage from './pages/PlacesPage';
@@ -18,6 +19,7 @@ function App() {
     <Routes>
       {/* All pages using the MainLayout will be nested inside this Route */}
       <Route path="/" element={<MainLayout />}>
+      <Route path="/" element={<Chat/>}></Route>
         <Route index element={<HomePage />} />
         <Route path="people" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />

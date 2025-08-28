@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 
 // Import Layout and Page components
 import MainLayout from './components/MainLayout';
-import Chat from './components/Chat'; 
 import HomePage from './pages/HomePage';
 import PeoplePage from './pages/PeoplePage';
 import PlacesPage from './pages/PlacesPage';
@@ -13,21 +12,30 @@ import RegisterPage from './pages/RegisterPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 
- 
 function App() { 
   return ( 
     <Routes>
       {/* All pages using the MainLayout will be nested inside this Route */}
       <Route path="/" element={<MainLayout />}>
-      <Route path="/" element={<Chat/>}></Route>
+        
+        {/* HomePage will be shown at the root "/" path */}
         <Route index element={<HomePage />} />
-        <Route path="people" element={<PeoplePage />} />
+        
+        {/* --- THIS IS THE LINE TO FIX --- */}
+        {/* Changed path from "people" to "figures" to match your link */}
+        <Route path="figures" element={<PeoplePage />} />
+        
+        {/* These routes are correct based on your homepage links */}
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
+
+        {/* Other pages */}
         <Route path="login" element={<LoginPage />} /> 
         <Route path="register" element={<RegisterPage />} />
-         <Route path="about" element={<AboutPage />} />    
+        <Route path="about" element={<AboutPage />} />    
         <Route path="contact" element={<ContactPage />} /> 
+
+        {/* The <Chat/> route was removed because the ChatWidget is already in MainLayout */}
       </Route> 
 
       {/* This route is for the 404 page and does not use the MainLayout */}

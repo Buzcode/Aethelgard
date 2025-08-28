@@ -11,20 +11,19 @@ const MainLayout = () => {
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
 
-  // --- NEW: SMARTER LOGIC FOR GETTING INITIALS ---
   const getInitials = () => {
     if (!user || !user.name) {
-      return 'U'; // Default for "User" if name is not available
+      return 'U'; // if name is not available
     }
 
     const nameParts = user.name.split(' ');
 
-    // If there's only one name (e.g., "Admin"), take the first two letters
+  
     if (nameParts.length === 1) {
       return nameParts[0].substring(0, 2).toUpperCase();
     }
 
-    // If there are multiple names, take the first letter of the first and last names
+    // the first letter of the first and last names
     const firstNameInitial = nameParts[0][0] || '';
     const lastNameInitial = nameParts[nameParts.length - 1][0] || '';
 
@@ -78,7 +77,7 @@ const MainLayout = () => {
           <div className="auth-section">
             {user ? (
               <div className="profile-container" ref={dropdownRef}>
-                {/* --- THIS IS THE UPDATED LINE --- */}
+                {/* --- UPDATED LINE --- */}
                 <div className="profile-icon" onClick={toggleDropdown}>
                   {getInitials()}
                 </div>
@@ -103,7 +102,7 @@ const MainLayout = () => {
                         </button>
                         <div className="info-item">
                           <span>First Name</span>
-                          {/* This logic assumes user.name is "FirstName LastName" */}
+                          {/* logic for "FirstName LastName" */}
                           <p>{user.name.split(' ')[0]}</p>
                         </div>
                         <div className="info-item">

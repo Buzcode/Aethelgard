@@ -9,9 +9,8 @@ const HomePage = () => {
   return (
     <div className="homepage-container">
 
-      {/* ============== TOP THREE CATEGORY CARDS ============== */}
       <div className="card-gallery">
-        {/* Added the 'figures-card' class below to target this specific card */}
+
         <Link to="/figures" className="category-card figures-card">
           <img src={leonardoDaVinciImg} alt="Historical Figures" />
           <div className="card-label">FIGURES</div>

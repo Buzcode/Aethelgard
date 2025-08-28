@@ -69,18 +69,16 @@
   margin-bottom: 1rem;
 }
 
-/* ==========================================================================
-   5. Global Form Styles (For Login, Register, etc.)
-   ========================================================================== */
+
 
 /* --- Main container for the form --- */
 .form-container {
   max-width: 500px;
-  margin: 3rem auto; /* Center the form on the page with vertical spacing */
+  margin: 3rem auto; 
   padding: 2.5rem;
-  background-color: #F5F0E1; /* Lighter parchment, matches sidebar */
+  background-color: #F5F0E1;
   border: 1px solid rgba(74, 64, 58, 0.1);
-  border-radius: 12px; /* Consistent rounded corners */
+  border-radius: 12px; 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
@@ -91,7 +89,7 @@
   font-family: 'Lora', serif;
 }
 
-/* --- Container for each label + input pair --- */
+/* --- each label + input pair --- */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -103,17 +101,17 @@
   color: #4A403A;
 }
 
-/* --- Styling for the input fields --- */
+
 .form-group input {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 8px;
-  background-color: #EAE0C8; /* Main parchment background */
+  background-color: #EAE0C8; 
   color: #4A403A;
   font-size: 1rem;
   font-family: 'Lato', sans-serif;
-  box-sizing: border-box; /* Ensures padding doesn't affect the width */
+  box-sizing: border-box; 
 }
 
 /* --- The main action button --- */
@@ -123,7 +121,7 @@
   padding: 0.8rem;
   border: none;
   border-radius: 8px;
-  background-color: #800020; /* Burgundy accent */
+  background-color: #800020; 
   color: #FFFFFF;
   font-size: 1.1rem;
   font-weight: bold;
@@ -133,7 +131,7 @@
 }
 
 .form-button:hover {
-  background-color: #600018; /* Darker burgundy on hover */
+  background-color: #600018; 
 }
 
 /* --- The error message --- */
@@ -282,9 +280,7 @@
   cursor: not-allowed;
 }
 
-/* ==========================================================================
-   8. Header Redesign
-   ========================================================================== */
+/*8. Header Redesign*/
 .main-header {
   display: flex;
   align-items: center;
@@ -314,21 +310,21 @@
   font-weight: bold;
 }
 
-/* --- THIS RULE IS NOW FIXED TO TARGET ALL HEADER LINKS --- */
-/* It now includes .auth-links a to remove the hyperlink style */
+
+
 .main-nav a,
 .auth-links a {
   margin: 0 1rem;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #4A403A; /* Enforce dark sepia color */
-  text-decoration: none; /* Remove default underline */
+  color: #4A403A; 
+  text-decoration: none; 
   position: relative;
   padding-bottom: 8px;
 }
 
-/* Styling for the underline on the active NavLink */
+
 .main-nav a.active-link {
   color: #4A403A;
 }
@@ -344,9 +340,7 @@
 }
 
 
-/* ==========================================================================
-   9. Homepage Specific Styles
-   ========================================================================== */
+/*9. Homepage Specific Styles */
 .home-section {
   background-color: #F5F0E1;
   border: 1px solid rgba(74, 64, 58, 0.1);
@@ -446,11 +440,8 @@
   min-width: 200px;
 }
 
-/* ==========================================================================
-   10. Sidebar Interactive Styles
-   ========================================================================== */
+/*10. Sidebar Interactive Styles*/
 
-/* Make the section titles clickable */
 .sidebar-section h3 {
   display: flex;
   justify-content: space-between;
@@ -488,9 +479,7 @@
   transform: rotate(45deg);
 }
 
-/* ==========================================================================
-   11. Profile Dropdown Styles
-   ========================================================================== */
+/*11. Profile Dropdown Styles*/
 
 .header-right-nav {
   display: flex;
@@ -501,7 +490,6 @@
   margin-left: 1.5rem;
 }
 
-/* Note: .auth-links a is now styled with .main-nav a for consistency */
 
 .profile-container {
   position: relative;

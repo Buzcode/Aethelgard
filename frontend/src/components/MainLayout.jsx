@@ -3,6 +3,8 @@ import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Sidebar from './Sidebar';
 
+import ChatWidget from './ChatWidget';
+
 const MainLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -134,6 +136,7 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
+            <ChatWidget />
     </>
   );
 };

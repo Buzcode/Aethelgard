@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import CategoryPage from './pages/CategoryPage'; // <-- THIS IS THE FIX
 
 function App() { 
   return ( 
@@ -21,11 +22,11 @@ function App() {
         {/* HomePage will be shown at the root "/" path */}
         <Route index element={<HomePage />} />
         
-        {/* --- THIS IS THE LINE TO FIX --- */}
-        {/* Changed path from "people" to "figures" to match your link */}
-        <Route path="figures" element={<PeoplePage />} />
+        {/* Your new dynamic route for categories */}
+        <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
-        {/* These routes are correct based on your homepage links */}
+        {/* General pages for main types */}
+        <Route path="figures" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 
@@ -35,7 +36,6 @@ function App() {
         <Route path="about" element={<AboutPage />} />    
         <Route path="contact" element={<ContactPage />} /> 
 
-        {/* The <Chat/> route was removed because the ChatWidget is already in MainLayout */}
       </Route> 
 
       {/* This route is for the 404 page and does not use the MainLayout */}

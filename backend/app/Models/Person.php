@@ -20,5 +20,6 @@ class Person extends Model
         'death_date',
         'bio',
         'portrait_url',
+        'category',
     ]; 
 } 

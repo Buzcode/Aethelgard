@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Person;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage; 
 
@@ -13,10 +13,22 @@ class PersonController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request) // Injected Request
     {
-        // Simply fetch all people from the database
-        return Person::all();
+        // Start with a base query builder instance
+        $query = Person::query();
+
+        // if a 'category' parameter exists in the URL
+        if ($request->has('category')) {
+            //add a WHERE clause to filter the results
+            $query->where('category', $request->input('category'));
+        }
+
+        // Execute the query and get the results
+        $people = $query->get();
+
+        // Return the collection of people as JSON
+        return response()->json($people);
     }
 
     /**
@@ -30,7 +42,7 @@ class PersonController extends Controller
             'birth_date' => 'nullable|string|max:255',
             'death_date' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
-            'portrait_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Expects a file named 'portrait_image'
+            'portrait_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
 
         if ($validator->fails()) {
@@ -38,7 +50,7 @@ class PersonController extends Controller
         }
 
         // 3. Handle the file upload logic
-        $data = $request->except('portrait_image'); // Get all data except the image itself
+        $data = $request->except('portrait_image'); 
 
         if ($request->hasFile('portrait_image')) {
             // Store the image in 'storage/app/public/portraits' and get its path

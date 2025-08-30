@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; 
 
 const Sidebar = () => {
   const [openSections, setOpenSections] = useState({
@@ -23,10 +24,10 @@ const Sidebar = () => {
           <span className={`arrow ${openSections.figures ? 'down' : 'right'}`}></span>
         </h3>
         <ul className={openSections.figures ? 'open' : 'closed'}>
-          <li><a href="#">Politics & Leadership</a></li>
-          <li><a href="#">Science & Technology</a></li>
-          <li><a href="#">Arts & Culture</a></li>
-          {/* "ETC." has been removed */}
+          
+          <li><Link to="/people/category/politics_leadership">Politics & Leadership</Link></li>
+          <li><Link to="/people/category/science_technology">Science & Technology</Link></li>
+          <li><Link to="/people/category/arts_culture">Arts & Culture</Link></li>
         </ul>
       </div>
 
@@ -37,10 +38,10 @@ const Sidebar = () => {
           <span className={`arrow ${openSections.events ? 'down' : 'right'}`}></span>
         </h3>
         <ul className={openSections.events ? 'open' : 'closed'}>
-          <li><a href="#">Conflicts & Warfare</a></li>
-          <li><a href="#">Political & Social Transformations</a></li>
-          <li><a href="#">Exploration & Discovery</a></li>
-          {/* "ETC." has been removed */}
+        
+          <li><Link to="/events/category/conflicts_warfare">Conflicts & Warfare</Link></li>
+          <li><Link to="/events/category/political_social_transformations">Political & Social Transformations</Link></li>
+          <li><Link to="/events/category/exploration_discovery">Exploration & Discovery</Link></li>
         </ul>
       </div>
 
@@ -51,10 +52,10 @@ const Sidebar = () => {
           <span className={`arrow ${openSections.places ? 'down' : 'right'}`}></span>
         </h3>
         <ul className={openSections.places ? 'open' : 'closed'}>
-          <li><a href="#">Ancient Cities</a></li>
-          <li><a href="#">Monuments & Structures</a></li>
-          <li><a href="#">Lost Civilizations</a></li>
-          {/* "ETC." has been removed */}
+      
+          <li><Link to="/places/category/ancient_cities">Ancient Cities</Link></li>
+          <li><Link to="/places/category/monuments_structures">Monuments & Structures</Link></li>
+          <li><Link to="/places/category/lost_civilizations">Lost Civilizations</Link></li>
         </ul>
       </div>
 

@@ -13,6 +13,7 @@ class Place extends Model
         'longitude',
         'description',                                                                                                                     
         'picture',
+        'category',
     ];                                                                                                                           
 }                                                                                                                                                   
                         

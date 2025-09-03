@@ -28,7 +28,7 @@ const RegisterPage = () => {
       } else {
         setError('An unexpected error occurred.');
       }
-    }
+    } 
   };
 
   return (

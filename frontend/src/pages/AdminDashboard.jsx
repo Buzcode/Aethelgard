@@ -79,7 +79,7 @@ const AdminDashboard = () => {
         }`}
       >
         <div className="admin-header-welcome">
-          <h2>WELCOME. MITU!</h2>
+          <h2>WELCOME.</h2>
           <Link to="/admin/add-article" className="add-new-article-button">
             + ADD NEW ARTICLE
           </Link>

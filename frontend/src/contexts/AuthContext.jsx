@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axiosClient from '../api/axiosClient'; // Make sure this path is correct
+import axiosClient from '../api/axiosClient'; 
 
 // 1. Create the context. This is kept internal to this file and not exported.
 const AuthContext = createContext({
@@ -10,7 +10,7 @@ const AuthContext = createContext({
   logout: () => {},
 });
 
-// 2. Create the AuthProvider. This component will wrap your application or parts of it.
+// 2. Create the AuthProvider to wrap application or parts of it.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
           setUser(data);
         })
         .catch(() => {
-          // If token is invalid, remove it
+          // If token is invalid, remove 
           localStorage.removeItem('ACCESS_TOKEN');
           setToken(null);
         });
@@ -67,8 +67,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// 3. Create and export the custom useAuth hook.
-// THIS IS THE ONLY THING COMPONENTS SHOULD IMPORT FROM THIS FILE.
 export const useAuth = () => {
   return useContext(AuthContext);
 };

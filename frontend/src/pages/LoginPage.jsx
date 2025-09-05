@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext'; // Correctly imports the hook
+import { useAuth } from '../contexts/AuthContext'; 
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState(''); // It's better to start with empty strings
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const { login } = useAuth(); // Correctly uses the hook
+  const { login } = useAuth(); 
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -27,7 +27,7 @@ const LoginPage = () => {
 
     } catch (err) {
       console.error("Login failed:", err);
-      // Provide a user-friendly error message
+      // error message
       const errorMessage = err.response?.data?.message || 'Invalid credentials. Please try again.';
       setError(errorMessage);
     }

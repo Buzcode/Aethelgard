@@ -1,54 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../api/axiosClient"; 
 
 const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("All"); // Default filter
+  const [filter, setFilter] = useState("All");
 
-  // Default data to mimic your provided image
-  const [articles, setArticles] = useState([
-    {
-      id: 1,
-      title: "FRENCH REVOLUTION",
-      category: "EVENTS",
-      status: "PUBLISHED",
-    },
-    {
-      id: 2,
-      title: "Leonardo Da Vinci Biography",
-      category: "FIGURES",
-      status: "DRAFT",
-    },
-    // Add more default articles here if you wish
-  ]);
+  // State will now start empty and be filled by the API call.
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // Fetch all articles when the component loads
+  useEffect(() => {
+    // Set a timeout to give a better sense of loading, can be removed
+    const timer = setTimeout(() => {
+      axiosClient.get('/articles')
+        .then(({ data }) => {
+          setArticles(data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Failed to fetch articles:", err);
+          setError("Could not load articles from the server.");
+          setLoading(false);
+        });
+    }, 500); 
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []); 
 
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const handleSearchChange = (event) => setSearchTerm(event.target.value);
+  const handleFilterChange = (event) => setFilter(event.target.value);
 
+  // Updated filter logic to work with live data
   const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesFilter =
-      filter === "All" ||
-      article.category === filter ||
-      article.status === filter;
+    const matchesSearch = article.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filter === "All" || article.type === filter;
     return matchesSearch && matchesFilter;
   });
 
+  
+  if (loading) return <div>Loading articles...</div>;
+  if (error) return <div style={{ padding: "20px", color: "red" }}>{error}</div>;
+
   return (
     <div className="admin-page-container">
-      {/* Sidebar */}
       <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
         <button onClick={toggleSidebar} className="sidebar-toggle-button">
           {isSidebarOpen ? "◀" : "▶"}
@@ -56,33 +55,17 @@ const AdminDashboard = () => {
         <div className="sidebar-content">
           <h3>ADMIN</h3>
           <ul className="admin-nav-list">
-            <li>
-              <Link to="/admin/articles">ALL ARTICLES</Link>
-            </li>
-            <li>
-              <Link to="/admin/categories">CATEGORIES</Link>
-            </li>
-            <li>
-              <Link to="/">VIEW SITE</Link>
-            </li>
-            <li>
-              <Link to="/logout">LOG OUT</Link>
-            </li>
+            <li><Link to="/admin/articles">ALL ARTICLES</Link></li>
+            <li><Link to="/">VIEW SITE</Link></li>
+            <li><Link to="/logout">LOG OUT</Link></li>
           </ul>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main
-        className={`admin-main-content ${
-          isSidebarOpen ? "sidebar-open" : "sidebar-closed"
-        }`}
-      >
+      <main className={`admin-main-content ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
         <div className="admin-header-welcome">
           <h2>WELCOME.</h2>
-          <Link to="/admin/add-article" className="add-new-article-button">
-            + ADD NEW ARTICLE
-          </Link>
+          <Link to="/admin/add-article" className="add-new-article-button">+ ADD NEW ARTICLE</Link>
         </div>
 
         <div className="admin-search-filter-container">
@@ -94,19 +77,13 @@ const AdminDashboard = () => {
             onChange={handleSearchChange}
           />
           <div className="admin-filter-dropdown-wrapper">
-            <select
-              className="admin-filter-dropdown"
-              onChange={handleFilterChange}
-              value={filter}
-            >
+            {/* Updated filter options to match live data */}
+            <select className="admin-filter-dropdown" onChange={handleFilterChange} value={filter}>
               <option value="All">SEARCH BY FILTER</option>
-              <option value="PUBLISHED">Published</option>
-              <option value="DRAFT">Draft</option>
-              <option value="EVENTS">Events</option>
               <option value="FIGURES">Figures</option>
+              <option value="EVENTS">Events</option>
               <option value="PLACES">Places</option>
             </select>
-            {/* You can add a custom arrow here if needed */}
             <span className="admin-filter-arrow"></span>
           </div>
         </div>
@@ -115,46 +92,35 @@ const AdminDashboard = () => {
           <table className="admin-articles-table">
             <thead>
               <tr>
-                <th>
-                  <input type="checkbox" />
-                </th>
+                <th><input type="checkbox" /></th>
                 <th>TITLE</th>
                 <th>CATEGORY</th>
-                <th>STATUS</th>
+          
                 <th>ACTION</th>
               </tr>
             </thead>
             <tbody>
-              {filteredArticles.map((article) => (
-                <tr key={article.id}>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                  <td>{article.title}</td>
-                  <td>{article.category}</td>
-                  <td>{article.status}</td>
-                  <td>
-                    <span className="action-icon edit-icon">✏️</span>
-                    <span className="action-icon delete-icon">🗑️</span>
-                    <span className="action-icon view-icon">👁️</span>
+              {/* Logic to handle case where there are no articles */}
+              {filteredArticles.length > 0 ? (
+                filteredArticles.map((article) => (
+                  <tr key={`${article.type}-${article.id}`}> {/* A more unique key */}
+                    <td><input type="checkbox" /></td>
+                    <td>{article.name}</td> 
+                    <td>{article.type}</td> 
+                    <td>
+                      <span className="action-icon edit-icon">✏️</span>
+                      <span className="action-icon delete-icon">🗑️</span>
+                      <span className="action-icon view-icon">👁️</span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                    No articles found.
                   </td>
                 </tr>
-              ))}
-              {/* Add empty rows to match the visual length of your example */}
-              {Array.from({
-                length:
-                  5 - filteredArticles.length > 0
-                    ? 5 - filteredArticles.length
-                    : 0,
-              }).map((_, index) => (
-                <tr key={`empty-${index}`} className="empty-row">
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

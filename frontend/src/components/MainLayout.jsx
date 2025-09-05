@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext'; // This is the correct path
 import Sidebar from './Sidebar';
 
 import ChatWidget from './ChatWidget';

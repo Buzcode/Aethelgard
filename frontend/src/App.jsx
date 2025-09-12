@@ -17,7 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AddArticlePage from "./pages/AddArticlePage";
 
 import AdminRoute from "./components/AdminRoute";
-import AdminRoute from "./components/AdminRoute"; 
+
 
 
 function App() {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DashboardController; // <-- 1. ADD THIS IMPORT
 
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -29,11 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    // NOTE: The chat route has been moved below to make it public for testing.
-    // You can move it back in here later to protect it.
-
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {
+        // --- THIS IS THE NEW ROUTE FOR THE DASHBOARD ---
+        Route::get('/articles', [DashboardController::class, 'index']); 
+
         // People
         Route::post('/people', [PersonController::class, 'store']);
         Route::put('/people/{person}', [PersonController::class, 'update']);
@@ -49,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
     });
+    
 });
 
 // --- Public Chat Route for Testing ---

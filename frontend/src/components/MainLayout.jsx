@@ -3,17 +3,16 @@
 // MODIFICATION 1: Imported `useLocation`
 import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-=======
-=======
->>>>>>> Stashed changes
-import { useAuth } from '../contexts/AuthContext';
->>>>>>> Stashed changes
-import Sidebar from './Sidebar';
 
+import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
+
+import { useAuth } from '../hooks/useAuth';
+
+import { useAuth } from '../contexts/AuthContext';
+
+import { useAuth } from '../contexts/AuthContext';
+
+import Sidebar from './Sidebar';
 import ChatWidget from './ChatWidget';
 
 const MainLayout = () => {
@@ -30,24 +29,15 @@ const MainLayout = () => {
   const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
 
   const getInitials = () => {
-    if (!user || !user.name) {
-      return 'U'; // if name is not available
-    }
+    if (!user) return 'U';
+    const firstName = user.first_name || 'User';
+    const lastName = user.last_name || '';
 
-    const nameParts = user.name.split(' ');
-
-  
-    if (nameParts.length === 1) {
-      return nameParts[0].substring(0, 2).toUpperCase();
-    }
-
-    // the first letter of the first and last names
-    const firstNameInitial = nameParts[0][0] || '';
-    const lastNameInitial = nameParts[nameParts.length - 1][0] || '';
+    const firstNameInitial = firstName[0] || '';
+    const lastNameInitial = lastName ? (lastName[0] || '') : (firstName[1] || '');
 
     return `${firstNameInitial}${lastNameInitial}`.toUpperCase();
   };
-
 
   const handleLogout = () => {
     logout();
@@ -74,6 +64,7 @@ const MainLayout = () => {
   };
 
   return (
+    
     <>
       <header className="main-header">
         <div className="header-brand">
@@ -95,7 +86,6 @@ const MainLayout = () => {
           <div className="auth-section">
             {user ? (
               <div className="profile-container" ref={dropdownRef}>
-                {/* --- UPDATED LINE --- */}
                 <div className="profile-icon" onClick={toggleDropdown}>
                   {getInitials()}
                 </div>
@@ -104,6 +94,15 @@ const MainLayout = () => {
                   <div className="profile-dropdown">
                     {dropdownView === 'main' && (
                       <>
+                        {user.role === 'admin' && (
+                           <Link 
+                              to="/admin" 
+                              className="dropdown-item"
+                              onClick={() => setDropdownOpen(false)}
+                           >
+                              Admin Dashboard
+                           </Link>
+                        )}
                         <button className="dropdown-item" onClick={() => setDropdownView('info')}>
                           Personal Information
                         </button>
@@ -112,7 +111,6 @@ const MainLayout = () => {
                         </button>
                       </>
                     )}
-
                     {dropdownView === 'info' && (
                       <div className="dropdown-info">
                         <button className="dropdown-back" onClick={() => setDropdownView('main')}>
@@ -120,12 +118,11 @@ const MainLayout = () => {
                         </button>
                         <div className="info-item">
                           <span>First Name</span>
-                          {/* logic for "FirstName LastName" */}
-                          <p>{user.name.split(' ')[0]}</p>
+                          <p>{user.first_name}</p>
                         </div>
                         <div className="info-item">
                           <span>Last Name</span>
-                          <p>{user.name.split(' ').slice(1).join(' ')}</p>
+                          <p>{user.last_name}</p>
                         </div>
                         <div className="info-item">
                           <span>Email</span>
@@ -153,8 +150,8 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
-            <ChatWidget />
-    </>
+      <ChatWidget />
+    </> 
   );
 };
 

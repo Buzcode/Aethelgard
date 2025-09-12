@@ -1,5 +1,4 @@
 
-
 import { Routes, Route } from "react-router-dom";
 
 // Import Layout and Page components
@@ -16,22 +15,29 @@ import ContactPage from "./pages/ContactPage";
 import CategoryPage from "./pages/CategoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddArticlePage from "./pages/AddArticlePage";
+
 import AdminRoute from "./components/AdminRoute";
+import AdminRoute from "./components/AdminRoute"; 
+
 
 function App() {
   return (
     <Routes>
-      {/* --- ROUTES WITHOUT SIDEBAR --- */}
+
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* --- ROUTES WITH SIDEBAR (using MainLayout) --- */}
+   
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         <Route path="figures" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
+
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
       </Route>

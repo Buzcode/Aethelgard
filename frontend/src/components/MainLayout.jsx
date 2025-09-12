@@ -1,18 +1,13 @@
-// src/components/MainLayout.jsx
-
-// MODIFICATION 1: Imported `useLocation`
 import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 
 import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
-
 import { useAuth } from '../hooks/useAuth';
 
 import { useAuth } from '../contexts/AuthContext';
 
-import { useAuth } from '../contexts/AuthContext';
-
 import Sidebar from './Sidebar';
+
 import ChatWidget from './ChatWidget';
 
 const MainLayout = () => {

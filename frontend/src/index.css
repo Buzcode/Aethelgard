@@ -1,7 +1,12 @@
 .page-container {
   display: flex;
+<<<<<<< Updated upstream
   background-color: #EAE0C8;
   height: calc(100vh - 70px); /* CHANGE: Use height instead of min-height */
+=======
+  background-color: #eae0c8;
+  height: calc(100vh - 70px); 
+>>>>>>> Stashed changes
 }
 
 /* Add this new rule */
@@ -14,10 +19,14 @@
 .main-content-area {
   flex-grow: 1;
   padding: 2rem;
-  overflow-y: auto; /* ADD THIS: This makes the main content scrollable */
+  overflow-y: auto; 
 }
 
-/* --- Sidebar Component --- */
+.main-content-area--full-width {
+  width: 100%;
+  padding-left: 2rem; 
+}
+
 /* --- Sidebar Component --- */
 .sidebar {
   width: 280px;

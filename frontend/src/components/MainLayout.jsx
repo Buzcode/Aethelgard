@@ -4,9 +4,12 @@
 import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 =======
+=======
+>>>>>>> Stashed changes
 import { useAuth } from '../contexts/AuthContext';
 >>>>>>> Stashed changes
 import Sidebar from './Sidebar';

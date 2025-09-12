@@ -27,19 +27,28 @@ import CategoryPage from "./pages/CategoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddArticlePage from "./pages/AddArticlePage";
 import AdminRoute from "./components/AdminRoute";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 function App() { 
   return ( 
     <Routes>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       {/* All pages using the MainLayout will be nested inside this Route */}
 =======
+=======
+>>>>>>> Stashed changes
       {/* --- ROUTES WITHOUT SIDEBAR --- */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
       {/* --- ROUTES WITH SIDEBAR (using MainLayout) --- */}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       <Route path="/" element={<MainLayout />}>
         
@@ -54,6 +63,7 @@ function App() {
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
         {/* Other pages */}
         <Route path="login" element={<LoginPage />} /> 
@@ -61,6 +71,8 @@ function App() {
         <Route path="about" element={<AboutPage />} />    
         <Route path="contact" element={<ContactPage />} /> 
 =======
+=======
+>>>>>>> Stashed changes
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
       </Route>

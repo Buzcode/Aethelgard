@@ -22,7 +22,7 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        // --- MODIFICATION START ---
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -30,7 +30,7 @@ class EventController extends Controller
             'event_date' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        // --- MODIFICATION END ---
+        
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
@@ -53,7 +53,7 @@ class EventController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|max:255', // Also added here
+            'category' => 'nullable|string|max:255', 
             'event_date' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

@@ -865,3 +865,9 @@
   font-family: "Lato", sans-serif;
   box-sizing: border-box;
 }
+
+.category-selection-display {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #555; 
+}

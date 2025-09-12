@@ -78,11 +78,6 @@ const AddArticlePage = () => {
       formData.append('description', description);
     }
     
-    // Note: The 'status' field is not used in your controllers.
-    // If you want to save the status, you must add a 'status' column
-    // to your database tables and add 'status' to the $fillable array in each model.
-    // formData.append('status', status);
-    // --- MODIFICATION END ---
 
     try {
       await axiosClient.post(`/${endpoint}`, formData, {

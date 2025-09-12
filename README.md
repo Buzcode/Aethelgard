@@ -49,7 +49,7 @@ Rehnuma Tarannum Ramisha:
 ## ✨ Core Features & Platform Modules
 
 ### 🔒 User Authentication & Roles
-
+                                            
 - Secure login with role-based access (User vs. Admin/Historian).
 - Admin dashboard for content management and site analytics.
 - Personalized user accounts for saving favorite topics and tracking exploration history.

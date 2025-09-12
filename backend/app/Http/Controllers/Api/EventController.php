@@ -10,38 +10,27 @@ use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request) //Injected Request
+    public function index(Request $request)
     {
-        // base query builder instance
         $query = Event::query();
-
-        // Check if a 'category' parameter exists in the URL
         if ($request->has('category')) {
-            // add a WHERE clause to filter the results
             $query->where('category', $request->input('category'));
         }
-
-        // Execute the query (original or filtered one) and get the results
         $events = $query->get();
-
-        // Return the collection of events as JSON
         return response()->json($events);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
+            'category' => 'required|string|max:255', // Added category validation
             'event_date' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
@@ -61,7 +50,18 @@ class EventController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        // Validation...
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'nullable|string|max:255', 
+            'event_date' => 'nullable|string|max:255',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $data = $request->except('picture');
 
         if ($request->hasFile('picture')) {

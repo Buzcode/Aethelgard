@@ -1,23 +1,36 @@
-import { createContext, useState } from 'react';
-import axiosClient from '../api/axiosClient';
+import { createContext, useState, useEffect, useContext } from 'react';
+import axiosClient from '../api/axiosClient'; 
 
-// 1. Create the context with a default shape
+// 1. Create the context. This is kept internal to this file and not exported.
 const AuthContext = createContext({
   user: null,
   token: null,
   login: () => {},
-  register: () => {}, // Add register to the default shape
+  register: () => {},
   logout: () => {},
 });
 
-export { AuthContext };
-
-// 2. Create the provider component
+// 2. Create the AuthProvider to wrap application or parts of it.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
 
-  // Function to set the token in state and local storage
+  // Effect to fetch user data if a token exists on page load
+  useEffect(() => {
+    if (token) {
+      axiosClient.get('/user')
+        .then(({ data }) => {
+          setUser(data);
+        })
+        .catch(() => {
+          // If token is invalid, remove 
+          localStorage.removeItem('ACCESS_TOKEN');
+          setToken(null);
+        });
+    }
+  }, [token]); // Rerun effect if token changes
+
+  // Helper function to manage the token in state and localStorage
   const _setToken = (newToken) => {
     setToken(newToken);
     if (newToken) {
@@ -27,22 +40,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  const login = async (credentials) => {
-    // Assuming credentials is an object like { email, password }
-    const response = await axiosClient.post('/login', credentials);
+  const login = async (email, password) => {
+    const response = await axiosClient.post('/login', { email, password });
     setUser(response.data.user);
     _setToken(response.data.access_token);
-    return response;
+    return response.data.user;
   }; 
 
-  // --- THIS IS THE CORRECT, FINAL VERSION OF THE REGISTER FUNCTION ---
   const register = async (userData) => {
-    // 1. Call the backend to create the user
-    await axiosClient.post('/register', userData);
-    
-    // 2. After successful registration, immediately log them in
-    //    to get their user data and set the token.
-    await login({ email: userData.email, password: userData.password });
+    const response = await axiosClient.post('/register', userData);
+    setUser(response.data.user);
+    _setToken(response.data.access_token);
+    return response.data.user;
   };
 
   const logout = () => {
@@ -50,9 +59,14 @@ export const AuthProvider = ({ children }) => {
     _setToken(null);
   };
 
+  // Provide the context value to all children components
   return (
     <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };

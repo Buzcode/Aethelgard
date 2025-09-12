@@ -1,16 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import leonardoDaVinciImg from '../assets/leonardo-da-vinci.jpg'; 
-import eventsImg from '../assets/images/events.jpg'; 
-import placesImg from '../assets/images/places.jpg';
+import leonardoDaVinciImg from "../assets/leonardo-da-vinci.jpg";
+import eventsImg from "../assets/images/events.jpg";
+import placesImg from "../assets/images/places.jpg";
 
 const HomePage = () => {
   return (
     <div className="homepage-container">
-
       <div className="card-gallery">
-
         <Link to="/figures" className="category-card figures-card">
           <img src={leonardoDaVinciImg} alt="Historical Figures" />
           <div className="card-label">FIGURES</div>
@@ -51,7 +49,6 @@ const HomePage = () => {
           <div className="item-placeholder"></div>
         </div>
       </section>
-      
     </div>
   );
 };

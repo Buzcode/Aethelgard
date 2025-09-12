@@ -4,9 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
-
 import ChatWidget from './ChatWidget';
 import { useAuth } from '../hooks/useAuth';
 import { HiMenu } from 'react-icons/hi';
@@ -25,48 +24,19 @@ const MainLayout = () => {
   const dropdownRef = useRef(null);
 
   const getInitials = () => {
-    if (!user || !user.name) {
-      return 'U'; // if name is not available
-    }
+    if (!user) return 'U';
+    const firstName = user.first_name || 'User';
+    const lastName = user.last_name || '';
 
-    const nameParts = user.name.split(' ');
-
-  
-    if (nameParts.length === 1) {
-      return nameParts[0].substring(0, 2).toUpperCase();
-    }
-
-    // the first letter of the first and last names
-    const firstNameInitial = nameParts[0][0] || '';
-    const lastNameInitial = nameParts[nameParts.length - 1][0] || '';
+    const firstNameInitial = firstName[0] || '';
+    const lastNameInitial = lastName ? (lastName[0] || '') : (firstName[1] || '');
 
     return `${firstNameInitial}${lastNameInitial}`.toUpperCase();
   };
 
- 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [dropdownView, setDropdownView] = useState('main');  
-  const dropdownRef = useRef(null);
-
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
-    logout();
-    //setDropdownOpen(false);
     navigate('/login');
   };
 
@@ -99,6 +69,7 @@ const MainLayout = () => {
 
 
   return (
+    
     <>
       <header className="main-header">
         <div className="header-brand">
@@ -126,7 +97,6 @@ const MainLayout = () => {
           <div className="auth-section">
             {user ? (
               <div className="profile-container" ref={dropdownRef}>
-                {/* --- UPDATED LINE --- */}
                 <div className="profile-icon" onClick={toggleDropdown}>
                   {getInitials()}
                 </div>
@@ -135,6 +105,15 @@ const MainLayout = () => {
                   <div className="profile-dropdown">
                     {dropdownView === 'main' && (
                       <>
+                        {user.role === 'admin' && (
+                           <Link 
+                              to="/admin" 
+                              className="dropdown-item"
+                              onClick={() => setDropdownOpen(false)}
+                           >
+                              Admin Dashboard
+                           </Link>
+                        )}
                         <button className="dropdown-item" onClick={() => setDropdownView('info')}>
                           Personal Information
                         </button>
@@ -143,7 +122,6 @@ const MainLayout = () => {
                         </button>
                       </>
                     )}
-
                     {dropdownView === 'info' && (
                       <div className="dropdown-info">
                         <button className="dropdown-back" onClick={() => setDropdownView('main')}>
@@ -151,12 +129,11 @@ const MainLayout = () => {
                         </button>
                         <div className="info-item">
                           <span>First Name</span>
-                          {/* logic for "FirstName LastName" */}
-                          <p>{user.name.split(' ')[0]}</p>
+                          <p>{user.first_name}</p>
                         </div>
                         <div className="info-item">
                           <span>Last Name</span>
-                          <p>{user.name.split(' ').slice(1).join(' ')}</p>
+                          <p>{user.last_name}</p>
                         </div>
                         <div className="info-item">
                           <span>Email</span>
@@ -183,6 +160,10 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
+      <ChatWidget />
+    </> 
+  );
+};
             <ChatWidget />
     </>
         <div className="auth-links">

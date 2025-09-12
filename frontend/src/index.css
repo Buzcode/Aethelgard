@@ -1,6 +1,6 @@
 .page-container {
   display: flex;
-  background-color: #EAE0C8;
+  background-color: #eae0c8;
   height: calc(100vh - 70px); /* CHANGE: Use height instead of min-height */
 }
 
@@ -22,7 +22,7 @@
 .sidebar {
   width: 280px;
   flex-shrink: 0;
-  background-color: #F5F0E1;
+  background-color: #f5f0e1;
   padding: 1.5rem;
   border-right: 1px solid rgba(74, 64, 58, 0.2);
   height: calc(100vh - 70px);
@@ -36,10 +36,10 @@
 }
 
 .sidebar-section h3 {
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 1rem;
   font-weight: bold;
-  color: #4A403A;
+  color: #4a403a;
   margin-bottom: 1rem;
   border-bottom: 1px solid rgba(74, 64, 58, 0.1);
   padding-bottom: 0.5rem;
@@ -53,7 +53,7 @@
 }
 
 .sidebar-section ul li a {
-  color: #4A403A;
+  color: #4a403a;
   text-decoration: none;
   font-weight: normal;
   display: block;
@@ -66,28 +66,26 @@
 }
 
 .saved-placeholder {
-  background-color: #DCD6C5;
+  background-color: #dcd6c5;
   border-radius: 8px;
   height: 120px;
 }
 
 .topic-placeholder {
-  background-color: #DCD6C5;
+  background-color: #dcd6c5;
   border-radius: 4px;
   height: 30px;
   margin-bottom: 1rem;
 }
 
-
-
 /* --- Main container for the form --- */
 .form-container {
   max-width: 500px;
-  margin: 3rem auto; 
+  margin: 3rem auto;
   padding: 2.5rem;
-  background-color: #F5F0E1;
+  background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
-  border-radius: 12px; 
+  border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
@@ -95,7 +93,7 @@
   text-align: center;
   margin-top: 0;
   margin-bottom: 2rem;
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
 }
 
 /* --- each label + input pair --- */
@@ -107,20 +105,19 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #4A403A;
+  color: #4a403a;
 }
-
 
 .form-group input {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 8px;
-  background-color: #EAE0C8; 
-  color: #4A403A;
+  background-color: #eae0c8;
+  color: #4a403a;
   font-size: 1rem;
-  font-family: 'Lato', sans-serif;
-  box-sizing: border-box; 
+  font-family: "Lato", sans-serif;
+  box-sizing: border-box;
 }
 
 /* --- The main action button --- */
@@ -130,8 +127,8 @@
   padding: 0.8rem;
   border: none;
   border-radius: 8px;
-  background-color: #800020; 
-  color: #FFFFFF;
+  background-color: #800020;
+  color: #ffffff;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
@@ -140,7 +137,7 @@
 }
 
 .form-button:hover {
-  background-color: #600018; 
+  background-color: #600018;
 }
 
 /* --- The error message --- */
@@ -162,7 +159,7 @@
   background-color: transparent;
   border: none;
   /* Adjust padding if needed to ensure the whole icon is clickable */
-  padding: 10px; 
+  padding: 10px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
   z-index: 1000;
@@ -179,7 +176,7 @@
   right: 2rem;
   width: 350px;
   max-height: 70vh; /* Max height to prevent overflow on small screens */
-  background-color: #F5F0E1; /* Light Parchment, matching form inputs */
+  background-color: #f5f0e1; /* Light Parchment, matching form inputs */
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -201,7 +198,7 @@
 .chatbox-header h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: #4A403A;
+  color: #4a403a;
 }
 
 .chatbox-close-button {
@@ -210,7 +207,7 @@
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #4A403A;
+  color: #4a403a;
 }
 
 /* The scrollable area for messages */
@@ -242,7 +239,7 @@
 }
 .message-bubble.user {
   background-color: #800020; /* Burgundy accent */
-  color: #FFFFFF;
+  color: #ffffff;
   border-bottom-right-radius: 4px; /* "Tail" effect */
 }
 
@@ -252,10 +249,9 @@
 }
 .message-bubble.model {
   background-color: rgba(74, 64, 58, 0.1); /* Faint Sepia */
-  color: #4A403A;
+  color: #4a403a;
   border-bottom-left-radius: 4px; /* "Tail" effect */
 }
-
 
 /* The form at the bottom of the chatbox */
 .chat-form {
@@ -270,7 +266,7 @@
   padding: 0.75rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 4px;
-  background-color: #EAE0C8; /* Parchment background */
+  background-color: #eae0c8; /* Parchment background */
   font-size: 1rem;
 }
 
@@ -278,8 +274,8 @@
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 4px;
-  background-color: #4A403A; /* Dark Sepia */
-  color: #FFFFFF;
+  background-color: #4a403a; /* Dark Sepia */
+  color: #ffffff;
   font-weight: bold;
   cursor: pointer;
 }
@@ -296,30 +292,28 @@
   justify-content: space-between;
   height: 70px;
   padding: 0 2rem;
-  background-color: #F5F0E1;
+  background-color: #f5f0e1;
   border-bottom: 1px solid rgba(74, 64, 58, 0.2);
 }
 
 .header-brand a {
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 1.8rem;
   font-weight: bold;
-  color: #4A403A;
+  color: #4a403a;
   text-decoration: none;
 }
 
 .header-search input {
   border: 1px solid rgba(74, 64, 58, 0.2);
-  background-color: #DCD6C5;
+  background-color: #dcd6c5;
   border-radius: 20px;
   padding: 0.5rem 1rem;
   width: 300px;
   text-align: center;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   font-weight: bold;
 }
-
-
 
 .main-nav a,
 .auth-links a {
@@ -327,31 +321,29 @@
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #4A403A; 
-  text-decoration: none; 
+  color: #4a403a;
+  text-decoration: none;
   position: relative;
   padding-bottom: 8px;
 }
 
-
 .main-nav a.active-link {
-  color: #4A403A;
+  color: #4a403a;
 }
 
 .main-nav a.active-link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 4px;
-  background-color: #4A403A;
+  background-color: #4a403a;
 }
-
 
 /*9. Homepage Specific Styles */
 .home-section {
-  background-color: #F5F0E1;
+  background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
@@ -359,17 +351,17 @@
 }
 
 .home-section h2 {
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 1.2rem;
   margin: 0 0 1.5rem 0;
-  color: #4A403A;
+  color: #4a403a;
   font-weight: bold;
   text-transform: uppercase;
 }
 
 .card-gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -382,7 +374,7 @@
   overflow: hidden;
   height: 320px;
   display: block;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .figures-card img {
@@ -407,7 +399,7 @@
   right: 0;
   text-align: center;
   padding: 1rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
   font-weight: bold;
   font-size: 1.2rem;
   text-transform: uppercase;
@@ -423,7 +415,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background-color: #EAE0C8;
+  background-color: #eae0c8;
   padding: 0.5rem;
   border-radius: 8px;
   min-width: 250px;
@@ -438,11 +430,11 @@
 
 .item-card span {
   font-weight: bold;
-  color: #4A403A;
+  color: #4a403a;
 }
 
 .item-placeholder {
-  background-color: #DCD6C5;
+  background-color: #dcd6c5;
   border-radius: 8px;
   height: 96px;
   flex-grow: 1;
@@ -473,7 +465,7 @@
 }
 
 .arrow {
-  border: solid #4A403A;
+  border: solid #4a403a;
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
@@ -498,7 +490,6 @@
 .auth-section {
   margin-left: 1.5rem;
 }
-
 
 .profile-container {
   position: relative;
@@ -534,6 +525,7 @@
 }
 
 .dropdown-item {
+  display: block;
   width: 100%;
   padding: 0.75rem 1rem;
   border: none;
@@ -543,6 +535,8 @@
   border-radius: 4px;
   font-size: 1rem;
   color: #333;
+  text-decoration: none;
+  font-weight: normal; 
 }
 
 .dropdown-item:hover {
@@ -595,7 +589,7 @@
 .category-page-container h1 {
   text-align: center;
   margin-bottom: 2rem;
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 2.5rem;
 }
 
@@ -603,7 +597,7 @@
 .item-card-simple {
   /* --- CHANGE IS HERE --- */
   max-width: 800px; /* Reduced from 900px */
-  margin: 0 auto 4rem auto; 
+  margin: 0 auto 4rem auto;
 }
 
 /* This styles the image to match the Figma design */
@@ -613,9 +607,9 @@
   height: 450px; /* Reduced from 500px */
   object-fit: cover;
   object-position: center 20%;
-  border-radius: 8px; 
-  border: 4px solid #FFFFFF;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
+  border-radius: 8px;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* ... (the rest of the styles for h2, p, etc. remain the same) ... */
@@ -625,14 +619,255 @@
 }
 
 .item-card-simple h2 {
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   font-size: 2.2rem;
-  color: #4A403A;
+  color: #4a403a;
   margin-bottom: 1rem;
 }
 
 .item-card-simple p {
   font-size: 1.1rem;
   line-height: 1.7;
-  color: #4A403A;
+  color: #4a403a;
+}
+/* Admin Dashboard Specific Styles */
+
+.admin-page-container {
+  display: flex;
+  height: 100vh; /* Full viewport height */
+  background-color: #eae0c8;
+}
+
+.admin-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background-color: #f5f0e1;
+  border-right: 1px solid rgba(74, 64, 58, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative; /* For the toggle button positioning */
+  transition: width 0.3s ease-in-out;
+  overflow-x: hidden; /* Hide content when collapsed */
+}
+
+.admin-sidebar.closed {
+  width: 60px; /* Adjust based on your toggle button size */
+}
+
+.sidebar-content {
+  padding: 1.5rem;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.admin-sidebar.closed .sidebar-content {
+  opacity: 0;
+  pointer-events: none; /* Disable interaction when hidden */
+}
+
+.admin-sidebar h3 {
+  font-family: "Lora", serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4a403a;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(74, 64, 58, 0.1);
+  padding-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.admin-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-nav-list li a {
+  color: #4a403a;
+  text-decoration: none;
+  font-weight: normal;
+  display: block;
+  padding: 0.5rem 0;
+  transition: background-color 0.2s ease;
+}
+
+.admin-nav-list li a:hover {
+  background-color: rgba(74, 64, 58, 0.05);
+}
+
+.sidebar-toggle-button {
+  position: absolute;
+  top: 1.5rem; /* Adjust as needed */
+  right: 1rem;
+  background: #4a403a; /* Dark Sepia */
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-sidebar.closed .sidebar-toggle-button {
+  right: -15px; /* Adjust to keep it visible when sidebar is closed */
+  transform: rotate(180deg); /* Flip arrow */
+}
+
+.admin-main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Adjust main content margin when sidebar is closed if needed */
+/* .admin-main-content.sidebar-closed removed because empty rulesets are not allowed */
+
+.admin-header-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-header-welcome h2 {
+  font-family: "Lora", serif;
+  color: #4a403a;
+  margin: 0;
+}
+
+.add-new-article-button {
+  background-color: #5cb85c; /* Green */
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.add-new-article-button:hover {
+  background-color: #4cae4c;
+}
+
+.admin-search-filter-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: flex-start; /* Align to the left */
+}
+
+.admin-search-input {
+  flex-grow: 1; /* Allow it to take up available space */
+  max-width: 300px; /* Limit its width */
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(74, 64, 58, 0.2);
+  border-radius: 20px;
+  background-color: #dcd6c5;
+  color: #4a403a;
+  font-family: "Lato", sans-serif;
+  text-align: left; /* Align text to left inside input */
+  outline: none;
+}
+
+/* Custom styling for the dropdown to match the image */
+.admin-filter-dropdown-wrapper {
+  position: relative;
+  display: inline-block; /* Or flex item */
+}
+
+.admin-filter-dropdown {
+  width: 200px; /* Fixed width as in the image */
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(74, 64, 58, 0.2);
+  border-radius: 20px;
+  background-color: #dcd6c5;
+  color: #4a403a;
+  font-family: "Lato", sans-serif;
+  appearance: none; /* Hide default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.admin-filter-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Allow clicks to pass through to select */
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #4a403a; /* Custom arrow */
+}
+
+.admin-articles-table-container {
+  background-color: #f5f0e1;
+  border: 1px solid rgba(74, 64, 58, 0.1);
+  border-radius: 12px;
+  overflow: hidden; /* Ensures rounded corners for table */
+}
+
+.admin-articles-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-articles-table th,
+.admin-articles-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(74, 64, 58, 0.1);
+  color: #4a403a;
+  font-family: "Lato", sans-serif;
+}
+
+.admin-articles-table th {
+  background-color: rgba(74, 64, 58, 0.05); /* Lighter header background */
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.admin-articles-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-articles-table tbody tr:nth-child(even) {
+  background-color: #eae0c8; /* Alternating row color */
+}
+
+.admin-articles-table .action-icon {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+/* Styles for the textarea and select on the Add Article page */
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(74, 64, 58, 0.2);
+  border-radius: 8px;
+  background-color: #eae0c8;
+  color: #4a403a;
+  font-size: 1rem;
+  font-family: "Lato", sans-serif;
+  box-sizing: border-box;
+}
+
+.category-selection-display {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #555; 
 }

@@ -20,5 +20,10 @@ class Event extends Model
         'event_date',
         'picture',
         'category',
+        'likes'
     ];
+    public function likers()
+{
+    return $this->belongsToMany(User::class, 'event_likes', 'event_id', 'user_id');
+}
 }

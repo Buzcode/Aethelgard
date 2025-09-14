@@ -31,7 +31,7 @@ function App() {
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
         {/* Routes for listing all items */}
-        <Route path="people" element={<PeoplePage />} />
+        <Route path="figures" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 

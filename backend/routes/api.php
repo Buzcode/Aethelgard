@@ -7,7 +7,8 @@ use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
-use App\Http\Controllers\Api\DashboardController; // <-- 1. ADD THIS IMPORT
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\SearchController; // <--- ADD THIS IMPORT!
 
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -23,6 +24,9 @@ Route::get('/places/{place}', [PlaceController::class, 'show']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
 
+// --- NEW SEARCH ROUTE ---
+Route::get('/search', [SearchController::class, 'search']); // <--- ADD THIS ROUTE!
+
 // --- Protected Admin & User Routes ---
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -32,30 +36,29 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {
-        // --- THIS IS THE NEW ROUTE FOR THE DASHBOARD ---
-        Route::get('/articles', [DashboardController::class, 'index']); 
+        Route::get('/articles', [DashboardController::class, 'index']);
 
         // People
         Route::post('/people', [PersonController::class, 'store']);
         Route::put('/people/{person}', [PersonController::class, 'update']);
         Route::delete('/people/{person}', [PersonController::class, 'destroy']);
-        
+
         // Places
         Route::post('/places', [PlaceController::class, 'store']);
         Route::put('/places/{place}', [PlaceController::class, 'update']);
         Route::delete('/places/{place}', [PlaceController::class, 'destroy']);
-        
+
         // Events
         Route::post('/events', [EventController::class, 'store']);
         Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
     });
-    
+
 });
 
 // --- Public Chat Route for Testing ---
 Route::post('/chat', [ChatController::class, 'handleChat']);
 Route::get('/testkey', function () {
     $key = config('gemini.api_key');
-    dd($key); // dd means "Dump and Die"
+    dd($key);
 });

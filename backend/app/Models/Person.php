@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany; // Added for type-hinting
 
 class Person extends Model
 {
-   use HasFactory;
+    use HasFactory;
 
     // The table associated with the model.
     protected $table = 'people'; // Explicitly defining the table name is good practice
@@ -26,13 +27,12 @@ class Person extends Model
         'category',
         'likes' // This is correct
     ];
-    // In Person.php
 
-/**
- * The users that have liked this person.
- */
-public function likers()
-{
-    return $this->belongsToMany(User::class, 'person_likes', 'person_id', 'user_id');
-}
+    /**
+     * The users that have liked this person.
+     */
+    public function likers(): BelongsToMany // Added type-hint for best practice
+    {
+        return $this->belongsToMany(User::class, 'person_likes', 'person_id', 'user_id');
+    }
 }

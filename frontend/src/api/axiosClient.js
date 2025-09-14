@@ -1,24 +1,19 @@
+// src/api/axiosClient.js
+
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  // --- THIS IS THE CORRECTED LINE ---
   baseURL: 'http://127.0.0.1:8000/api',
-
-  // This is crucial for Laravel Sanctum to work with SPAs
-  withCredentials: true,
 });
 
-// A request interceptor to automatically add the auth token
+// This interceptor is the ONLY thing needed to add the auth token.
 axiosClient.interceptors.request.use(
   (config) => {
-    // Get the token from local storage
-    const token = localStorage.getItem('ACCESS_TOKEN'); // Ensure this key is correct
-
-    // If a token exists, add it to the Authorization header
+    const token = localStorage.getItem('ACCESS_TOKEN');
     if (token) {
+      // This is the line that was not running correctly before.
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => {
@@ -26,21 +21,17 @@ axiosClient.interceptors.request.use(
   }
 );
 
-// A response interceptor for handling common errors like 401 Unauthorized
+// This response interceptor is great for handling expired tokens. Keep it.
 axiosClient.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    // Check if the error is a 401 Unauthorized response
     if (error.response && error.response.status === 401) {
-      // The user's token is invalid or has expired.
-      // Remove the bad token from storage.
       localStorage.removeItem('ACCESS_TOKEN');
-      // Optionally redirect the user to the login page
+      // You might want to redirect the user to the login page here.
       // window.location.href = '/login';
     }
-    // Return the error so that components can handle it in their .catch() blocks
     return Promise.reject(error);
   }
 );

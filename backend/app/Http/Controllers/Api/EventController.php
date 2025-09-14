@@ -16,50 +16,67 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-        // MODIFICATION: Removed withCount('likers') as we now have a dedicated likes_count column.
+        
         $query = Event::query();
 
         if ($request->has('category')) {
             $query->where('category', $request->input('category'));
         }
-        $events = $query->get();
 
+        // Always get the true likes count from the relationship.
+        // We alias it to 'likes' to match your frontend's expectation.
+        $query->withCount('likers as likes');
+
+        // If a user is logged in, efficiently check if they have liked each event.
         if (Auth::check()) {
-            /** @var \App\Models\User $user */
-            $user = Auth::user();
-
-            $likedEventIds = $user->likedEvents()->pluck('events.id')->toArray();
-            $events->each(function ($event) use ($likedEventIds) {
-                $event->is_liked = in_array($event->id, $likedEventIds);
-            });
+            $query->withExists(['likers as is_liked' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }]);
         }
+        
+        $events = $query->latest()->get();
 
         return response()->json($events);
     }
 
     /**
-     * Toggle a like and update the likes_count.
+     * Toggle a like and return the new state.
+     * This is now safe from race conditions and uses the source of truth for counts.
      */
-    public function updateLikes(Request $request, Event $event)
+      public function updateLikes(Request $request, Event $event)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+
+        // Toggle the relationship in the pivot table (the source of truth)
+        $user->likedEvents()->toggle($event->id);
+
+        // Recalculate the count from the source of truth
+        $newLikesCount = $event->likers()->count();
         
-        // --- NEW LOGIC TO UPDATE COUNT ---
-        $result = $user->likedEvents()->toggle($event->id);
+        // Save the new count to our cached 'likes' column
+        $event->update(['likes' => $newLikesCount]);
 
-        // If a like was added, increment the count.
-        if (!empty($result['attached'])) {
-            $event->increment('likes_count');
-        } else {
-            // Otherwise, a like was removed, so decrement.
-            $event->decrement('likes_count');
-        }
+        // Determine the new liked status
+        $isLiked = $user->likedEvents()->where('event_id', $event->id)->exists();
 
-        return response()->json(['status' => 'success', 'message' => 'Like status updated.']);
+        // Return the fresh data to the frontend
+        return response()->json([
+            'new_likes_count' => $newLikesCount,
+            'is_liked' => $isLiked,
+        ]);
     }
 
-    // --- Other methods remain the same ---
+    /**
+     * Display the specified resource.
+     */
+    public function show(Event $event)
+    {
+        // Add the 'likes' count and let the model accessor handle 'is_liked'.
+        $event->loadCount('likers as likes');
+
+        return response()->json($event);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -86,36 +103,56 @@ class EventController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Event $event)
-    {
-        return response()->json($event);
-    }
-
-    /**
      * Update the specified resource in storage.
+     */
+       /**
+     * Update the specified resource in storage.
+     * THIS IS THE CORRECTED VERSION.
      */
     public function update(Request $request, Event $event)
     {
         try {
+            // First, validate the text-based fields.
             $validatedData = $request->validate([
                 'name' => 'sometimes|required|string|max:255',
                 'description' => 'nullable|string',
                 'category' => 'nullable|string|max:255',
-                'event_date' => 'nullable|date',
+                // Add any other text/select fields here (e.g., subcategory, status)
+            ]);
+
+            // Validate the image separately.
+            $request->validate([
                 'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-            $data = $validatedData;
+
+            // Start building the data array with the text fields.
+            $dataToUpdate = $validatedData;
+
+            // Now, handle the file upload with explicit logic.
+            // This block will only run if a new file is actually chosen.
             if ($request->hasFile('picture')) {
-                if ($event->picture) { Storage::disk('public')->delete($event->picture); }
+                // 1. Delete the old picture if it exists to save space.
+                if ($event->picture) {
+                    Storage::disk('public')->delete($event->picture);
+                }
+                
+                // 2. Store the new picture and get its path.
                 $path = $request->file('picture')->store('events', 'public');
-                $data['picture'] = $path;
+                
+                // 3. Only add the 'picture' key to our data array if a new file was stored.
+                $dataToUpdate['picture'] = $path;
             }
-            $event->update($data);
+
+            // Perform the update. The 'picture' field is only updated if a new file was uploaded.
+            // Otherwise, it remains untouched in the database.
+            $event->update($dataToUpdate);
+
             return response()->json($event);
-        } catch (ValidationException $e) { return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422); }
-        catch (\Exception $e) { return response()->json(['message' => 'Failed to update event', 'error' => $e->getMessage()], 500); }
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update event', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

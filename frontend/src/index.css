@@ -1005,3 +1005,55 @@
 .item-actions div:hover svg {
   transform: scale(1.15);
 }
+
+/* Container for both like and save buttons */
+.item-actions {
+  display: flex;
+  justify-content: space-between; /* Puts like on left, save on right */
+  align-items: flex-start; /* Aligns them to the top */
+  width: 100%;
+  margin-top: auto; /* Pushes actions to the bottom of the card content */
+  padding-top: 16px;
+}
+
+/* Container for the like button AND its warning message */
+.like-action {
+  position: relative; /* This is the anchor for the absolute warning message */
+  display: flex;
+  flex-direction: column;
+}
+
+/* The clickable like button and count */
+.like-button {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between heart and number */
+  cursor: pointer;
+  color: #333; /* Default icon color */
+}
+
+/* The warning message tooltip */
+.like-warning {
+  position: absolute;
+  top: 100%; /* Position it directly below the like button */
+  left: 50%;
+  transform: translateX(-50%); /* Center it perfectly */
+  
+  margin-top: 8px; /* Space from the button */
+  padding: 6px 12px;
+  background-color: #fff0f0; /* Light red background */
+  color: #c53030; /* Darker red text */
+  border: 1px solid #f9c6c6;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap; /* Prevents the text from breaking into two lines */
+  z-index: 10; /* Ensures it appears on top of other content */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Simple styling for the save button */
+.save-action {
+  cursor: pointer;
+  color: #333;
+}

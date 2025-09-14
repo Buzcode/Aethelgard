@@ -1,36 +1,44 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import axiosClient from '../api/axiosClient'; 
+// src/contexts/AuthContext.jsx
 
-// 1. Create the context. This is kept internal to this file and not exported.
+import { createContext, useState, useEffect, useContext } from 'react';
+import axiosClient from '../api/axiosClient';
+
 const AuthContext = createContext({
   user: null,
   token: null,
-  login: () => {},
-  register: () => {},
+  loading: true,
+  login: () => Promise.resolve(),
+  register: () => Promise.resolve(),
   logout: () => {},
 });
 
-// 2. Create the AuthProvider to wrap application or parts of it.
-export const AuthProvider = ({ children }) => {
+export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
+  const [loading, setLoading] = useState(true); // Start as true
 
-  // Effect to fetch user data if a token exists on page load
   useEffect(() => {
-    if (token) {
+    // This effect runs once on app load to verify the stored token.
+    const tokenFromStorage = localStorage.getItem('ACCESS_TOKEN');
+    if (tokenFromStorage) {
       axiosClient.get('/user')
         .then(({ data }) => {
           setUser(data);
         })
         .catch(() => {
-          // If token is invalid, remove 
+          // If the token is invalid, remove it.
           localStorage.removeItem('ACCESS_TOKEN');
           setToken(null);
+        })
+        .finally(() => {
+          setLoading(false);
         });
+    } else {
+      // If there's no token, we are done loading.
+      setLoading(false);
     }
-  }, [token]); // Rerun effect if token changes
+  }, []); // Note: The dependency array is empty to ensure it runs only once on mount.
 
-  // Helper function to manage the token in state and localStorage
   const _setToken = (newToken) => {
     setToken(newToken);
     if (newToken) {
@@ -39,13 +47,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('ACCESS_TOKEN');
     }
   };
-  
+
   const login = async (email, password) => {
     const response = await axiosClient.post('/login', { email, password });
     setUser(response.data.user);
     _setToken(response.data.access_token);
     return response.data.user;
-  }; 
+  };
 
   const register = async (userData) => {
     const response = await axiosClient.post('/register', userData);
@@ -57,15 +65,18 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     _setToken(null);
+    // You might want to also call the backend logout endpoint if you have one.
+    // axiosClient.post('/logout');
   };
 
-  // Provide the context value to all children components
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+      {/* This ensures the rest of your app doesn't render until we know
+          if the user is logged in or not. This is critical. */}
+      {!loading && children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   return useContext(AuthContext);

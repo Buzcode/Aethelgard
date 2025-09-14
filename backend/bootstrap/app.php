@@ -8,7 +8,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php', 
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -16,15 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
 
+        // THE FIX IS HERE: All middleware aliases are consolidated into one array,
+        // and our new 'auth.optional' alias is added.
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'is.admin' => \App\Http\Middleware\IsAdmin::class,
+            'auth.optional' => \App\Http\Middleware\OptionalAuthSanctum::class, // This is the new line
         ]);
-
-    $middleware->alias([ 
-        'is.admin' => \App\Http\Middleware\IsAdmin::class,
-    ]); 
-})
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
-

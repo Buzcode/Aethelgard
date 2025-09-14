@@ -16,7 +16,6 @@ class PersonController extends Controller
      */
     public function index(Request $request)
     {
-        // MODIFICATION: Removed withCount('likers') as we now have a dedicated likes_count column.
         $query = Person::query();
 
         if ($request->has('category')) {
@@ -38,22 +37,23 @@ class PersonController extends Controller
     }
 
     /**
-     * Toggle a like and update the likes_count.
+     * Toggle a like and update the likes count.
      */
     public function updateLikes(Request $request, Person $person)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
 
-        // --- NEW LOGIC TO UPDATE COUNT ---
         $result = $user->likedPeople()->toggle($person->id);
 
         // If a like was added, increment the count.
         if (!empty($result['attached'])) {
-            $person->increment('likes_count');
+            // --- FIX HERE ---
+            $person->increment('likes'); // Use 'likes' to match your database column
         } else {
             // Otherwise, a like was removed, so decrement.
-            $person->decrement('likes_count');
+            // --- FIX HERE ---
+            $person->decrement('likes'); // Use 'likes' to match your database column
         }
 
         return response()->json(['status' => 'success', 'message' => 'Like status updated.']);

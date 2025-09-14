@@ -16,7 +16,6 @@ class PlaceController extends Controller
      */
     public function index(Request $request)
     {
-        // MODIFICATION: Removed withCount('likers') as we now have a dedicated likes_count column.
         $query = Place::query();
 
         if ($request->has('category')) {
@@ -38,29 +37,30 @@ class PlaceController extends Controller
     }
 
     /**
-     * Toggle a like and update the likes_count.
+     * Toggle a like and update the likes count.
      */
     public function updateLikes(Request $request, Place $place)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
 
-        // --- NEW LOGIC TO UPDATE COUNT ---
         $result = $user->likedPlaces()->toggle($place->id);
-        
+
         // If a like was added, increment the count.
         if (!empty($result['attached'])) {
-            $place->increment('likes_count');
+            // --- FIX HERE ---
+            $place->increment('likes'); // Use 'likes' to match your database column
         } else {
             // Otherwise, a like was removed, so decrement.
-            $place->decrement('likes_count');
+            // --- FIX HERE ---
+            $place->decrement('likes'); // Use 'likes' to match your database column
         }
 
         return response()->json(['status' => 'success', 'message' => 'Like status updated.']);
     }
 
     // --- Other methods remain the same ---
-    
+
     /**
      * Store a newly created resource in storage.
      */

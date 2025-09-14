@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import axiosClient from '../api/axiosClient';
+import { useState, useEffect } from "react";
+import axiosClient from "../api/axiosClient";
 
 const PlacesPage = () => {
   // State for storing the list of places
@@ -14,12 +14,12 @@ const PlacesPage = () => {
     const fetchPlaces = async () => {
       try {
         setLoading(true); // Set loading to true when starting the fetch
-        const response = await axiosClient.get('/places');
+        const response = await axiosClient.get("/places");
         setPlaces(response.data);
         setError(null); // Clear any previous errors on success
       } catch (err) {
-        setError('Failed to fetch historical places.');
-        console.error('API Error fetching places:', err);
+        setError("Failed to fetch historical places.");
+        console.error("API Error fetching places:", err);
       } finally {
         setLoading(false); // Set loading to false after fetch completes (success or fail)
       }
@@ -37,7 +37,7 @@ const PlacesPage = () => {
 
   // 2. Render error state
   if (error) {
-    return <p style={{ color: '#800020' }}>{error}</p>;
+    return <p style={{ color: "#800020" }}>{error}</p>;
   }
 
   // 3. Render the main content
@@ -47,12 +47,25 @@ const PlacesPage = () => {
       {places.length > 0 ? (
         <ul style={{ padding: 0 }}>
           {places.map((place) => (
-            <li key={place.id} style={{ marginBottom: '1.5rem', listStyle: 'none', overflow: 'hidden' }}>
+            <li
+              key={place.id}
+              style={{
+                marginBottom: "1.5rem",
+                listStyle: "none",
+                overflow: "hidden",
+              }}
+            >
               {place.picture && (
-                <img 
-                  src={`http://127.0.0.1:8000/storage/${place.picture}`} 
-                  alt={`View of ${place.name}`} 
-                  style={{ width: '150px', height: '100px', objectFit: 'cover', marginRight: '1rem', float: 'left' }} 
+                <img
+                  src={`http://127.0.0.1:8000/storage/${place.picture}`}
+                  alt={`View of ${place.name}`}
+                  style={{
+                    width: "150px",
+                    height: "100px",
+                    objectFit: "cover",
+                    marginRight: "1rem",
+                    float: "left",
+                  }}
                 />
               )}
               <h3>{place.name}</h3>

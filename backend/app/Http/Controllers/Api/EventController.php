@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         $query = Event::query();
@@ -20,17 +23,18 @@ class EventController extends Controller
         return response()->json($events);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'category' => 'required|string|max:255', // Added category validation
+            'category' => 'required|string|max:255',
             'event_date' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
@@ -48,12 +52,24 @@ class EventController extends Controller
         return response()->json($event, 201);
     }
 
+    /**
+     * Display the specified resource.
+     * --- THIS IS THE NEWLY ADDED METHOD ---
+     */
+    public function show(Event $event)
+    {
+        return response()->json($event);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Event $event)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|max:255', 
+            'category' => 'nullable|string|max:255',
             'event_date' => 'nullable|string|max:255',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -74,5 +90,23 @@ class EventController extends Controller
 
         $event->update($data);
         return response()->json($event);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * --- THIS IS THE NEWLY ADDED METHOD ---
+     */
+    public function destroy(Event $event)
+    {
+        // Delete the picture from storage if it exists
+        if ($event->picture) {
+            Storage::disk('public')->delete($event->picture);
+        }
+        
+        // Delete the event record from the database
+        $event->delete();
+        
+        // Return a 204 No Content response, which is standard for a successful delete
+        return response()->json(null, 204);
     }
 }

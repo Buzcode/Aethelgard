@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 
 // Import Layout and Page components
@@ -18,26 +17,31 @@ import AddArticlePage from "./pages/AddArticlePage";
 
 import AdminRoute from "./components/AdminRoute";
 
+import DetailPage from "./pages/DetailPage"; 
 
 
 function App() {
   return (
     <Routes>
-
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-   
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
-        <Route path="figures" element={<PeoplePage />} />
+        
+        {/* Routes for listing all items */}
+        <Route path="people" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 
+        {/* --- ADD THESE 3 NEW ROUTES FOR DETAIL PAGES --- */}
+        <Route path="people/:id" element={<DetailPage />} />
+        <Route path="places/:id" element={<DetailPage />} />
+        <Route path="events/:id" element={<DetailPage />} />
+
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
       </Route>
@@ -45,12 +49,8 @@ function App() {
       {/* --- ADMIN PROTECTED ROUTES --- */}
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/articles" element={<AdminDashboard />} />
         <Route path="/admin/add-article" element={<AddArticlePage />} />
-        <Route
-          path="/admin/categories"
-          element={<div>Admin Categories Management (Coming Soon)</div>}
-        />
+        <Route path="/admin/edit/:type/:id" element={<AddArticlePage />} />
       </Route>
 
       {/* Catch-all 404 page */}

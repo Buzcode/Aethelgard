@@ -320,20 +320,22 @@
   text-decoration: none;
 }
 
+/* --- CHANGE #1 IS HERE --- */
 .header-search input {
   border: 1px solid rgba(74, 64, 58, 0.2);
   background-color: #dcd6c5;
   border-radius: 20px;
   padding: 0.5rem 1rem;
-  width: 300px;
+  width: 240px; /* REDUCED from 300px */
   text-align: center;
   font-family: "Lato", sans-serif;
   font-weight: bold;
 }
 
+/* --- CHANGE #2 IS HERE --- */
 .main-nav a,
 .auth-links a {
-  margin: 0 1rem;
+  margin: 0 0.8rem; /* Keep this reduced value */
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -909,4 +911,97 @@
 .action-icon:hover {
   opacity: 0.7;
   transform: scale(1.1); 
+}
+
+/* --- List Page Styles (Figures, Places, Events) --- */
+
+/* Main container for the entire page */
+.list-page-container {
+  max-width: 900px; /* Limits the width and centers the content */
+  margin: 2rem auto; /* Adds space at the top/bottom and centers horizontally */
+  padding: 0 1rem; /* Adds padding on smaller screens */
+}
+
+/* Styles the main H1 title ("Historical Figures", etc.) */
+.list-page-container h1 {
+  font-family: "Lora", serif;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #4a403a;
+  margin-bottom: 3rem;
+}
+
+/* Removes default styling from the <ul> element */
+.item-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* This is the main "card" for each item in the list */
+.list-item-card {
+  display: flex;
+  align-items: flex-start; /* Aligns items to the top */
+  background-color: #f5f0e1; /* Light parchment background */
+  border: 1px solid rgba(74, 64, 58, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem; /* Space between cards */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.list-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Styles the image within the card */
+.item-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 1.5rem;
+  flex-shrink: 0; /* Prevents the image from shrinking */
+}
+
+/* Container for the text content (title, description) */
+.item-content {
+  flex-grow: 1; /* Allows the content to take up the available space */
+}
+
+.item-content h3 {
+  font-family: "Lora", serif;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #4a403a;
+}
+
+.item-content p {
+  line-height: 1.6;
+  color: #4a403a;
+  margin: 0;
+}
+
+/* Container for the like and save icons */
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 1.5rem;
+  gap: 1rem; /* Creates space between the icons */
+}
+
+.item-actions div {
+  cursor: pointer;
+}
+
+/* Adds a nice hover effect to the icons */
+.item-actions svg {
+  transition: transform 0.2s ease;
+}
+
+.item-actions div:hover svg {
+  transform: scale(1.15);
 }

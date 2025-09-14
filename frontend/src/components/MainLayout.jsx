@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
+import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
@@ -11,11 +11,6 @@ const MainLayout = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
-  
-  // MODIFICATION 2: Added logic to check the current route
-  const location = useLocation();
-  const noSidebarRoutes = ['/login', '/register'];
-  const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
 
   const getInitials = () => {
     if (!user) return 'U';
@@ -67,6 +62,13 @@ const MainLayout = () => {
         <div className="header-right-nav">
           <nav className="main-nav">
             <NavLink to="/" className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
+            
+            {/* --- NEW LINKS ADDED HERE --- */}
+            <NavLink to="/figures" className={({ isActive }) => (isActive ? 'active-link' : '')}>Figures</NavLink>
+            <NavLink to="/places" className={({ isActive }) => (isActive ? 'active-link' : '')}>Places</NavLink>
+            <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Events</NavLink>
+            {/* ---------------------------- */}
+            
             <NavLink to="/popular" className={({ isActive }) => (isActive ? 'active-link' : '')}>Most Popular</NavLink>
             <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>About Us</NavLink>
             <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active-link' : '')}>Contact</NavLink>
@@ -133,9 +135,9 @@ const MainLayout = () => {
       </header>
       
       <div className="page-container">
-        {shouldShowSidebar && <Sidebar />}
+        {user && <Sidebar />}
         
-        <main className={shouldShowSidebar ? "main-content-area" : "main-content-area--full-width"}>
+        <main className={user ? "main-content-area" : "main-content-area--full-width"}>
           <Outlet />
         </main>
       </div>

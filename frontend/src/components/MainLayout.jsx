@@ -1,5 +1,5 @@
+import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import ChatWidget from './ChatWidget';
@@ -11,6 +11,11 @@ const MainLayout = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
+  
+  // MODIFICATION 2: Added logic to check the current route
+  const location = useLocation();
+  const noSidebarRoutes = ['/login', '/register'];
+  const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
 
   const getInitials = () => {
     if (!user) return 'U';
@@ -128,8 +133,9 @@ const MainLayout = () => {
       </header>
       
       <div className="page-container">
-        <Sidebar />
-        <main className="main-content-area">
+        {shouldShowSidebar && <Sidebar />}
+        
+        <main className={shouldShowSidebar ? "main-content-area" : "main-content-area--full-width"}>
           <Outlet />
         </main>
       </div>

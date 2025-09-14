@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {
         // --- THIS IS THE NEW ROUTE FOR THE DASHBOARD ---
-        Route::get('/articles', [DashboardController::class, 'index']); // <-- 2. ADD THIS LINE
+        Route::get('/articles', [DashboardController::class, 'index']); 
 
         // People
         Route::post('/people', [PersonController::class, 'store']);

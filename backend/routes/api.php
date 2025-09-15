@@ -8,7 +8,10 @@ use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DashboardController;
+
 use App\Http\Controllers\Api\SearchController;
+
+use App\Http\Controllers\Api\PopularityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +36,8 @@ Route::get('/events', [EventController::class, 'index'])->middleware('auth.optio
 Route::get('/events/{event}', [EventController::class, 'show'])->middleware('auth.optional');
 Route::get('/search', [SearchController::class, 'search']); // <-- ADD THIS NEW ROUTE
 
-Route::get('/people', [PersonController::class, 'index'])->middleware('auth.optional');
-
+Route::get('/people', [PersonController::class, 'index'])->middleware('auth.op
+Route::get('/popular-items', [PopularityController::class, 'index']);
 
 // --- Protected User and Admin Routes ---
 // These routes still REQUIRE authentication.

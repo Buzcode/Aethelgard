@@ -1058,11 +1058,7 @@ body {
   color: #333;
 }
 
-/*
- * Styles for Login/Register Form Enhancements
- */
 
-/* Style for the back arrow */
 .back-arrow-link {
   position: absolute;
   top: 25px;
@@ -1115,4 +1111,216 @@ body {
 
 .list-item-card:hover h3 {
   text-decoration: underline;
+=======
+/* === NEW STYLES FOR THE CAROUSEL === */
+
+.most-popular-section {
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.most-popular-section h2 {
+    font-family: serif;
+    margin-bottom: 1.5rem;
+    color: #4a4a4a;
+    text-align: left;
+}
+
+.carousel-wrapper {
+    position: relative;
+}
+
+/* 1. The Scroll Container */
+.carousel-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem; /* 24px */
+    padding-bottom: 1.5rem; /* Space for content below, not the scrollbar */
+
+    /* Makes the scrolling snap to the beginning of each card */
+    scroll-snap-type: x mandatory; 
+
+    /* Hide the scrollbar completely */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+.carousel-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+/* 2. The New Card Shape */
+.carousel-card {
+    flex: 0 0 250px; /* Each card has a fixed width of 350px */
+    height: 95px; /* Fixed height for a consistent look */
+    scroll-snap-align: start; /* Each card is a snap point */
+
+    display: flex; /* Use flexbox for the side-by-side layout */
+    align-items: center; /* Vertically center content */
+    
+    background-color: #f8f5ed;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.carousel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* 3. The Image (40% space) */
+.carousel-card-image {
+    width: 36%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 4. The Title (60% space) */
+.carousel-card-name {
+    flex-grow: 1; /* Takes up the remaining space */
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-card-name span {
+    font-weight: bold;
+    font-family: serif;
+    font-size: 0.8rem;
+    color: #4a4a4a;
+    text-align: center;
+}
+
+/* 5. The Navigation Dots */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #d1c8b3;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.carousel-dot:hover {
+    opacity: 0.8;
+}
+
+.carousel-dot.active {
+    opacity: 1;
+    background-color: #4a4a4a;
+    transform: scale(1.2);
+}
+/* src/pages/DetailPage.css (Revised for a larger, contained image) */
+
+/* We will still use CSS Grid for a robust layout */
+.detail-page-container {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 800px) 1fr;
+    margin: 2rem auto;
+    gap: 1rem;
+}
+
+.detail-page-container > * {
+    grid-column: 2; /* By default, content is in the center 800px column */
+}
+
+.detail-title {
+    font-family: serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4a4a4a;
+    text-align: center; 
+    margin: 0;
+}
+
+/* --- THE MAIN CHANGES ARE HERE --- */
+.image-container {
+    grid-column: 1 / -1;   /* Allow the container to break out of the text column */
+    position: relative;
+    width: 70%;            /* 1. Make the container smaller than the full screen */
+    max-width: 1400px;     /* Set a reasonable max size for very large screens */
+    margin: 0 auto;        /* 2. Center the container on the page */
+}
+
+.detail-image {
+    display: block;
+    width: 100%;           /* The image will fill its container perfectly */
+    height: auto;
+    max-height: 70vh;      /* Prevent image from being excessively tall */
+    object-fit: cover;
+    border-radius: 12px;   /* 3. Added the rounded corners back */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+/* --- END OF MAIN CHANGES --- */
+
+.detail-actions {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+.action-button:hover:not(:disabled) {
+    transform: scale(1.1);
+}
+
+.action-button .icon {
+    font-size: 1.5rem;
+}
+
+.action-button.liked .icon,
+.action-button.liked .count {
+    color: #e53e3e;
+}
+
+.action-button.saved .icon {
+    color: #3182ce;
+}
+
+.item-meta {
+    text-align: center;
+    color: #212020;
+    font-size: 1rem;
+    border-top: 1px solid #ddd;
+    padding-top: 0;
+}
+
+.item-description {
+    text-align: left;
+    line-height: 1.6;
+    color: #4a4a4a;
+    white-space: pre-wrap;
 }

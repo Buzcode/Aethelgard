@@ -19,6 +19,8 @@ import AdminRoute from "./components/AdminRoute";
 
 import DetailPage from "./pages/DetailPage"; 
 
+import SearchResultsPage from "./pages/SearchResultsPage";
+
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
 
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
+         <Route path="/search" element={<SearchResultsPage />} /> 
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
         {/* Routes for listing all items */}

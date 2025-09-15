@@ -29,12 +29,15 @@ const PlacesPage = () => {
     fetchPlaces();
   }, [user]); // Add user as a dependency
 
-  const handleLikeClick = async (placeId) => {
-    // 2. Add check to see if the user is logged in
+  // IN PlacesPage.jsx - THE CORRECTED CODE
+
+const handleLikeClick = async (placeId) => { // It receives placeId
+    // Check if the user is logged in
     if (!user) {
+      // Use placeId here
       setWarning({ id: placeId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
-      return; // Stop the function here
+      return; // Stop the function
     }
 
     // Optimistic update for logged-in users
@@ -44,13 +47,14 @@ const PlacesPage = () => {
 
     setPlaces(currentPlaces =>
       currentPlaces.map(place =>
-        place.id === placeId
+        place.id === placeId // Use placeId here
           ? { ...place, is_liked: !place.is_liked, likes: place.is_liked ? place.likes - 1 : place.likes + 1 }
           : place
       )
     );
 
     try {
+      // The API call is correct
       await axiosClient.post(`/places/${placeId}/like`);
     } catch (error) {
       console.error('Failed to update like status:', error);

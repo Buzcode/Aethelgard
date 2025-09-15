@@ -52,9 +52,9 @@ const PeoplePage = () => {
     );
 
     try {
-      // The actual API call
-      await axiosClient.post(`/people/${personId}/like`);
-    } catch (error) {
+      // The actual API call - CORRECT
+      await axiosClient.post(`/people/${personId}/like`); // <-- TYPO REMOVED
+    } catch (error)  {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
       setPeople(originalPeople); // Revert on failure

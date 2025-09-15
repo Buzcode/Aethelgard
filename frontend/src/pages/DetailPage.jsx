@@ -1,4 +1,3 @@
-// src/pages/DetailPage.jsx
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
@@ -10,10 +9,18 @@ import { useAuth } from '../contexts/AuthContext';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const DetailPage = () => {
+
+    const { id } = useParams(); // Gets the 'id' from the URL
+    const location = useLocation(); // Gets the full URL information
+    
+    // Determine the type ('people', 'places', 'events') from the URL path
+    const type = location.pathname.split('/')[1]; 
+
     const { id } = useParams();
     const location = useLocation();
     const type = location.pathname.split('/')[1];
     const { user } = useAuth();
+
 
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -100,6 +107,7 @@ const DetailPage = () => {
             </div>
             <div className="item-meta">
                 <p><strong>Category:</strong> {item.category.replace('_', ' ')}</p>
+
                 {item.event_date && <p><strong>Date:</strong> {item.event_date}</p>}
                 {item.birth_date && <p><strong>Born:</strong> {item.birth_date}</p>}
                 {item.death_date && <p><strong>Died:</strong> {item.death_date}</p>}

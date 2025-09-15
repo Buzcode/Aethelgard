@@ -8,7 +8,11 @@ use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DashboardController;
+
+use App\Http\Controllers\Api\SearchController;
+
 use App\Http\Controllers\Api\PopularityController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,7 +24,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // --- Public Read-Only Content Routes ---
-// THE FIX IS HERE: We apply our new 'auth.optional' middleware to these routes.
+// THE FIXED: We apply new 'auth.optional' middleware to these routes.
 // Now, guests can view them, and logged-in users will be recognized.
 Route::get('/people', [PersonController::class, 'index'])->middleware('auth.optional');
 Route::get('/people/{person}', [PersonController::class, 'show'])->middleware('auth.optional');
@@ -30,6 +34,9 @@ Route::get('/places/{place}', [PlaceController::class, 'show'])->middleware('aut
 
 Route::get('/events', [EventController::class, 'index'])->middleware('auth.optional');
 Route::get('/events/{event}', [EventController::class, 'show'])->middleware('auth.optional');
+Route::get('/search', [SearchController::class, 'search']); // <-- ADD THIS NEW ROUTE
+
+Route::get('/people', [PersonController::class, 'index'])->middleware('auth.op
 Route::get('/popular-items', [PopularityController::class, 'index']);
 
 // --- Protected User and Admin Routes ---

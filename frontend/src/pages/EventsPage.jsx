@@ -76,7 +76,7 @@ const EventsPage = () => {
               {event.picture && (
                 <img
                   className="item-image"
-                  src={`http://12-7.0.0.1:8000/storage/${event.picture}`}
+                  src={`http://127.0.0.1:8000/storage/${event.picture}`}
                   alt={`Depiction of ${event.name}`}
                 />
               )}

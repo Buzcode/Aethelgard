@@ -8,22 +8,17 @@ const PeoplePage = () => {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [likedPeople, setLikedPeople] = useState({});
+  
+  // 1. Add the 'warning' state, just like in EventsPage
+  const [warning, setWarning] = useState({ id: null, message: '' });
 
   useEffect(() => {
     const fetchPeople = async () => {
       try {
         setLoading(true);
+        // The backend should already send the correct is_liked and likes count
         const response = await axiosClient.get('/people');
-        const peopleData = response.data;
-        setPeople(peopleData);
-
-        const initialLikes = peopleData.reduce((acc, person) => {
-          acc[person.id] = person.is_liked;
-          return acc;
-        }, {});
-        setLikedPeople(initialLikes);
-        
+        setPeople(response.data);
         setError(null);
       } catch (err) {
         setError('Failed to fetch historical people.');
@@ -33,28 +28,52 @@ const PeoplePage = () => {
       }
     };
     fetchPeople();
-  }, []);
+  }, [user]); // Add user as a dependency to refetch data on login/logout
 
   const handleLikeClick = async (personId) => {
-    const isCurrentlyLiked = !!likedPeople[personId];
-    setLikedPeople(prev => ({ ...prev, [personId]: !prev[personId] }));
+    // 2. Add check to see if the user is logged in
+    if (!user) {
+      setWarning({ id: personId, message: 'Please log in to like posts' });
+      setTimeout(() => setWarning({ id: null, message: '' }), 3000);
+      return; // Stop the function here
+    }
+
+    // This is the optimistic update for logged-in users
+    const originalPeople = [...people];
+    const personToUpdate = originalPeople.find(p => p.id === personId);
+    if (!personToUpdate) return;
+
+    setPeople(currentPeople =>
+      currentPeople.map(person =>
+        person.id === personId
+          ? { ...person, is_liked: !person.is_liked, likes: person.is_liked ? person.likes - 1 : person.likes + 1 }
+          : person
+      )
+    );
 
     try {
+      // The actual API call
       await axiosClient.post(`/people/${personId}/like`);
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
-      setLikedPeople(prev => ({ ...prev, [personId]: isCurrentlyLiked }));
+      setPeople(originalPeople); // Revert on failure
     }
   };
 
-  if (loading) {
-    return <p>Loading historical figures...</p>;
-  }
+  // 3. Add the handleSaveClick function
+  const handleSaveClick = (personId) => {
+    if (!user) {
+      setWarning({ id: personId, message: 'Please log in to save posts' });
+      setTimeout(() => setWarning({ id: null, message: '' }), 3000);
+      return;
+    }
+    // Placeholder for actual save logic
+    alert(`Save functionality for person #${personId} is coming soon!`);
+  };
 
-  if (error) {
-    return <p style={{ color: '#800020' }}>{error}</p>;
-  }
+  if (loading) { return <p>Loading historical figures...</p>; }
+  if (error) { return <p style={{ color: '#800020' }}>{error}</p>; }
 
   return (
     <div className="list-page-container">
@@ -75,20 +94,23 @@ const PeoplePage = () => {
                 <p>{person.bio}</p>
               </div>
 
-              {user && (
-                <div className="item-actions">
-                  <div onClick={() => handleLikeClick(person.id)}>
-                    {likedPeople[person.id] ? (
-                      <FaHeart size={24} color="red" />
-                    ) : (
-                      <FaRegHeart size={24} color="black" />
-                    )}
-                  </div>
-                  <div>
-                    <FaRegBookmark size={24} color="black" />
-                  </div>
+              {/* 4. Replace the old JSX with this new structure for alignment */}
+              <div className="item-actions">
+                <div className="save-action" onClick={() => handleSaveClick(person.id)}>
+                  <FaRegBookmark size={24} />
                 </div>
-              )}
+                <div className="like-action">
+                  <div className="like-button" onClick={() => handleLikeClick(person.id)}>
+                    {person.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+                    {person.likes > 0 && <span className="like-count">{person.likes}</span>}
+                  </div>
+                  {warning.id === person.id && (
+                    <div className="like-warning">
+                      {warning.message}
+                    </div>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
         </ul>

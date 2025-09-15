@@ -1,3 +1,9 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #EAE0C8; /* Set the background color here */
+}
+
 .page-container {
   display: flex;
 
@@ -6,13 +12,7 @@
 
   background-color: #eae0c8;
 
-  height: calc(100vh - 70px); /* CHANGE: Use height instead of min-height */
-
-  background-color: #eae0c8;
-  height: calc(100vh - 70px); 
-
-  background-color: #eae0c8;
-  height: calc(100vh - 70px); 
+   min-height: calc(100vh - 70px); 
 
 }
 

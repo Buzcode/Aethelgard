@@ -8,22 +8,16 @@ const PlacesPage = () => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [likedPlaces, setLikedPlaces] = useState({});
+  
+  // 1. Add the 'warning' state
+  const [warning, setWarning] = useState({ id: null, message: '' });
 
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
         setLoading(true);
         const response = await axiosClient.get('/places');
-        const placesData = response.data;
-        setPlaces(placesData);
-
-        const initialLikes = placesData.reduce((acc, place) => {
-          acc[place.id] = place.is_liked;
-          return acc;
-        }, {});
-        setLikedPlaces(initialLikes);
-
+        setPlaces(response.data);
         setError(null);
       } catch (err) {
         setError('Failed to fetch historical places.');
@@ -32,30 +26,51 @@ const PlacesPage = () => {
         setLoading(false);
       }
     };
-
     fetchPlaces();
-  }, []);
+  }, [user]); // Add user as a dependency
 
   const handleLikeClick = async (placeId) => {
-    const isCurrentlyLiked = !!likedPlaces[placeId];
-    setLikedPlaces(prev => ({ ...prev, [placeId]: !prev[placeId] }));
+    // 2. Add check to see if the user is logged in
+    if (!user) {
+      setWarning({ id: placeId, message: 'Please log in to like posts' });
+      setTimeout(() => setWarning({ id: null, message: '' }), 3000);
+      return; // Stop the function here
+    }
+
+    // Optimistic update for logged-in users
+    const originalPlaces = [...places];
+    const placeToUpdate = originalPlaces.find(p => p.id === placeId);
+    if (!placeToUpdate) return;
+
+    setPlaces(currentPlaces =>
+      currentPlaces.map(place =>
+        place.id === placeId
+          ? { ...place, is_liked: !place.is_liked, likes: place.is_liked ? place.likes - 1 : place.likes + 1 }
+          : place
+      )
+    );
 
     try {
       await axiosClient.post(`/places/${placeId}/like`);
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
-      setLikedPlaces(prev => ({ ...prev, [placeId]: isCurrentlyLiked }));
+      setPlaces(originalPlaces); // Revert on failure
     }
   };
 
-  if (loading) {
-    return <p>Loading historical places...</p>;
-  }
+  // 3. Add the handleSaveClick function
+  const handleSaveClick = (placeId) => {
+    if (!user) {
+      setWarning({ id: placeId, message: 'Please log in to save posts' });
+      setTimeout(() => setWarning({ id: null, message: '' }), 3000);
+      return;
+    }
+    alert(`Save functionality for place #${placeId} is coming soon!`);
+  };
 
-  if (error) {
-    return <p style={{ color: '#800020' }}>{error}</p>;
-  }
+  if (loading) { return <p>Loading historical places...</p>; }
+  if (error) { return <p style={{ color: '#800020' }}>{error}</p>; }
 
   return (
     <div className="list-page-container">
@@ -76,20 +91,23 @@ const PlacesPage = () => {
                 <p>{place.description}</p>
               </div>
 
-              {user && (
-                <div className="item-actions">
-                  <div onClick={() => handleLikeClick(place.id)}>
-                    {likedPlaces[place.id] ? (
-                      <FaHeart size={24} color="red" />
-                    ) : (
-                      <FaRegHeart size={24} color="black" />
-                    )}
-                  </div>
-                  <div>
-                    <FaRegBookmark size={24} color="black" />
-                  </div>
+              {/* 4. Replace the old JSX with this new structure for alignment */}
+              <div className="item-actions">
+                <div className="save-action" onClick={() => handleSaveClick(place.id)}>
+                  <FaRegBookmark size={24} />
                 </div>
-              )}
+                <div className="like-action">
+                  <div className="like-button" onClick={() => handleLikeClick(place.id)}>
+                    {place.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+                    {place.likes > 0 && <span className="like-count">{place.likes}</span>}
+                  </div>
+                  {warning.id === place.id && (
+                    <div className="like-warning">
+                      {warning.message}
+                    </div>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
         </ul>

@@ -8,9 +8,7 @@ use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DashboardController;
-
 use App\Http\Controllers\Api\SearchController;
-
 use App\Http\Controllers\Api\PopularityController;
 
 /*
@@ -23,24 +21,25 @@ use App\Http\Controllers\Api\PopularityController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// --- Public Read-Only Content Routes ---
-// THE FIXED: We apply new 'auth.optional' middleware to these routes.
-// Now, guests can view them, and logged-in users will be recognized.
-Route::get('/people', [PersonController::class, 'index'])->middleware('auth.optional');
-Route::get('/people/{person}', [PersonController::class, 'show'])->middleware('auth.optional');
-
-Route::get('/places', [PlaceController::class, 'index'])->middleware('auth.optional');
-Route::get('/places/{place}', [PlaceController::class, 'show'])->middleware('auth.optional');
-
-Route::get('/events', [EventController::class, 'index'])->middleware('auth.optional');
-Route::get('/events/{event}', [EventController::class, 'show'])->middleware('auth.optional');
-Route::get('/search', [SearchController::class, 'search']); // <-- ADD THIS NEW ROUTE
-
-Route::get('/people', [PersonController::class, 'index'])->middleware('auth.op
+// --- Other Public Routes ---
+Route::get('/search', [SearchController::class, 'search']);
 Route::get('/popular-items', [PopularityController::class, 'index']);
+Route::post('/chat', [ChatController::class, 'handleChat']);
+
+// --- Public Read-Only Content Routes ---
+// Guests can view these, and logged-in users will be recognized.
+Route::middleware('auth.optional')->group(function () {
+    Route::get('/people', [PersonController::class, 'index']);
+    Route::get('/people/{person}', [PersonController::class, 'show']);
+    Route::get('/places', [PlaceController::class, 'index']);
+    Route::get('/places/{place}', [PlaceController::class, 'show']);
+    Route::get('/events', [EventController::class, 'index']);
+    Route::get('/events/{event}', [EventController::class, 'show']);
+});
+
 
 // --- Protected User and Admin Routes ---
-// These routes still REQUIRE authentication.
+// These routes REQUIRE authentication.
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
@@ -61,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
-// --- Other Public Routes ---
-Route::post('/chat', [ChatController::class, 'handleChat']);
-Route::get('/testkey', function () { /* ... */ });
+// Example test route if you still need it
+Route::get('/testkey', function () {
+    return response()->json(['message' => 'API key is working']);
+});

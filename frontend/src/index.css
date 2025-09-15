@@ -1057,3 +1057,62 @@ body {
   cursor: pointer;
   color: #333;
 }
+
+/*
+ * Styles for Login/Register Form Enhancements
+ */
+
+/* Style for the back arrow */
+.back-arrow-link {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  font-size: 1.5rem; /* Makes the icon larger */
+  color: #333; /* A dark grey color */
+  transition: color 0.2s ease-in-out;
+}
+
+.back-arrow-link:hover {
+  color: #800020; /* Your theme's dark red color */
+}
+
+/* This makes sure the form container can position the arrow correctly */
+.form-container {
+  position: relative; 
+  padding-top: 40px; /* Add some padding so the h1 doesn't overlap the arrow */
+}
+
+
+/* Wrapper for the password input and icon */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Make sure the input inside the wrapper takes full width */
+.password-input-wrapper input {
+  width: 100%;
+}
+
+/* Style for the eye icon */
+.password-toggle-icon {
+  position: absolute;
+  right: 15px; /* Position inside the input field */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #777; /* A medium grey color for the icon */
+}
+
+.list-item-card .card-link-wrapper {
+  text-decoration: none; /* Removes the underline */
+  color: inherit;       /* Makes text use the parent's color */
+  display: flex;        /* Ensures proper layout of image and text */
+  flex-grow: 1;         /* Allows the link to take up available space */
+}
+
+
+.list-item-card:hover h3 {
+  text-decoration: underline;
+}

@@ -8,25 +8,39 @@ const MainLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // 1. Add state to manage the search input's value
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
+
+  // 2. Add a function to handle the search submission
+  const handleSearchSubmit = (e) => {
+    // Prevent the browser from reloading the page
+    e.preventDefault(); 
+    
+    // Only navigate if the search term isn't just empty spaces
+    if (searchTerm.trim()) {
+      navigate(`/search?query=${searchTerm.trim()}`);
+      // Optional: you can clear the search bar after a search
+      // setSearchTerm('');
+    }
+  };
 
   const getInitials = () => {
     if (!user) return 'U';
     const firstName = user.first_name || 'User';
     const lastName = user.last_name || '';
-
     const firstNameInitial = firstName[0] || '';
     const lastNameInitial = lastName ? (lastName[0] || '') : (firstName[1] || '');
-
     return `${firstNameInitial}${lastNameInitial}`.toUpperCase();
   };
 
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
-    navigate('/login');
+    navigate('/');
   };
 
   useEffect(() => {
@@ -48,27 +62,28 @@ const MainLayout = () => {
   };
 
   return (
-    
     <>
       <header className="main-header">
         <div className="header-brand">
           <Link to="/">Aethelgard</Link>
         </div>
         
-        <div className="header-search">
-          <input type="text" placeholder="SEARCH HERE..." />
-        </div>
+        {/* 3. Update the search div to be a form with an onSubmit handler */}
+        <form className="header-search" onSubmit={handleSearchSubmit}>
+          <input 
+            type="text" 
+            placeholder="SEARCH HERE..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </form>
 
         <div className="header-right-nav">
           <nav className="main-nav">
             <NavLink to="/" className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
-            
-            {/* --- NEW LINKS ADDED HERE --- */}
             <NavLink to="/figures" className={({ isActive }) => (isActive ? 'active-link' : '')}>Figures</NavLink>
             <NavLink to="/places" className={({ isActive }) => (isActive ? 'active-link' : '')}>Places</NavLink>
             <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Events</NavLink>
-            {/* ---------------------------- */}
-            
             <NavLink to="/popular" className={({ isActive }) => (isActive ? 'active-link' : '')}>Most Popular</NavLink>
             <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>About Us</NavLink>
             <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active-link' : '')}>Contact</NavLink>

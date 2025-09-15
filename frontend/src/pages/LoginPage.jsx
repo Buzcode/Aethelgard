@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // <-- Import Link
+import { FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa'; // <-- Import new icons
 
 const LoginPage = () => {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  // v-- NEW STATE FOR PASSWORD VISIBILITY --v
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useAuth(); 
   const navigate = useNavigate();
@@ -17,17 +21,14 @@ const LoginPage = () => {
     try {
       const loggedInUser = await login(email, password);
       
-      // Navigate based on user role
       if (loggedInUser && loggedInUser.role === 'admin') {
         navigate('/admin');
       } else {
-        // Navigate to a default dashboard or home page for other users
         navigate('/'); 
       }
 
     } catch (err) {
       console.error("Login failed:", err);
-      // error message
       const errorMessage = err.response?.data?.message || 'Invalid credentials. Please try again.';
       setError(errorMessage);
     }
@@ -35,6 +36,11 @@ const LoginPage = () => {
   
   return (
     <div className="form-container">
+      {/* v-- NEW: BACK ARROW --v */}
+      <Link to="/" className="back-arrow-link" aria-label="Go back to homepage">
+        <FaArrowLeft />
+      </Link>
+
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -47,16 +53,27 @@ const LoginPage = () => {
             required 
           />
         </div>
+
+        {/* v-- NEW: WRAPPER AND TOGGLE ICON FOR PASSWORD --v */}
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input 
-            type="password" 
-            id="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
+          <div className="password-input-wrapper">
+            <input 
+              type={showPassword ? 'text' : 'password'} // Dynamically change type
+              id="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
+            <span 
+              className="password-toggle-icon" 
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
         </div>
+        
         {error && <p className="form-error">{error}</p>}
         <button type="submit" className="form-button">Login</button>
       </form>

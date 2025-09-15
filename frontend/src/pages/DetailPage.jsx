@@ -1,11 +1,9 @@
-// src/pages/DetailPage.jsx (NEW FILE)
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 
 const DetailPage = () => {
-    const { id } = useParams(); // Gets the 'id' from the URL, e.g., "4"
+    const { id } = useParams(); // Gets the 'id' from the URL
     const location = useLocation(); // Gets the full URL information
     
     // Determine the type ('people', 'places', 'events') from the URL path
@@ -53,7 +51,7 @@ const DetailPage = () => {
             <img src={imageUrl} alt={item.name} style={{ maxWidth: '600px', height: 'auto', margin: '20px 0' }} />
             <div className="item-meta" style={{ color: '#555', marginBottom: '20px' }}>
                 <p><strong>Category:</strong> {item.category.replace('_', ' ')}</p>
-                {/* You can add other meta info here like dates if they exist */}
+               
                 {item.event_date && <p><strong>Date:</strong> {item.event_date}</p>}
                 {item.birth_date && <p><strong>Born:</strong> {item.birth_date}</p>}
                 {item.death_date && <p><strong>Died:</strong> {item.death_date}</p>}

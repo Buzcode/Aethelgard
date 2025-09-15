@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\PlaceController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DashboardController;
-
+use App\Http\Controllers\Api\PopularityController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,7 +30,7 @@ Route::get('/places/{place}', [PlaceController::class, 'show'])->middleware('aut
 
 Route::get('/events', [EventController::class, 'index'])->middleware('auth.optional');
 Route::get('/events/{event}', [EventController::class, 'show'])->middleware('auth.optional');
-
+Route::get('/popular-items', [PopularityController::class, 'index']);
 
 // --- Protected User and Admin Routes ---
 // These routes still REQUIRE authentication.

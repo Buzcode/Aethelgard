@@ -1,6 +1,12 @@
+// src/pages/HomePage.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 
+// Component Imports
+import MostPopular from "../components/MostPopular"; // 1. IMPORT THE COMPONENT
+
+// Image Imports
 import leonardoDaVinciImg from "../assets/leonardo-da-vinci.jpg";
 import eventsImg from "../assets/images/events.jpg";
 import placesImg from "../assets/images/places.jpg";
@@ -8,6 +14,7 @@ import placesImg from "../assets/images/places.jpg";
 const HomePage = () => {
   return (
     <div className="homepage-container">
+      
       <div className="card-gallery">
         <Link to="/figures" className="category-card figures-card">
           <img src={leonardoDaVinciImg} alt="Historical Figures" />
@@ -23,22 +30,10 @@ const HomePage = () => {
         </Link>
       </div>
 
-      {/* ============== MOST POPULAR SECTION ============== */}
-      <section className="home-section">
-        <h2>MOST POPULAR</h2>
-        <div className="items-container">
-          <div className="item-card">
-            <img src={leonardoDaVinciImg} alt="Leonardo Da Vinci" />
-            <span>LEONARDO DA VINCI</span>
-          </div>
-          <div className="item-placeholder"></div>
-          <div className="item-placeholder"></div>
-          <div className="item-placeholder"></div>
-          <div className="item-placeholder"></div>
-        </div>
-      </section>
+      
+      <MostPopular />
 
-      {/* ============== RECOMMENDATIONS SECTION ============== */}
+      {/* ============== RECOMMENDATIONS SECTION  ============== */}
       <section className="home-section">
         <h2>RECOMMENDATIONS</h2>
         <div className="items-container">

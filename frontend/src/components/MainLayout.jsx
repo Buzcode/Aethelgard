@@ -1,33 +1,59 @@
+// src/components/MainLayout.jsx
+
 import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import ChatWidget from './ChatWidget';
+import axiosClient from '../api/axiosClient';
+import debounce from 'lodash.debounce';
 
 const MainLayout = () => {
+  // --- All of your state and functions remain unchanged ---
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
-  // 1. Add state to manage the search input's value
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [suggestions, setSuggestions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
 
-  // 2. Add a function to handle the search submission
-  const handleSearchSubmit = (e) => {
-    // Prevent the browser from reloading the page
-    e.preventDefault(); 
-    
-    // Only navigate if the search term isn't just empty spaces
-    if (searchTerm.trim()) {
-      navigate(`/search?query=${searchTerm.trim()}`);
-      // Optional: you can clear the search bar after a search
-      // setSearchTerm('');
+  const fetchSuggestions = async (query) => {
+    if (query.length < 2) {
+      setSuggestions([]); return;
+    }
+    try {
+      const response = await axiosClient.get(`/suggestions?query=${query}`);
+      setSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setSuggestions([]);
     }
   };
-
+  const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), []);
+  useEffect(() => {
+    debouncedFetchSuggestions(searchTerm);
+    return () => debouncedFetchSuggestions.cancel();
+  }, [searchTerm, debouncedFetchSuggestions]);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      setSuggestions([]);
+      navigate(`/search?query=${searchTerm.trim()}`);
+    }
+  };
+  const handleArticleClick = (type, id) => {
+    try {
+      axiosClient.post('/track-click', { type, id });
+    } catch (error) {
+      console.error("Failed to log click:", error);
+    }
+  };
+  const handleSuggestionClick = () => {
+    setSuggestions([]);
+    setSearchTerm('');
+  };
   const getInitials = () => {
     if (!user) return 'U';
     const firstName = user.first_name || 'User';
@@ -36,13 +62,11 @@ const MainLayout = () => {
     const lastNameInitial = lastName ? (lastName[0] || '') : (firstName[1] || '');
     return `${firstNameInitial}${lastNameInitial}`.toUpperCase();
   };
-
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
     navigate('/');
   };
-
   useEffect(() => {
     if (!isDropdownOpen) return;
     function handleClickOutside(event) {
@@ -55,7 +79,6 @@ const MainLayout = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
-
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
     setDropdownView('main');
@@ -68,90 +91,103 @@ const MainLayout = () => {
           <Link to="/">Aethelgard</Link>
         </div>
         
-        {/* 3. Update the search div to be a form with an onSubmit handler */}
-        <form className="header-search" onSubmit={handleSearchSubmit}>
-          <input 
-            type="text" 
-            placeholder="SEARCH HERE..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </form>
+        {/* START OF CHANGES: Added a wrapper div */}
+        <div className="header-right-group">
+          <div className="search-container">
+            <form className="header-search" onSubmit={handleSearchSubmit}>
+                <input 
+                  type="text" 
+                  placeholder="SEARCH HERE..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                  autoComplete="off"
+                />
+              </form>
+              {suggestions.length > 0 && isFocused && (
+                <ul className="suggestions-list">
+                  {suggestions.map((suggestion) => (
+                    <li key={`${suggestion.type}-${suggestion.id}`}>
+                      <Link 
+                        to={`/${suggestion.type}/${suggestion.id}`} 
+                        onClick={() => {
+                          handleArticleClick(suggestion.type, suggestion.id);
+                          handleSuggestionClick();
+                        }}
+                      >
+                        {suggestion.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+          </div>
 
-        <div className="header-right-nav">
-          <nav className="main-nav">
-            <NavLink to="/" className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
-            <NavLink to="/figures" className={({ isActive }) => (isActive ? 'active-link' : '')}>Figures</NavLink>
-            <NavLink to="/places" className={({ isActive }) => (isActive ? 'active-link' : '')}>Places</NavLink>
-            <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Events</NavLink>
-            <NavLink to="/popular" className={({ isActive }) => (isActive ? 'active-link' : '')}>Most Popular</NavLink>
-            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>About Us</NavLink>
-            <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active-link' : '')}>Contact</NavLink>
-          </nav>
-
-          <div className="auth-section">
-            {user ? (
-              <div className="profile-container" ref={dropdownRef}>
-                <div className="profile-icon" onClick={toggleDropdown}>
-                  {getInitials()}
-                </div>
-
-                {isDropdownOpen && (
-                  <div className="profile-dropdown">
-                    {dropdownView === 'main' && (
-                      <>
-                        {user.role === 'admin' && (
-                           <Link 
-                              to="/admin" 
-                              className="dropdown-item"
-                              onClick={() => setDropdownOpen(false)}
-                           >
-                              Admin Dashboard
-                           </Link>
+          <div className="header-right-nav">
+              <nav className="main-nav">
+                <NavLink to="/" className={({ isActive }) => (isActive ? 'active-link' : '')}>Home</NavLink>
+                <NavLink to="/figures" className={({ isActive }) => (isActive ? 'active-link' : '')}>Figures</NavLink>
+                <NavLink to="/places" className={({ isActive }) => (isActive ? 'active-link' : '')}>Places</NavLink>
+                <NavLink to="/events" className={({ isActive }) => (isActive ? 'active-link' : '')}>Events</NavLink>
+                <NavLink to="/about" className={({ isActive }) => (isActive ? 'active-link' : '')}>About Us</NavLink>
+                <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active-link' : '')}>Contact</NavLink>
+              </nav>
+              <div className="auth-section">
+                {user ? (
+                  <div className="profile-container" ref={dropdownRef} style={{ position: 'relative', zIndex: 20 }}>
+                    <div className="profile-icon" onClick={toggleDropdown}>
+                      {getInitials()}
+                    </div>
+                    
+                    {isDropdownOpen && (
+                      <div className="profile-dropdown">
+                        {dropdownView === 'main' && (
+                          <>
+                            {user.role === 'admin' && (
+                               <Link 
+                                  to="/admin" 
+                                  className="dropdown-item"
+                                  onClick={() => setDropdownOpen(false)}
+                               >
+                                  Admin Dashboard
+                               </Link>
+                            )}
+                            <button className="dropdown-item" onClick={() => setDropdownView('info')}>
+                              Personal Information
+                            </button>
+                            <button className="dropdown-item logout" onClick={handleLogout}>
+                              Log Out
+                            </button>
+                          </>
                         )}
-                        <button className="dropdown-item" onClick={() => setDropdownView('info')}>
-                          Personal Information
-                        </button>
-                        <button className="dropdown-item logout" onClick={handleLogout}>
-                          Log Out
-                        </button>
-                      </>
-                    )}
-                    {dropdownView === 'info' && (
-                      <div className="dropdown-info">
-                        <button className="dropdown-back" onClick={() => setDropdownView('main')}>
-                          &larr; Back
-                        </button>
-                        <div className="info-item">
-                          <span>First Name</span>
-                          <p>{user.first_name}</p>
-                        </div>
-                        <div className="info-item">
-                          <span>Last Name</span>
-                          <p>{user.last_name}</p>
-                        </div>
-                        <div className="info-item">
-                          <span>Email</span>
-                          <p>{user.email}</p>
-                        </div>
+                        {dropdownView === 'info' && (
+                          <div className="dropdown-info">
+                            <button className="dropdown-back" onClick={() => setDropdownView('main')}>
+                              &larr; Back
+                            </button>
+                            <div className="info-item"><span>First Name</span><p>{user.first_name}</p></div>
+                            <div className="info-item"><span>Last Name</span><p>{user.last_name}</p></div>
+                            <div className="info-item"><span>Email</span><p>{user.email}</p></div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
+                ) : (
+                  <div className="auth-links">
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Sign Up</Link>
+                  </div>
                 )}
               </div>
-            ) : (
-              <div className="auth-links">
-                <Link to="/login">Login</Link>
-                <Link to="/register">Sign Up</Link>
-              </div>
-            )}
-          </div>
+            </div>
         </div>
+        {/* END OF CHANGES */}
       </header>
       
       <div className="page-container">
         {user && <Sidebar />}
-        
         <main className={user ? "main-content-area" : "main-content-area--full-width"}>
           <Outlet />
         </main>

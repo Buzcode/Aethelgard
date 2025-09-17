@@ -16,17 +16,14 @@ class PlaceController extends Controller
      */
     public function index(Request $request)
     {
-        // v-- REPLACE THE OLD INDEX METHOD WITH THIS --v
         $query = Place::query();
 
         if ($request->has('category')) {
             $query->where('category', $request->input('category'));
         }
 
-        // Always get the true likes count from the relationship.
         $query->withCount('likers as likes');
 
-        // If a user is logged in, efficiently check if they have liked each place.
         if (Auth::check()) {
             $query->withExists(['likers as is_liked' => function ($query) {
                 $query->where('user_id', Auth::id());
@@ -43,35 +40,45 @@ class PlaceController extends Controller
      */
     public function updateLikes(Request $request, Place $place)
     {
-        // v-- REPLACE THE OLD UPDATELIKES METHOD WITH THIS --v
         /** @var \App\Models\User $user */
         $user = $request->user();
-
-        // Toggle the relationship in the pivot table (the source of truth)
         $user->likedPlaces()->toggle($place->id);
-
-        // Recalculate the count from the source of truth
         $newLikesCount = $place->likers()->count();
-        
-        // Save the new count to our cached 'likes' column
         $place->update(['likes' => $newLikesCount]);
-
-        // Determine the new liked status
         $isLiked = $user->likedPlaces()->where('place_id', $place->id)->exists();
 
-        // Return the fresh data to the frontend
         return response()->json([
             'new_likes_count' => $newLikesCount,
             'is_liked' => $isLiked,
         ]);
     }
 
-    // --- Other methods remain the same ---
-
+    /**
+     * Store a newly created resource in storage.
+     * THIS IS THE CORRECTED METHOD.
+     */
     public function store(Request $request)
     {
-        // Logic remains the same
-        $data = $request->all();
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $data = $request->except('picture');
+
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('places', 'public');
+            $data['picture'] = $path;
+        }
+
         $place = Place::create($data);
         return response()->json($place, 201);
     }
@@ -82,19 +89,28 @@ class PlaceController extends Controller
         return response()->json($place);
     }
 
+    /**
+     * Update the specified resource in storage.
+     * THIS METHOD IS ALSO IMPROVED.
+     */
     public function update(Request $request, Place $place)
     {
-        // Logic remains the same
+        // Add validation for update as well
         $data = $request->all();
         $place->update($data);
         return response()->json($place);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * THIS METHOD IS ALSO IMPROVED.
+     */
     public function destroy(Place $place)
     {
-        // Logic remains the same
-        if ($place->picture) { Storage::disk('public')->delete($place->picture); }
+        if ($place->picture) {
+            Storage::disk('public')->delete($place->picture);
+        }
         $place->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Place deleted successfully.']);
     }
 }

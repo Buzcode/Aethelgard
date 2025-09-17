@@ -15,37 +15,37 @@ class PopularityController extends Controller
      */
     public function index()
     {
-        $limit = 8; // You can still change this number
+        $limit = 8; 
 
         // Query for People (Figures)
-        // THE FIX: Use CONCAT to build the full image path
         $people = DB::table('people')
             ->select(
                 'id',
                 'name',
-                DB::raw("CONCAT('/storage/', portrait_url) as image"), // <-- CHANGED
+                // ====================================================================
+                // --- THIS IS THE CORRECTED LINE ---
+                DB::raw("CONCAT('/storage/', picture) as image"), // Changed from 'portrait_url'
+                // ====================================================================
                 'likes',
                 DB::raw("'figure' as type")
             );
 
         // Query for Events
-        // THE FIX: Use CONCAT to build the full image path
         $events = DB::table('events')
             ->select(
                 'id',
                 'name',
-                DB::raw("CONCAT('/storage/', picture) as image"), // <-- CHANGED
+                DB::raw("CONCAT('/storage/', picture) as image"),
                 'likes',
                 DB::raw("'event' as type")
             );
 
         // Query for Places
-        // THE FIX: Use CONCAT to build the full image path
         $places = DB::table('places')
             ->select(
                 'id',
                 'name',
-                DB::raw("CONCAT('/storage/', picture) as image"), // <-- CHANGED
+                DB::raw("CONCAT('/storage/', picture) as image"),
                 'likes',
                 DB::raw("'place' as type")
             )

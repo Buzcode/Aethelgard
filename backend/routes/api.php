@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\PopularityController;
+use App\Http\Controllers\Api\TrendingController;
+use App\Http\Controllers\Api\SuggestionController; 
+use App\Http\Controllers\Api\TrackingController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // --- Other Public Routes ---
 Route::get('/search', [SearchController::class, 'search']);
+Route::get('/suggestions', [SuggestionController::class, 'fetch']);
+Route::post('/track-click', [TrackingController::class, 'logClick']);
+Route::get('/trending-topics', [TrendingController::class, 'index']);
 Route::get('/popular-items', [PopularityController::class, 'index']);
 Route::post('/chat', [ChatController::class, 'handleChat']);
 

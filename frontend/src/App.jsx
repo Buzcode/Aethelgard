@@ -21,6 +21,8 @@ import DetailPage from "./pages/DetailPage";
 
 import SearchResultsPage from "./pages/SearchResultsPage";
 
+import PersonalInformationPage from "./pages/PersonalInformationPage"; 
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
 
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
+         <Route path="personal-information" element={<PersonalInformationPage />} />
          <Route path="/search" element={<SearchResultsPage />} /> 
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         

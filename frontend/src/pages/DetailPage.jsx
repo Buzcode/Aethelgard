@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
@@ -9,18 +8,13 @@ import { useAuth } from '../contexts/AuthContext';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const DetailPage = () => {
-
+    // CORRECTED: Combined and removed duplicate declarations
     const { id } = useParams(); // Gets the 'id' from the URL
     const location = useLocation(); // Gets the full URL information
+    const { user } = useAuth();
     
     // Determine the type ('people', 'places', 'events') from the URL path
     const type = location.pathname.split('/')[1]; 
-
-    const { id } = useParams();
-    const location = useLocation();
-    const type = location.pathname.split('/')[1];
-    const { user } = useAuth();
-
 
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// --- MODIFIED ---: Import useParams to read the URL
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
@@ -21,7 +20,6 @@ const categories = {
   ],
 };
 
-// --- ADDED ---: Helper function to find the parent category from a subcategory value
 const findParentCategory = (subcategoryValue) => {
   for (const parent in categories) {
     if (categories[parent].some(sub => sub.value === subcategoryValue)) {
@@ -33,20 +31,23 @@ const findParentCategory = (subcategoryValue) => {
 
 
 const AddArticlePage = () => {
-  // --- ADDED ---: Get URL parameters and determine if we are in edit mode
   const { type, id } = useParams();
-  const isEditMode = !!id; // If there's an ID in the URL, this will be true
 
-  // --- MODIFIED ---: Renamed state for clarity and added loading/error states
+  // =======================================================================
+  // --- THIS IS THE LINE ADDED FOR DEBUGGING ---
+  console.log("Value of 'id' from useParams:", id);
+  // =======================================================================
+
+  const isEditMode = !!id; 
+
   const [formData, setFormData] = useState({
     name: "",
-    description: "", // This will hold 'bio' for figures
+    description: "", 
     category: "",
-    // Add any other fields like 'event_date' if you have them
   });
   const [image, setImage] = useState(null);
   const [status, setStatus] = useState("DRAFT");
-  const [loading, setLoading] = useState(isEditMode); // Start loading if in edit mode
+  const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
@@ -54,10 +55,8 @@ const AddArticlePage = () => {
   const [selectedParentCategory, setSelectedParentCategory] = useState("");
   const [availableSubcategories, setAvailableSubcategories] = useState([]);
 
-  // --- ADDED ---: useEffect to fetch data when in edit mode
   useEffect(() => {
     if (isEditMode) {
-      // Map the URL type 'people' back to 'FIGURES' for our internal logic
       const endpointMap = { people: 'people', places: 'places', events: 'events' };
       const endpoint = endpointMap[type];
 
@@ -70,8 +69,6 @@ const AddArticlePage = () => {
       setLoading(true);
       axiosClient.get(`/${endpoint}/${id}`)
         .then(({ data }) => {
-          // The 'people' table returns 'bio', others return 'description'.
-          // We handle this by setting a single 'description' field in our state.
           const descriptionOrBio = data.bio || data.description;
 
           setFormData({
@@ -80,7 +77,6 @@ const AddArticlePage = () => {
             category: data.category
           });
 
-          // Pre-fill the category dropdowns based on the fetched data
           const parentCat = findParentCategory(data.category);
           if (parentCat) {
             setSelectedParentCategory(parentCat);
@@ -118,7 +114,6 @@ const AddArticlePage = () => {
     } else {
       setAvailableSubcategories([]);
     }
-    // Reset the subcategory when the parent changes
     setFormData(prev => ({ ...prev, category: "" }));
   };
   
@@ -129,7 +124,6 @@ const AddArticlePage = () => {
       return;
     }
     
-    // Determine the correct API endpoint
     const endpointMap = {
       FIGURES: 'people',
       PLACES: 'places',
@@ -153,15 +147,12 @@ const AddArticlePage = () => {
     
     try {
       if (isEditMode) {
-        // --- EDIT LOGIC ---
-        // For FormData updates, Laravel needs a POST request with a _method field
         submissionData.append('_method', 'PUT');
         await axiosClient.post(`/${endpoint}/${id}`, submissionData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         alert("Article updated successfully!");
       } else {
-        // --- ADD LOGIC ---
         await axiosClient.post(`/${endpoint}`, submissionData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -178,18 +169,15 @@ const AddArticlePage = () => {
     }
   };
 
-  // --- ADDED ---: Loading and Error UI states
   if (loading) return <div>Loading article details...</div>;
   if (error) return <div style={{ color: "red", padding: "20px" }}>Error: {error}</div>;
 
   return (
     <div className="form-container">
-      {/*  Title is now dynamic */}
       <h1>{isEditMode ? "EDIT ARTICLE" : "ADD NEW ARTICLE"}</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Title</label>
-          {/*  All inputs now use the formData state object */}
           <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
         </div>
         <div className="form-group">
@@ -251,7 +239,6 @@ const AddArticlePage = () => {
         </div>
 
         <button type="submit" className="form-button">
-          {/*Button text is now dynamic */}
           {isEditMode ? "Update Article" : "Submit Article"}
         </button>
       </form>

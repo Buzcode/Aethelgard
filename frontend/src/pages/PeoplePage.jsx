@@ -9,14 +9,12 @@ const PeoplePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // 1. Add the 'warning' state, just like in EventsPage
   const [warning, setWarning] = useState({ id: null, message: '' });
 
   useEffect(() => {
     const fetchPeople = async () => {
       try {
         setLoading(true);
-        // The backend should already send the correct is_liked and likes count
         const response = await axiosClient.get('/people');
         setPeople(response.data);
         setError(null);
@@ -28,17 +26,15 @@ const PeoplePage = () => {
       }
     };
     fetchPeople();
-  }, [user]); // Add user as a dependency to refetch data on login/logout
+  }, [user]);
 
   const handleLikeClick = async (personId) => {
-    // 2. Add check to see if the user is logged in
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
-      return; // Stop the function here
+      return;
     }
 
-    // This is the optimistic update for logged-in users
     const originalPeople = [...people];
     const personToUpdate = originalPeople.find(p => p.id === personId);
     if (!personToUpdate) return;
@@ -52,23 +48,20 @@ const PeoplePage = () => {
     );
 
     try {
-      // The actual API call - CORRECT
-      await axiosClient.post(`/people/${personId}/like`); // <-- TYPO REMOVED
+      await axiosClient.post(`/people/${personId}/like`);
     } catch (error)  {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
-      setPeople(originalPeople); // Revert on failure
+      setPeople(originalPeople);
     }
   };
 
-  // 3. Add the handleSaveClick function
   const handleSaveClick = (personId) => {
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-    // Placeholder for actual save logic
     alert(`Save functionality for person #${personId} is coming soon!`);
   };
 
@@ -82,19 +75,20 @@ const PeoplePage = () => {
         <ul className="item-list">
           {people.map((person) => (
             <li key={person.id} className="list-item-card">
-              {person.portrait_url && (
+              {/* === THIS IS THE CORRECTED SECTION === */}
+              {person.picture && (
                 <img
                   className="item-image"
-                  src={`http://127.0.0.1:8000/storage/${person.portrait_url}`}
+                  src={`http://127.0.0.1:8000/storage/${person.picture}`}
                   alt={`Portrait of ${person.name}`}
                 />
               )}
+              {/* === END OF CORRECTED SECTION === */}
               <div className="item-content">
                 <h3>{person.name}</h3>
                 <p>{person.bio}</p>
               </div>
 
-              {/* 4. Replace the old JSX with this new structure for alignment */}
               <div className="item-actions">
                 <div className="save-action" onClick={() => handleSaveClick(person.id)}>
                   <FaRegBookmark size={24} />

@@ -1,3 +1,5 @@
+// src/pages/SearchResultsPage.jsx
+
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
@@ -25,7 +27,6 @@ const SearchResultsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // This now correctly uses the 'query' parameter
         const response = await axiosClient.get(`/search?query=${query}`);
         setResults(response.data);
       } catch (err) {
@@ -38,6 +39,15 @@ const SearchResultsPage = () => {
 
     fetchResults();
   }, [query, user]);
+
+  // --- NEW: Function to log an article click for trending topics ---
+  const handleArticleClick = (type, id) => {
+    try {
+      axiosClient.post('/track-click', { type, id });
+    } catch (error) {
+      console.error("Failed to log click:", error);
+    }
+  };
 
   const handleLikeClick = (itemType, itemId) => {
     if (!user) {
@@ -89,7 +99,12 @@ const SearchResultsPage = () => {
           {results.map((item) => (
             <li key={`${item.type}-${item.id}`} className="list-item-card">
               
-              <Link to={`/${item.type}/${item.id}`} className="card-link-wrapper">
+              {/* --- MODIFIED LINK --- */}
+              <Link 
+                to={`/${item.type}/${item.id}`} 
+                className="card-link-wrapper"
+                onClick={() => handleArticleClick(item.type, item.id)}
+              >
                 {(item.picture || item.portrait_url) && (
                   <img
                     className="item-image"

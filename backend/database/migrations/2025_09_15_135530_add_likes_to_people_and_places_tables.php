@@ -9,25 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-     /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('people', function (Blueprint $table) {
-            // Add a column to store the total number of likes
-            $table->integer('likes')->unsigned()->default(0)->after('category');
+            // Add a column to store the total number of likes.
+            $table->integer('likes')->unsigned()->default(0);
         });
 
         Schema::table('places', function (Blueprint $table) {
-            // Add the same column to the places table
-            $table->integer('likes')->unsigned()->default(0)->after('category');
+            // Add the same column to the places table.
+            $table->integer('likes')->unsigned()->default(0);
+        });
+
+        // --- FIX: ADD THIS NEW SECTION ---
+        Schema::table('events', function (Blueprint $table) {
+            // Add the same column to the events table.
+            $table->integer('likes')->unsigned()->default(0);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     /**
      * Reverse the migrations.
      */
@@ -38,6 +38,11 @@ return new class extends Migration
         });
 
         Schema::table('places', function (Blueprint $table) {
+            $table->dropColumn('likes');
+        });
+
+        // --- FIX: ADD THIS NEW SECTION ---
+        Schema::table('events', function (Blueprint $table) {
             $table->dropColumn('likes');
         });
     }

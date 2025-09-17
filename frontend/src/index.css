@@ -6,14 +6,8 @@ body {
 
 .page-container {
   display: flex;
-
-
-  background-color: #EAE0C8;
-
   background-color: #eae0c8;
-
-   min-height: calc(100vh - 70px); 
-
+  min-height: calc(100vh - 70px); 
 }
 
 /* Add this new rule */
@@ -43,7 +37,7 @@ body {
   border-right: 1px solid rgba(74, 64, 58, 0.2);
   height: calc(100vh - 70px);
   position: sticky;
-  top: 0; /* CHANGE: Stick to the top of its parent container */
+  top: 0;
   overflow-y: auto;
 }
 
@@ -171,10 +165,8 @@ body {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  /* Make the button itself invisible */
   background-color: transparent;
   border: none;
-  /* Adjust padding if needed to ensure the whole icon is clickable */
   padding: 10px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
@@ -188,11 +180,11 @@ body {
 /* The main chatbox container that appears */
 .chatbox {
   position: fixed;
-  bottom: calc(2rem + 70px); /* 70px above the button */
+  bottom: calc(2rem + 70px); 
   right: 2rem;
   width: 350px;
-  max-height: 70vh; /* Max height to prevent overflow on small screens */
-  background-color: #f5f0e1; /* Light Parchment, matching form inputs */
+  max-height: 70vh; 
+  background-color: #f5f0e1; 
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -204,7 +196,7 @@ body {
 /* The header of the chatbox */
 .chatbox-header {
   padding: 1rem;
-  background-color: rgba(74, 64, 58, 0.05); /* Faint sepia background */
+  background-color: rgba(74, 64, 58, 0.05); 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -254,9 +246,9 @@ body {
   justify-content: flex-end;
 }
 .message-bubble.user {
-  background-color: #800020; /* Burgundy accent */
+  background-color: #800020; 
   color: #ffffff;
-  border-bottom-right-radius: 4px; /* "Tail" effect */
+  border-bottom-right-radius: 4px; 
 }
 
 /* AI's message (left-aligned, sepia) */
@@ -264,9 +256,9 @@ body {
   justify-content: flex-start;
 }
 .message-bubble.model {
-  background-color: rgba(74, 64, 58, 0.1); /* Faint Sepia */
+  background-color: rgba(74, 64, 58, 0.1); 
   color: #4a403a;
-  border-bottom-left-radius: 4px; /* "Tail" effect */
+  border-bottom-left-radius: 4px; 
 }
 
 /* The form at the bottom of the chatbox */
@@ -278,11 +270,11 @@ body {
 }
 
 .chat-form input {
-  flex: 1; /* Take up remaining space */
+  flex: 1; 
   padding: 0.75rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 4px;
-  background-color: #eae0c8; /* Parchment background */
+  background-color: #eae0c8; 
   font-size: 1rem;
 }
 
@@ -290,7 +282,7 @@ body {
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 4px;
-  background-color: #4a403a; /* Dark Sepia */
+  background-color: #4a403a; 
   color: #ffffff;
   font-weight: bold;
   cursor: pointer;
@@ -301,15 +293,25 @@ body {
   cursor: not-allowed;
 }
 
-/*8. Header Redesign*/
+/* ================================== */
+/* === 8. HEADER REDESIGN (START) === */
+/* ================================== */
+
 .main-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* This is the key change */
   height: 70px;
   padding: 0 2rem;
   background-color: #f5f0e1;
   border-bottom: 1px solid rgba(74, 64, 58, 0.2);
+}
+
+/* This is the new container for all right-side elements */
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Space between search, nav, and profile */
 }
 
 .header-brand a {
@@ -320,22 +322,63 @@ body {
   text-decoration: none;
 }
 
-/* --- CHANGE #1 IS HERE --- */
 .header-search input {
-  border: 1px solid rgba(74, 64, 58, 0.2);
-  background-color: #dcd6c5;
+  border: 1px solid #c8bda7;
+  background-color: #EAE0C8;
   border-radius: 20px;
   padding: 0.5rem 1rem;
-  width: 240px; /* REDUCED from 300px */
+  width: 240px;
   text-align: center;
   font-family: "Lato", sans-serif;
   font-weight: bold;
 }
 
-/* --- CHANGE #2 IS HERE --- */
+.search-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.header-search {
+  width: 100%;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%; 
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  list-style: none;
+  margin-top: 5px;
+  padding: 0;
+  z-index: 1000; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.suggestions-list li a {
+  display: block;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.suggestions-list li:last-child a {
+  border-bottom: none;
+}
+
+.suggestions-list li a:hover {
+  background-color: #f5f5f5;
+}
+
 .main-nav a,
 .auth-links a {
-  margin: 0 0.8rem; /* Keep this reduced value */
+  margin: 0 0.8rem;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -359,6 +402,11 @@ body {
   background-color: #4a403a;
 }
 
+/* ================================ */
+/* === 8. HEADER REDESIGN (END) === */
+/* ================================ */
+
+
 /*9. Homepage Specific Styles */
 .home-section {
   background-color: #f5f0e1;
@@ -377,26 +425,26 @@ body {
   text-transform: uppercase;
 }
 
+
+/* Main container for the 4-card layout */
 .card-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  display: flex; 
+  gap: 1.5rem;   
   margin-bottom: 2rem;
+  align-items: stretch; 
 }
 
+/* --- Styling for the first three IMAGE cards --- */
 .category-card {
+  flex: 1; 
   text-decoration: none;
   color: white;
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  height: 320px;
+  height: 320px; 
   display: block;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.figures-card img {
-  object-position: center 20%;
 }
 
 .category-card img {
@@ -421,6 +469,52 @@ body {
   font-weight: bold;
   font-size: 1.2rem;
   text-transform: uppercase;
+}
+
+/* Specific image crop for the Figures card */
+.figures-card img {
+  object-position: center 20%;
+}
+
+.trending-topics-section {
+  flex: 1; 
+  height: 320px; 
+  background-color: #f5f0e1;
+  border-radius: 12px;
+  border: 1px solid rgba(74, 64, 58, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  box-sizing: border-box; 
+}
+
+.trending-topics-section h4 {
+  font-family: "Lora", serif;
+  text-transform: uppercase;
+  color: #4a403a;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(74, 64, 58, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.trending-topics-section ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #4a403a;
+}
+
+.trending-topics-section li {
+  margin-bottom: 0.75rem;
+}
+
+.trending-topics-section a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.trending-topics-section a:hover {
+  text-decoration: underline;
 }
 
 .items-container {
@@ -603,7 +697,6 @@ body {
 
 /* --- 12. Category Page Styles (Figma Inspired) --- */
 
-/* This is the main title of the page (e.g., "Politics Leadership") */
 .category-page-container h1 {
   text-align: center;
   margin-bottom: 2rem;
@@ -611,18 +704,14 @@ body {
   font-size: 2.5rem;
 }
 
-/* This is the container for EACH item (image + text) */
 .item-card-simple {
-  /* --- CHANGE IS HERE --- */
-  max-width: 800px; /* Reduced from 900px */
+  max-width: 800px; 
   margin: 0 auto 4rem auto;
 }
 
-/* This styles the image to match the Figma design */
 .item-card-simple img {
   width: 100%;
-  /* --- CHANGE IS HERE --- */
-  height: 450px; /* Reduced from 500px */
+  height: 450px; 
   object-fit: cover;
   object-position: center 20%;
   border-radius: 8px;
@@ -630,7 +719,6 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* ... (the rest of the styles for h2, p, etc. remain the same) ... */
 .item-card-simple .item-details {
   text-align: center;
   padding: 1.5rem 1rem 0 1rem;
@@ -652,7 +740,7 @@ body {
 
 .admin-page-container {
   display: flex;
-  height: 100vh; /* Full viewport height */
+  height: 100vh; 
   background-color: #eae0c8;
 }
 
@@ -663,13 +751,13 @@ body {
   border-right: 1px solid rgba(74, 64, 58, 0.2);
   display: flex;
   flex-direction: column;
-  position: relative; /* For the toggle button positioning */
+  position: relative; 
   transition: width 0.3s ease-in-out;
-  overflow-x: hidden; /* Hide content when collapsed */
+  overflow-x: hidden; 
 }
 
 .admin-sidebar.closed {
-  width: 60px; /* Adjust based on your toggle button size */
+  width: 60px; 
 }
 
 .sidebar-content {
@@ -680,7 +768,7 @@ body {
 
 .admin-sidebar.closed .sidebar-content {
   opacity: 0;
-  pointer-events: none; /* Disable interaction when hidden */
+  pointer-events: none; 
 }
 
 .admin-sidebar h3 {
@@ -715,9 +803,9 @@ body {
 
 .sidebar-toggle-button {
   position: absolute;
-  top: 1.5rem; /* Adjust as needed */
+  top: 1.5rem; 
   right: 1rem;
-  background: #4a403a; /* Dark Sepia */
+  background: #4a403a; 
   color: #ffffff;
   border: none;
   border-radius: 50%;
@@ -733,8 +821,8 @@ body {
 }
 
 .admin-sidebar.closed .sidebar-toggle-button {
-  right: -15px; /* Adjust to keep it visible when sidebar is closed */
-  transform: rotate(180deg); /* Flip arrow */
+  right: -15px; 
+  transform: rotate(180deg); 
 }
 
 .admin-main-content {
@@ -743,9 +831,6 @@ body {
   overflow-y: auto;
   transition: margin-left 0.3s ease-in-out;
 }
-
-/* Adjust main content margin when sidebar is closed if needed */
-/* .admin-main-content.sidebar-closed removed because empty rulesets are not allowed */
 
 .admin-header-welcome {
   display: flex;
@@ -761,7 +846,7 @@ body {
 }
 
 .add-new-article-button {
-  background-color: #5cb85c; /* Green */
+  background-color: #5cb85c; 
   color: white;
   padding: 0.8rem 1.5rem;
   border-radius: 25px;
@@ -769,7 +854,7 @@ body {
   font-weight: bold;
   font-size: 0.9rem;
   transition: background-color 0.2s ease-in-out;
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap; 
 }
 
 .add-new-article-button:hover {
@@ -780,37 +865,36 @@ body {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  justify-content: flex-start; /* Align to the left */
+  justify-content: flex-start; 
 }
 
 .admin-search-input {
-  flex-grow: 1; /* Allow it to take up available space */
-  max-width: 300px; /* Limit its width */
+  flex-grow: 1; 
+  max-width: 300px; 
   padding: 0.75rem 1rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 20px;
   background-color: #dcd6c5;
   color: #4a403a;
   font-family: "Lato", sans-serif;
-  text-align: left; /* Align text to left inside input */
+  text-align: left; 
   outline: none;
 }
 
-/* Custom styling for the dropdown to match the image */
 .admin-filter-dropdown-wrapper {
   position: relative;
-  display: inline-block; /* Or flex item */
+  display: inline-block; 
 }
 
 .admin-filter-dropdown {
-  width: 200px; /* Fixed width as in the image */
+  width: 200px; 
   padding: 0.75rem 1rem;
   border: 1px solid rgba(74, 64, 58, 0.2);
   border-radius: 20px;
   background-color: #dcd6c5;
   color: #4a403a;
   font-family: "Lato", sans-serif;
-  appearance: none; /* Hide default arrow */
+  appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none;
   cursor: pointer;
@@ -822,17 +906,17 @@ body {
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: none; /* Allow clicks to pass through to select */
+  pointer-events: none; 
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #4a403a; /* Custom arrow */
+  border-top: 5px solid #4a403a; 
 }
 
 .admin-articles-table-container {
   background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
   border-radius: 12px;
-  overflow: hidden; /* Ensures rounded corners for table */
+  overflow: hidden; 
 }
 
 .admin-articles-table {
@@ -850,7 +934,7 @@ body {
 }
 
 .admin-articles-table th {
-  background-color: rgba(74, 64, 58, 0.05); /* Lighter header background */
+  background-color: rgba(74, 64, 58, 0.05); 
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.85rem;
@@ -861,7 +945,7 @@ body {
 }
 
 .admin-articles-table tbody tr:nth-child(even) {
-  background-color: #eae0c8; /* Alternating row color */
+  background-color: #eae0c8; 
 }
 
 .admin-articles-table .action-icon {
@@ -870,7 +954,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Styles for the textarea and select on the Add Article page */
 .form-textarea,
 .form-select {
   width: 100%;
@@ -915,14 +998,12 @@ body {
 
 /* --- List Page Styles (Figures, Places, Events) --- */
 
-/* Main container for the entire page */
 .list-page-container {
-  max-width: 900px; /* Limits the width and centers the content */
-  margin: 2rem auto; /* Adds space at the top/bottom and centers horizontally */
-  padding: 0 1rem; /* Adds padding on smaller screens */
+  max-width: 900px; 
+  margin: 2rem auto; 
+  padding: 0 1rem; 
 }
 
-/* Styles the main H1 title ("Historical Figures", etc.) */
 .list-page-container h1 {
   font-family: "Lora", serif;
   text-align: center;
@@ -931,21 +1012,19 @@ body {
   margin-bottom: 3rem;
 }
 
-/* Removes default styling from the <ul> element */
 .item-list {
   list-style: none;
   padding: 0;
 }
 
-/* This is the main "card" for each item in the list */
 .list-item-card {
   display: flex;
-  align-items: flex-start; /* Aligns items to the top */
-  background-color: #f5f0e1; /* Light parchment background */
+  align-items: flex-start; 
+  background-color: #f5f0e1; 
   border: 1px solid rgba(74, 64, 58, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 2rem; /* Space between cards */
+  margin-bottom: 2rem; 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -955,19 +1034,17 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Styles the image within the card */
 .item-image {
   width: 120px;
   height: 120px;
   object-fit: cover;
   border-radius: 8px;
   margin-right: 1.5rem;
-  flex-shrink: 0; /* Prevents the image from shrinking */
+  flex-shrink: 0; 
 }
 
-/* Container for the text content (title, description) */
 .item-content {
-  flex-grow: 1; /* Allows the content to take up the available space */
+  flex-grow: 1; 
 }
 
 .item-content h3 {
@@ -984,20 +1061,18 @@ body {
   margin: 0;
 }
 
-/* Container for the like and save icons */
 .item-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-left: 1.5rem;
-  gap: 1rem; /* Creates space between the icons */
+  gap: 1rem; 
 }
 
 .item-actions div {
   cursor: pointer;
 }
 
-/* Adds a nice hover effect to the icons */
 .item-actions svg {
   transition: transform 0.2s ease;
 }
@@ -1006,53 +1081,48 @@ body {
   transform: scale(1.15);
 }
 
-/* Container for both like and save buttons */
 .item-actions {
   display: flex;
-  justify-content: space-between; /* Puts like on left, save on right */
-  align-items: flex-start; /* Aligns them to the top */
+  justify-content: space-between; 
+  align-items: flex-start; 
   width: 100%;
-  margin-top: auto; /* Pushes actions to the bottom of the card content */
+  margin-top: auto; 
   padding-top: 16px;
 }
 
-/* Container for the like button AND its warning message */
 .like-action {
-  position: relative; /* This is the anchor for the absolute warning message */
+  position: relative; 
   display: flex;
   flex-direction: column;
 }
 
-/* The clickable like button and count */
 .like-button {
   display: flex;
   align-items: center;
-  gap: 8px; /* Space between heart and number */
+  gap: 8px; 
   cursor: pointer;
-  color: #333; /* Default icon color */
+  color: #333; 
 }
 
-/* The warning message tooltip */
 .like-warning {
   position: absolute;
-  top: 100%; /* Position it directly below the like button */
+  top: 100%; 
   left: 50%;
-  transform: translateX(-50%); /* Center it perfectly */
+  transform: translateX(-50%); 
   
-  margin-top: 8px; /* Space from the button */
+  margin-top: 8px; 
   padding: 6px 12px;
-  background-color: #fff0f0; /* Light red background */
-  color: #c53030; /* Darker red text */
+  background-color: #fff0f0; 
+  color: #c53030; 
   border: 1px solid #f9c6c6;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 500;
-  white-space: nowrap; /* Prevents the text from breaking into two lines */
-  z-index: 10; /* Ensures it appears on top of other content */
+  white-space: nowrap; 
+  z-index: 10; 
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Simple styling for the save button */
 .save-action {
   cursor: pointer;
   color: #333;
@@ -1063,55 +1133,51 @@ body {
   position: absolute;
   top: 25px;
   left: 25px;
-  font-size: 1.5rem; /* Makes the icon larger */
-  color: #333; /* A dark grey color */
+  font-size: 1.5rem; 
+  color: #333; 
   transition: color 0.2s ease-in-out;
 }
 
 .back-arrow-link:hover {
-  color: #800020; /* Your theme's dark red color */
+  color: #800020; 
 }
 
-/* This makes sure the form container can position the arrow correctly */
 .form-container {
   position: relative; 
-  padding-top: 40px; /* Add some padding so the h1 doesn't overlap the arrow */
+  padding-top: 40px; 
 }
 
-
-/* Wrapper for the password input and icon */
 .password-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-/* Make sure the input inside the wrapper takes full width */
 .password-input-wrapper input {
   width: 100%;
 }
 
-/* Style for the eye icon */
 .password-toggle-icon {
   position: absolute;
-  right: 15px; /* Position inside the input field */
+  right: 15px; 
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #777; /* A medium grey color for the icon */
+  color: #777; 
 }
 
 .list-item-card .card-link-wrapper {
-  text-decoration: none; /* Removes the underline */
-  color: inherit;       /* Makes text use the parent's color */
-  display: flex;        /* Ensures proper layout of image and text */
-  flex-grow: 1;         /* Allows the link to take up available space */
+  text-decoration: none; 
+  color: inherit;       
+  display: flex;        
+  flex-grow: 1;         
 }
 
 
 .list-item-card:hover h3 {
   text-decoration: underline;
-=======
+}
+
 /* === NEW STYLES FOR THE CAROUSEL === */
 
 .most-popular-section {
@@ -1130,33 +1196,25 @@ body {
     position: relative;
 }
 
-/* 1. The Scroll Container */
 .carousel-container {
     display: flex;
     overflow-x: auto;
-    gap: 1.5rem; /* 24px */
-    padding-bottom: 1.5rem; /* Space for content below, not the scrollbar */
-
-    /* Makes the scrolling snap to the beginning of each card */
+    gap: 1.5rem; 
+    padding-bottom: 1.5rem; 
     scroll-snap-type: x mandatory; 
-
-    /* Hide the scrollbar completely */
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
 }
 .carousel-container::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
+    display: none; 
 }
 
-/* 2. The New Card Shape */
 .carousel-card {
-    flex: 0 0 250px; /* Each card has a fixed width of 350px */
-    height: 95px; /* Fixed height for a consistent look */
-    scroll-snap-align: start; /* Each card is a snap point */
-
-    display: flex; /* Use flexbox for the side-by-side layout */
-    align-items: center; /* Vertically center content */
-    
+    flex: 0 0 250px; 
+    height: 95px; 
+    scroll-snap-align: start; 
+    display: flex; 
+    align-items: center; 
     background-color: #f8f5ed;
     border-radius: 16px;
     overflow: hidden;
@@ -1171,16 +1229,14 @@ body {
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-/* 3. The Image (40% space) */
 .carousel-card-image {
     width: 36%;
     height: 100%;
     object-fit: cover;
 }
 
-/* 4. The Title (60% space) */
 .carousel-card-name {
-    flex-grow: 1; /* Takes up the remaining space */
+    flex-grow: 1; 
     padding: 1rem;
     display: flex;
     justify-content: center;
@@ -1195,7 +1251,6 @@ body {
     text-align: center;
 }
 
-/* 5. The Navigation Dots */
 .carousel-dots {
     display: flex;
     justify-content: center;
@@ -1223,9 +1278,7 @@ body {
     background-color: #4a4a4a;
     transform: scale(1.2);
 }
-/* src/pages/DetailPage.css (Revised for a larger, contained image) */
 
-/* We will still use CSS Grid for a robust layout */
 .detail-page-container {
     display: grid;
     grid-template-columns: 1fr minmax(0, 800px) 1fr;
@@ -1234,7 +1287,7 @@ body {
 }
 
 .detail-page-container > * {
-    grid-column: 2; /* By default, content is in the center 800px column */
+    grid-column: 2; 
 }
 
 .detail-title {
@@ -1246,25 +1299,23 @@ body {
     margin: 0;
 }
 
-/* --- THE MAIN CHANGES ARE HERE --- */
 .image-container {
-    grid-column: 1 / -1;   /* Allow the container to break out of the text column */
+    grid-column: 1 / -1;   
     position: relative;
-    width: 70%;            /* 1. Make the container smaller than the full screen */
-    max-width: 1400px;     /* Set a reasonable max size for very large screens */
-    margin: 0 auto;        /* 2. Center the container on the page */
+    width: 70%;            
+    max-width: 1400px;     
+    margin: 0 auto;        
 }
 
 .detail-image {
     display: block;
-    width: 100%;           /* The image will fill its container perfectly */
+    width: 100%;           
     height: auto;
-    max-height: 70vh;      /* Prevent image from being excessively tall */
+    max-height: 70vh;      
     object-fit: cover;
-    border-radius: 12px;   /* 3. Added the rounded corners back */
+    border-radius: 12px;   
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-/* --- END OF MAIN CHANGES --- */
 
 .detail-actions {
     position: absolute;

@@ -3,23 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Person;
 use App\Models\Place;
-use Illuminate\Support\Facades\Auth; // <-- Make sure Auth is imported
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        // We will use 'query' as the parameter name to match your frontend
-        $searchTerm = $request->input('query');
-        if (!$searchTerm) {
-            return response()->json(['message' => 'Search query is required.'], 400);
-        }
+        $validated = $request->validate([
+            'query' => 'required|string|max:255',
+        ]);
+        $searchTerm = $validated['query'];
 
-        // --- Build Queries with Like Counts and Status ---
         $eventsQuery = Event::query()->withCount('likers as likes');
         $peopleQuery = Person::query()->withCount('likers as likes');
         $placesQuery = Place::query()->withCount('likers as likes');
@@ -27,11 +25,10 @@ class SearchController extends Controller
         if (Auth::check()) {
             $userId = Auth::id();
             $eventsQuery->withExists(['likers as is_liked' => fn($q) => $q->where('user_id', $userId)]);
-            $peopleQuery->withExists(['likers as is_liked' => fn($q) => $q->where('user_id', $userId)]);
-            $placesQuery->withExists(['likers as is_liked' => fn($q) => $q->where('user_id', $userId)]);
+            $peopleQuery->withExists(['likers as is_liked' => fn($q) => $q->where('user_id', 'LIKE', $userId)]);
+            $placesQuery->withExists(['likers as is_liked' => fn($q) => $q->where('user_id', 'LIKE', $userId)]);
         }
 
-        // --- Fetch Results based on name OR description/bio ---
         $events = $eventsQuery->where('name', 'LIKE', "%{$searchTerm}%")
                               ->orWhere('description', 'LIKE', "%{$searchTerm}%")
                               ->get();
@@ -42,15 +39,12 @@ class SearchController extends Controller
                               ->orWhere('description', 'LIKE', "%{$searchTerm}%")
                               ->get();
 
-        // --- Add a 'type' identifier to each item ---
         $events->each(fn($item) => $item->type = 'events');
         $people->each(fn($item) => $item->type = 'people');
         $places->each(fn($item) => $item->type = 'places');
 
-        // --- Combine all results ---
         $allResults = $events->concat($people)->concat($places);
 
-        // --- Sort results by relevance (exact matches first) ---
         $sortedResults = $allResults->sortByDesc(function ($item) use ($searchTerm) {
             $score = 0;
             $itemNameLower = strtolower($item->name);
@@ -60,6 +54,8 @@ class SearchController extends Controller
             else $score = 1;
             return $score;
         })->values();
+
+        // --- THE OLD SEARCH LOGGING SYSTEM HAS BEEN REMOVED FROM THIS SECTION ---
 
         return response()->json($sortedResults);
     }

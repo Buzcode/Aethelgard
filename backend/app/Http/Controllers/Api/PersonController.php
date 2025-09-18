@@ -89,12 +89,48 @@ class PersonController extends Controller
         return response()->json($person);
     }
 
-    public function update(Request $request, Person $person)
+      public function update(Request $request, Person $person)
     {
-        // This logic can be improved later, but is fine for now
-        $data = $request->all();
-        $person->update($data);
-        return response()->json($person);
+        try {
+            // Validate text-based fields
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'bio' => 'nullable|string',
+                'category' => 'nullable|string|max:255',
+                'birth_date' => 'nullable|string|max:255',
+                'death_date' => 'nullable|string|max:255',
+            ]);
+
+            // Validate the image separately
+            $request->validate([
+                'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            $dataToUpdate = $validatedData;
+
+            // Handle the file upload if a new picture is provided
+            if ($request->hasFile('picture')) {
+                // Delete the old picture if it exists
+                if ($person->picture) {
+                    Storage::disk('public')->delete($person->picture);
+                }
+                
+                // Store the new picture in the 'portraits' folder
+                $path = $request->file('picture')->store('portraits', 'public');
+                
+                // Add the new picture path to our data array
+                $dataToUpdate['picture'] = $path;
+            }
+
+            // Perform the update
+            $person->update($dataToUpdate);
+
+            return response()->json($person);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update person', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Person $person)

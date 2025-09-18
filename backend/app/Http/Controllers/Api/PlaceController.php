@@ -92,13 +92,48 @@ class PlaceController extends Controller
     /**
      * Update the specified resource in storage.
      * THIS METHOD IS ALSO IMPROVED.
-     */
-    public function update(Request $request, Place $place)
+     */    public function update(Request $request, Place $place)
     {
-        // Add validation for update as well
-        $data = $request->all();
-        $place->update($data);
-        return response()->json($place);
+        try {
+            // Validate text-based fields
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'description' => 'nullable|string',
+                'category' => 'nullable|string|max:255',
+                'latitude' => 'nullable|numeric',
+                'longitude' => 'nullable|numeric',
+            ]);
+
+            // Validate the image separately
+            $request->validate([
+                'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            $dataToUpdate = $validatedData;
+
+            // Handle the file upload if a new picture is provided
+            if ($request->hasFile('picture')) {
+                // Delete the old picture if it exists
+                if ($place->picture) {
+                    Storage::disk('public')->delete($place->picture);
+                }
+                
+                // Store the new picture in the 'places' folder
+                $path = $request->file('picture')->store('places', 'public');
+                
+                // Add the new picture path to our data array
+                $dataToUpdate['picture'] = $path;
+            }
+
+            // Perform the update
+            $place->update($dataToUpdate);
+
+            return response()->json($place);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update place', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

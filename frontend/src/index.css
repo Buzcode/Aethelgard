@@ -17,11 +17,7 @@ body {
   height: calc(100vh - 70px); /* Fill the height below the 70px header */
 }
 
-.main-content-area {
-  flex-grow: 1;
-  padding: 2rem;
-  overflow-y: auto; 
-}
+
 
 .main-content-area--full-width {
   width: 100%;
@@ -29,17 +25,92 @@ body {
 }
 
 /* --- Sidebar Component --- */
-.sidebar {
-  width: 280px;
-  flex-shrink: 0;
-  background-color: #f5f0e1;
-  padding: 1.5rem;
-  border-right: 1px solid rgba(74, 64, 58, 0.2);
-  height: calc(100vh - 70px);
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
+
+/* === START: ADD THIS ENTIRE BLOCK TO THE END OF INDEX.CSS === */
+
+/* 1. Styles for the new "Hamburger" Menu Button */
+.header-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Space between icon and brand name */
 }
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: #4a403a; /* Match your brand color */
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Styles for the new Sidebar Backdrop */
+.sidebar-backdrop {
+  position: fixed; /* Cover the entire viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.5); 
+  
+  z-index: 999; /* Sidebar has z-index: 1000 */
+  
+  cursor: pointer; /* Show a pointer to indicate it's clickable */
+}
+
+
+.sidebar {
+    position: fixed; /* Takes the sidebar out of the document flow to act as an overlay */
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background-color: #f5f0e1; /* Your existing sidebar color */
+    border-right: 1px solid rgba(74, 64, 58, 0.2);
+    z-index: 1000; /* Ensure it's on top of other content */
+    
+    /* Hide it by default by pushing it off-screen to the left */
+    transform: translateX(-100%); 
+    
+    /* Add a smooth transition for the slide-in/out effect */
+    transition: transform 0.3s ease-in-out;
+    
+    /* Add back original padding and scrolling behavior */
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+/* This class will be added via React to make the sidebar visible */
+.sidebar.open {
+    transform: translateX(0); /* Moves it back into view */
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1); /* Optional: add a shadow when open */
+}
+
+
+/* 3. Simplification of Page Container */
+/* This will OVERRIDE your old .page-container rule */
+.page-container {
+  /* We no longer need flex here as the sidebar is an overlay */
+  background-color: #eae0c8;
+  min-height: calc(100vh - 70px); 
+}
+
+
+/* 4. Simplification of Main Content Area */
+/* This will OVERRIDE your old .main-content-area and .main-content-area--full-width rules */
+.main-content-area {
+  width: 100%; /* The main content can always be full width now */
+  padding: 2rem;
+  overflow-y: auto; 
+}
+
+
+/* === END: OF NEW CSS BLOCK === */
 
 .sidebar-section {
   margin-bottom: 2rem;
@@ -74,11 +145,97 @@ body {
 .sidebar-section ul li a:hover {
   background-color: rgba(74, 64, 58, 0.05);
 }
+/* === Styles for Saved Articles Page === */
 
-.saved-placeholder {
-  background-color: #dcd6c5;
-  border-radius: 8px;
-  height: 120px;
+/* === Styles for Saved Articles Page === */
+
+.saved-articles-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fdfdfa; /* This is the main page background color */
+    border-radius: 8px;
+}
+
+.saved-articles-container h1 {
+    text-align: center;
+    color: #333;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.saved-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+/* --- THIS IS THE UPDATED RULE --- */
+.saved-item-card {
+    background-color: #fdfdfa; /* CHANGED: Match the container background */
+    border: 1px solid #e0e0e0; /* ADDED: A subtle border for definition */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex;
+}
+
+.saved-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.saved-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.saved-item-image {
+    width: 100%;
+    height: 200px; 
+    object-fit: contain; /* Was 'cover', 'contain' prevents cropping */
+    background-color: #f0f2f5; 
+}
+
+.saved-item-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;
+}
+
+.saved-item-content h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.item-type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background-color: #800020;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+/* For the empty state message */
+.saved-articles-container > p {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.1rem;
+    color: #666;
 }
 
 .topic-placeholder {
@@ -1309,12 +1466,15 @@ body {
 
 .detail-image {
     display: block;
-    width: 100%;           
+    width: 100%;
     height: auto;
-    max-height: 70vh;      
-    object-fit: cover;
-    border-radius: 12px;   
+    max-height: 70vh;
+    object-fit: contain; /* <--- THIS IS THE FIX */
+    border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    /* Optional but recommended: Add a subtle background for any empty space */
+    background-color: #f8f5ed; 
 }
 
 .detail-actions {

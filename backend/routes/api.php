@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\PopularityController;
 use App\Http\Controllers\Api\TrendingController;
 use App\Http\Controllers\Api\SuggestionController; 
 use App\Http\Controllers\Api\TrackingController; 
+use App\Http\Controllers\Api\SavedArticleController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/people/{person}/like', [PersonController::class, 'updateLikes']);
     Route::post('/events/{event}/like', [EventController::class, 'updateLikes']);
     Route::post('/places/{place}/like', [PlaceController::class, 'updateLikes']);
+    Route::get('/saved-articles', [SavedArticleController::class, 'index']);
+    // Route to save or unsave an article
+    Route::post('/saved-articles/toggle', [SavedArticleController::class, 'toggleSave']);
 
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {

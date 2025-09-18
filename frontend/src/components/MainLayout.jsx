@@ -1,7 +1,6 @@
-// src/components/MainLayout.jsx
-
-import { Link, Outlet, useNavigate, NavLink } from 'react-router-dom';
+import { Link, Outlet, useNavigate, NavLink, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { FaBars } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import ChatWidget from './ChatWidget';
@@ -9,9 +8,28 @@ import axiosClient from '../api/axiosClient';
 import debounce from 'lodash.debounce';
 
 const MainLayout = () => {
-  // --- All of your state and functions remain unchanged ---
+  // --- State and Hooks Setup ---
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // --- LOGIC FOR COLLAPSIBLE SIDEBAR ---
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // === START OF THE CHANGE ===
+
+  // 1. Create a list of all paths that should NOT have a sidebar.
+  //    Add any other paths here in the future (e.g., '/about', '/contact')
+  const pathsWithoutSidebar = ['/saved-articles'];
+
+  // 2. The new logic: The sidebar can be shown if a user is logged in AND
+  //    the current page is NOT in our list of excluded paths.
+  const canShowSidebar = user && !pathsWithoutSidebar.includes(location.pathname);
+
+  // === END OF THE CHANGE ===
+
+
+  // --- Component State (The rest of your state remains unchanged) ---
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -19,6 +37,7 @@ const MainLayout = () => {
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
 
+  // --- Functions and Effects (All your other functions remain the same) ---
   const fetchSuggestions = async (query) => {
     if (query.length < 2) {
       setSuggestions([]); return;
@@ -31,11 +50,14 @@ const MainLayout = () => {
       setSuggestions([]);
     }
   };
+
   const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), []);
+
   useEffect(() => {
     debouncedFetchSuggestions(searchTerm);
     return () => debouncedFetchSuggestions.cancel();
   }, [searchTerm, debouncedFetchSuggestions]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -43,17 +65,20 @@ const MainLayout = () => {
       navigate(`/search?query=${searchTerm.trim()}`);
     }
   };
+
   const handleArticleClick = (type, id) => {
     try {
       axiosClient.post('/track-click', { type, id });
-    } catch (error) {
+    } catch (error)      {
       console.error("Failed to log click:", error);
     }
   };
+
   const handleSuggestionClick = () => {
     setSuggestions([]);
     setSearchTerm('');
   };
+
   const getInitials = () => {
     if (!user) return 'U';
     const firstName = user.first_name || 'User';
@@ -62,11 +87,13 @@ const MainLayout = () => {
     const lastNameInitial = lastName ? (lastName[0] || '') : (firstName[1] || '');
     return `${firstNameInitial}${lastNameInitial}`.toUpperCase();
   };
+
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
     navigate('/');
   };
+
   useEffect(() => {
     if (!isDropdownOpen) return;
     function handleClickOutside(event) {
@@ -79,6 +106,7 @@ const MainLayout = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
     setDropdownView('main');
@@ -87,11 +115,18 @@ const MainLayout = () => {
   return (
     <>
       <header className="main-header">
-        <div className="header-brand">
-          <Link to="/">Aethelgard</Link>
+        <div className="header-brand-group">
+          {/* This rendering logic now works for all allowed pages */}
+          {canShowSidebar && (
+            <button className="menu-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              <FaBars />
+            </button>
+          )}
+          <div className="header-brand">
+            <Link to="/">Aethelgard</Link>
+          </div>
         </div>
         
-        {/* START OF CHANGES: Added a wrapper div */}
         <div className="header-right-group">
           <div className="search-container">
             <form className="header-search" onSubmit={handleSearchSubmit}>
@@ -153,6 +188,15 @@ const MainLayout = () => {
                                   Admin Dashboard
                                </Link>
                             )}
+                            
+                            <Link
+                              to="/saved-articles"
+                              className="dropdown-item"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              Saved Articles
+                            </Link>
+
                             <button className="dropdown-item" onClick={() => setDropdownView('info')}>
                               Personal Information
                             </button>
@@ -183,12 +227,21 @@ const MainLayout = () => {
               </div>
             </div>
         </div>
-        {/* END OF CHANGES */}
       </header>
       
       <div className="page-container">
-        {user && <Sidebar />}
-        <main className={user ? "main-content-area" : "main-content-area--full-width"}>
+        
+        {isSidebarOpen && (
+          <div 
+            className="sidebar-backdrop" 
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
+
+        {/* This will now render the sidebar on all pages where it's allowed */}
+        {canShowSidebar && <Sidebar isOpen={isSidebarOpen} />}
+
+        <main className="main-content-area">
           <Outlet />
         </main>
       </div>

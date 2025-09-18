@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; 
 
-const Sidebar = () => {
+
+const Sidebar = ({ isOpen }) => {
+
+
   const [openSections, setOpenSections] = useState({
     figures: true,
     events: true,
@@ -16,7 +19,10 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="sidebar">
+  
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+    {/* === END OF MODIFICATION === */}
+
       {/* --- FIGURES SECTION --- */}
       <div className="sidebar-section">
         <h3 onClick={() => toggleSection('figures')}>
@@ -57,19 +63,6 @@ const Sidebar = () => {
           <li><Link to="/places/category/monuments_structures">Monuments & Structures</Link></li>
           <li><Link to="/places/category/lost_civilizations">Lost Civilizations</Link></li>
         </ul>
-      </div>
-
-      {/* --- SAVED and FAVOURITE TOPICS --- */}
-      <div className="sidebar-section saved-items">
-        <h3>SAVED</h3>
-        <div className="saved-placeholder"></div>
-      </div>
-
-      <div className="sidebar-section favourite-topics">
-        <h3>FAVOURITE TOPICS</h3>
-        <div className="topic-placeholder"></div>
-        <div className="topic-placeholder"></div>
-        <div className="topic-placeholder"></div>
       </div>
     </aside>
   );

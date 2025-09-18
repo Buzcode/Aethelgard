@@ -40,4 +40,11 @@ class Event extends Model
         }
         return $this->likers()->where('user_id', Auth::id())->exists();
     }
+
+    public function saves(): MorphMany
+{
+    // The name 'article' must match the name of the method
+    // in your SavedArticle model (public function article()).
+    return $this->morphMany(SavedArticle::class, 'article');
+}
 }

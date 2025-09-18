@@ -4,19 +4,17 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
-// --- These imports are correct ---
-use App\Models\Person;
-use App\Models\Event;
-use App\Models\Place;
+use App\Models\UserRecommendation; // Correctly imported for the relationship
 
 class User extends Authenticatable
 {
-    // The HasApiTokens trait is correctly included here.
+    /**
+     * The traits that should be used.
+     */
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -51,7 +49,6 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be cast.
-     * We are using the property format for maximum compatibility.
      *
      * @var array<string, string>
      */
@@ -98,4 +95,22 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Place::class, 'place_likes', 'user_id', 'place_id');
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECOMMENDATION RELATIONSHIP
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get the recommendations for the user.
+     * This is the function that fixes the error.
+     */
+ /**
+ * Get the recommendations for the user.
+ */
+public function recommendations()
+{
+    return $this->hasMany(UserRecommendation::class);
+}
 }

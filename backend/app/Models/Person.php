@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 
+
 class Person extends Model
 {
     // 2. USE THE TRAIT
@@ -50,4 +51,11 @@ class Person extends Model
 
         return $this->likers()->where('user_id', Auth::id())->exists();
     }
+
+    public function saves(): MorphMany
+{
+    // The name 'article' must match the name of the method
+    // in your SavedArticle model (public function article()).
+    return $this->morphMany(SavedArticle::class, 'article');
+}
 }

@@ -15,18 +15,20 @@ class ChatController extends Controller
             'history.*.role' => 'required|string|in:user,model',
             'history.*.content' => 'required|string',
         ]);
-        
+
         $userHistory = $validated['history'] ?? [];
+        $currentPersona = $request->input('persona'); // Get the current persona from the request
 
         // The service will now return the AI's reply
-        $aiReply = $gemini->generateContent($userHistory);
-        
+        $aiReply = $gemini->generateContent($userHistory, $currentPersona);
+
         // We add the AI's reply to the history
-        $userHistory[] = ['role' => 'model', 'content' => $aiReply];
+        // $userHistory[] = ['role' => 'model', 'content' => $aiReply]; // This is wrong, the $aiReply is an array
 
         // Return the complete, updated history
         return response()->json([
-            'history' => $userHistory
+            'history' => $aiReply['history'], // Use the history from the AI reply
+            'persona' => $aiReply['persona'], // Return the updated persona
         ]);
     }
 }

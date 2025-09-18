@@ -24,7 +24,7 @@ class PopularityController extends Controller
                 'name',
                 // ====================================================================
                 // --- THIS IS THE CORRECTED LINE ---
-                DB::raw("CONCAT('/storage/', picture) as image"), // Changed from 'portrait_url'
+                DB::raw("CONCAT('/storage/', picture) as image"), 
                 // ====================================================================
                 'likes',
                 DB::raw("'figure' as type")

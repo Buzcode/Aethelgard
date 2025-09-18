@@ -23,6 +23,12 @@ import SearchResultsPage from "./pages/SearchResultsPage";
 
 import PersonalInformationPage from "./pages/PersonalInformationPage"; 
 
+import SavedArticlesPage from './pages/SavedArticlesPage';
+
+// --- THIS IS THE FIX ---
+// You need to import the ProtectedRoute component before you can use it.
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 function App() {
   return (
@@ -33,7 +39,9 @@ function App() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
          <Route path="personal-information" element={<PersonalInformationPage />} />
-         <Route path="/search" element={<SearchResultsPage />} /> 
+         <Route path="/search" element={<SearchResultsPage />} />
+         {/* This line will now work correctly */}
+         <Route path="/saved-articles" element={<ProtectedRoute><SavedArticlesPage /></ProtectedRoute>} /> 
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
         {/* Routes for listing all items */}

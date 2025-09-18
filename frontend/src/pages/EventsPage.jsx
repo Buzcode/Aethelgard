@@ -9,14 +9,29 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
+  
+  // 1. Add state to track saved article IDs
+  const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axiosClient.get('/events');
-        const eventsData = response.data.map(event => ({ ...event, is_liked: event.is_liked || false }));
-        setEvents(eventsData);
+        // 2. Fetch both events and the user's saved articles in parallel
+        const [eventsResponse, savedResponse] = await Promise.all([
+            axiosClient.get('/events'),
+            user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
+        ]);
+
+        setEvents(eventsResponse.data);
+        
+        // Create a Set of saved IDs for quick lookups
+        const savedArticlesSet = new Set(
+            savedResponse.data
+                .filter(item => item.article_type === 'events') // Filter for this page's type
+                .map(item => item.article_id)
+        );
+        setSavedIds(savedArticlesSet);
         setError(null);
       } catch (err) {
         setError('Failed to fetch historical events.');
@@ -25,7 +40,7 @@ const EventsPage = () => {
         setLoading(false);
       }
     };
-    fetchEvents();
+    fetchData();
   }, [user]);
 
   const handleLikeClick = (eventId) => {
@@ -34,7 +49,6 @@ const EventsPage = () => {
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-    // ... Like logic for logged-in users
     const originalEvents = [...events];
     const eventToUpdate = originalEvents.find(e => e.id === eventId);
     if (!eventToUpdate) return;
@@ -54,13 +68,39 @@ const EventsPage = () => {
     }
   };
 
-  const handleSaveClick = (eventId) => {
+  // 3. Implement the new handleSaveClick logic
+  const handleSaveClick = async (eventId) => {
     if (!user) {
       setWarning({ id: eventId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-    alert(`Save functionality for event #${eventId} is coming soon!`);
+
+    const originalSavedIds = new Set(savedIds);
+    const newSavedIds = new Set(savedIds);
+    let action = '';
+
+    // Optimistic UI Update
+    if (newSavedIds.has(eventId)) {
+        newSavedIds.delete(eventId);
+        action = 'unsaved';
+    } else {
+        newSavedIds.add(eventId);
+        action = 'saved';
+    }
+    setSavedIds(newSavedIds);
+
+    // API Call
+    try {
+      await axiosClient.post('/saved-articles/toggle', {
+        article_id: eventId,
+        article_type: 'events', // Correct type for this page
+      });
+    } catch (error) {
+      console.error(`Failed to ${action} event:`, error);
+      setSavedIds(originalSavedIds); // Revert on failure
+      alert('There was an issue saving this item. Please try again.');
+    }
   };
 
   if (loading) { return <p>Loading historical events...</p>; }
@@ -71,43 +111,42 @@ const EventsPage = () => {
       <h1>Historical Events</h1>
       {events.length > 0 ? (
         <ul className="item-list">
-          {events.map((event) => (
-            <li key={event.id} className="list-item-card">
-              {event.picture && (
-                <img
-                  className="item-image"
-                  src={`http://127.0.0.1:8000/storage/${event.picture}`}
-                  alt={`Depiction of ${event.name}`}
-                />
-              )}
-              <div className="item-content">
-                <h3>{event.name}</h3>
-                <p>{event.description}</p>
-              </div>
-
-              {/* === THE ONLY CHANGE IS HERE === */}
-              {/* We have swapped the order of the 'save-action' and 'like-action' divs. */}
-              <div className="item-actions">
-                {/* Save action is now FIRST, so it appears on the left */}
-                <div className="save-action" onClick={() => handleSaveClick(event.id)}>
-                  <FaRegBookmark size={24} />
+          {events.map((event) => {
+            // 4. Check if the current event is saved
+            const isSaved = savedIds.has(event.id);
+            return (
+              <li key={event.id} className="list-item-card">
+                {event.picture && (
+                  <img
+                    className="item-image"
+                    src={`http://127.0.0.1:8000/storage/${event.picture}`}
+                    alt={`Depiction of ${event.name}`}
+                  />
+                )}
+                <div className="item-content">
+                  <h3>{event.name}</h3>
+                  <p>{event.description}</p>
                 </div>
-
-                {/* Like action is now SECOND, so it appears on the right */}
-                <div className="like-action">
-                  <div className="like-button" onClick={() => handleLikeClick(event.id)}>
-                    {event.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
-                    {event.likes > 0 && <span className="like-count">{event.likes}</span>}
+                <div className="item-actions">
+                  <div className="save-action" onClick={() => handleSaveClick(event.id)}>
+                    {/* Render filled or empty bookmark based on isSaved status */}
+                    {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
-                  {warning.id === event.id && (
-                    <div className="like-warning">
-                      {warning.message}
+                  <div className="like-action">
+                    <div className="like-button" onClick={() => handleLikeClick(event.id)}>
+                      {event.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+                      {event.likes > 0 && <span className="like-count">{event.likes}</span>}
                     </div>
-                  )}
+                    {warning.id === event.id && (
+                      <div className="like-warning">
+                        {warning.message}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <p>No historical events found. An admin needs to add some!</p>

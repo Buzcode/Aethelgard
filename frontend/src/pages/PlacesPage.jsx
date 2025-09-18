@@ -8,16 +8,30 @@ const PlacesPage = () => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // 1. Add the 'warning' state
   const [warning, setWarning] = useState({ id: null, message: '' });
 
+  // 1. Add state to track saved article IDs
+  const [savedIds, setSavedIds] = useState(new Set());
+
   useEffect(() => {
-    const fetchPlaces = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axiosClient.get('/places');
-        setPlaces(response.data);
+        // 2. Fetch both places and the user's saved articles in parallel
+        const [placesResponse, savedResponse] = await Promise.all([
+            axiosClient.get('/places'),
+            user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
+        ]);
+
+        setPlaces(placesResponse.data);
+
+        // Create a Set of saved IDs for quick lookups
+        const savedArticlesSet = new Set(
+            savedResponse.data
+                .filter(item => item.article_type === 'places') // Filter for this page's type
+                .map(item => item.article_id)
+        );
+        setSavedIds(savedArticlesSet);
         setError(null);
       } catch (err) {
         setError('Failed to fetch historical places.');
@@ -26,51 +40,67 @@ const PlacesPage = () => {
         setLoading(false);
       }
     };
-    fetchPlaces();
-  }, [user]); // Add user as a dependency
+    fetchData();
+  }, [user]);
 
-  // IN PlacesPage.jsx - THE CORRECTED CODE
-
-const handleLikeClick = async (placeId) => { // It receives placeId
-    // Check if the user is logged in
+  const handleLikeClick = async (placeId) => {
     if (!user) {
-      // Use placeId here
       setWarning({ id: placeId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
-      return; // Stop the function
+      return;
     }
-
-    // Optimistic update for logged-in users
     const originalPlaces = [...places];
     const placeToUpdate = originalPlaces.find(p => p.id === placeId);
     if (!placeToUpdate) return;
-
     setPlaces(currentPlaces =>
       currentPlaces.map(place =>
-        place.id === placeId // Use placeId here
+        place.id === placeId
           ? { ...place, is_liked: !place.is_liked, likes: place.is_liked ? place.likes - 1 : place.likes + 1 }
           : place
       )
     );
-
     try {
-      // The API call is correct
       await axiosClient.post(`/places/${placeId}/like`);
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
-      setPlaces(originalPlaces); // Revert on failure
+      setPlaces(originalPlaces);
     }
   };
 
-  // 3. Add the handleSaveClick function
-  const handleSaveClick = (placeId) => {
+  // 3. Implement the new handleSaveClick logic
+  const handleSaveClick = async (placeId) => {
     if (!user) {
       setWarning({ id: placeId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-    alert(`Save functionality for place #${placeId} is coming soon!`);
+
+    const originalSavedIds = new Set(savedIds);
+    const newSavedIds = new Set(savedIds);
+    let action = '';
+
+    // Optimistic UI Update
+    if (newSavedIds.has(placeId)) {
+        newSavedIds.delete(placeId);
+        action = 'unsaved';
+    } else {
+        newSavedIds.add(placeId);
+        action = 'saved';
+    }
+    setSavedIds(newSavedIds);
+
+    // API Call
+    try {
+      await axiosClient.post('/saved-articles/toggle', {
+        article_id: placeId,
+        article_type: 'places', // Correct type for this page
+      });
+    } catch (error) {
+      console.error(`Failed to ${action} place:`, error);
+      setSavedIds(originalSavedIds); // Revert on failure
+      alert('There was an issue saving this item. Please try again.');
+    }
   };
 
   if (loading) { return <p>Loading historical places...</p>; }
@@ -81,39 +111,42 @@ const handleLikeClick = async (placeId) => { // It receives placeId
       <h1>Historical Places</h1>
       {places.length > 0 ? (
         <ul className="item-list">
-          {places.map((place) => (
-            <li key={place.id} className="list-item-card">
-              {place.picture && (
-                <img
-                  className="item-image"
-                  src={`http://127.0.0.1:8000/storage/${place.picture}`}
-                  alt={`View of ${place.name}`}
-                />
-              )}
-              <div className="item-content">
-                <h3>{place.name}</h3>
-                <p>{place.description}</p>
-              </div>
-
-              {/* 4. Replace the old JSX with this new structure for alignment */}
-              <div className="item-actions">
-                <div className="save-action" onClick={() => handleSaveClick(place.id)}>
-                  <FaRegBookmark size={24} />
+          {places.map((place) => {
+            // 4. Check if the current place is saved
+            const isSaved = savedIds.has(place.id);
+            return (
+              <li key={place.id} className="list-item-card">
+                {place.picture && (
+                  <img
+                    className="item-image"
+                    src={`http://127.0.0.1:8000/storage/${place.picture}`}
+                    alt={`View of ${place.name}`}
+                  />
+                )}
+                <div className="item-content">
+                  <h3>{place.name}</h3>
+                  <p>{place.description}</p>
                 </div>
-                <div className="like-action">
-                  <div className="like-button" onClick={() => handleLikeClick(place.id)}>
-                    {place.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
-                    {place.likes > 0 && <span className="like-count">{place.likes}</span>}
+                <div className="item-actions">
+                  <div className="save-action" onClick={() => handleSaveClick(place.id)}>
+                    {/* Render filled or empty bookmark based on isSaved status */}
+                    {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
-                  {warning.id === place.id && (
-                    <div className="like-warning">
-                      {warning.message}
+                  <div className="like-action">
+                    <div className="like-button" onClick={() => handleLikeClick(place.id)}>
+                      {place.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+                      {place.likes > 0 && <span className="like-count">{place.likes}</span>}
                     </div>
-                  )}
+                    {warning.id === place.id && (
+                      <div className="like-warning">
+                        {warning.message}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <p>No historical places found. An admin needs to add some!</p>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB; // <-- ADDED FOR TRANSACTIONS
 
 class PersonController extends Controller
 {
@@ -36,21 +37,33 @@ class PersonController extends Controller
     }
 
     /**
-     * Toggle a like and return the new state.
+     * THIS FUNCTION HAS BEEN UPDATED FOR RELIABILITY
+     * Toggles the like status and ensures data consistency with a transaction.
      */
     public function updateLikes(Request $request, Person $person)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
-        $user->likedPeople()->toggle($person->id);
-        $newLikesCount = $person->likers()->count();
-        $person->update(['likes' => $newLikesCount]);
-        $isLiked = $user->likedPeople()->where('person_id', $person->id)->exists();
 
-        return response()->json([
-            'new_likes_count' => $newLikesCount,
-            'is_liked' => $isLiked,
-        ]);
+        return DB::transaction(function () use ($user, $person) {
+            // 1. Toggle the relationship in the pivot table.
+            $user->likedPeople()->toggle($person->id);
+
+            // 2. Recalculate the count.
+            $newLikesCount = $person->likers()->count();
+            
+            // 3. Update the cached 'likes' column.
+            $person->update(['likes' => $newLikesCount]);
+
+            // 4. Check the new "liked" status.
+            $isLiked = $user->likedPeople()->where('person_id', $person->id)->exists();
+
+            // 5. Return the fresh data.
+            return response()->json([
+                'new_likes_count' => $newLikesCount,
+                'is_liked' => $isLiked,
+            ]);
+        });
     }
 
     /**
@@ -58,25 +71,24 @@ class PersonController extends Controller
      */
     public function store(Request $request)
     {
-        // --- THIS METHOD HAS BEEN CORRECTED ---
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'bio' => 'required|string',
             'category' => 'required|string|max:255',
             'birth_date' => 'nullable|string|max:255',
             'death_date' => 'nullable|string|max:255',
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Changed from 'portrait_url'
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $data = $request->except('picture'); // Changed from 'portrait_url'
+        $data = $request->except('picture');
 
-        if ($request->hasFile('picture')) { // Changed from 'portrait_url'
-            $path = $request->file('picture')->store('portraits', 'public'); // Changed from 'portrait_url'
-            $data['picture'] = $path; // Changed from 'portrait_url'
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('portraits', 'public');
+            $data['picture'] = $path;
         }
 
         $person = Person::create($data);
@@ -89,10 +101,9 @@ class PersonController extends Controller
         return response()->json($person);
     }
 
-      public function update(Request $request, Person $person)
+    public function update(Request $request, Person $person)
     {
         try {
-            // Validate text-based fields
             $validatedData = $request->validate([
                 'name' => 'sometimes|required|string|max:255',
                 'bio' => 'nullable|string',
@@ -100,31 +111,18 @@ class PersonController extends Controller
                 'birth_date' => 'nullable|string|max:255',
                 'death_date' => 'nullable|string|max:255',
             ]);
-
-            // Validate the image separately
             $request->validate([
                 'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
             $dataToUpdate = $validatedData;
-
-            // Handle the file upload if a new picture is provided
             if ($request->hasFile('picture')) {
-                // Delete the old picture if it exists
                 if ($person->picture) {
                     Storage::disk('public')->delete($person->picture);
                 }
-                
-                // Store the new picture in the 'portraits' folder
                 $path = $request->file('picture')->store('portraits', 'public');
-                
-                // Add the new picture path to our data array
                 $dataToUpdate['picture'] = $path;
             }
-
-            // Perform the update
             $person->update($dataToUpdate);
-
             return response()->json($person);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);
@@ -135,9 +133,8 @@ class PersonController extends Controller
 
     public function destroy(Person $person)
     {
-        // --- THIS METHOD HAS BEEN CORRECTED ---
-        if ($person->picture) { // Changed from 'portrait_url'
-            Storage::disk('public')->delete($person->picture); // Changed from 'portrait_url'
+        if ($person->picture) {
+            Storage::disk('public')->delete($person->picture);
         }
         $person->delete();
         return response()->json(['message' => 'Person deleted successfully.']);

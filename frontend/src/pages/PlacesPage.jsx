@@ -16,16 +16,16 @@ const PlacesPage = () => {
       try {
         setLoading(true);
         const [placesResponse, savedResponse] = await Promise.all([
-            axiosClient.get('/places'),
-            user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
+          axiosClient.get('/places'),
+          user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
         setPlaces(placesResponse.data);
 
         const savedArticlesSet = new Set(
-            savedResponse.data
-                .filter(item => item.article_type === 'places')
-                .map(item => item.article_id)
+          savedResponse.data
+            .filter(item => item.article_type === 'places')
+            .map(item => item.article_id)
         );
         setSavedIds(savedArticlesSet);
         setError(null);
@@ -55,6 +55,7 @@ const PlacesPage = () => {
     );
     try {
       await axiosClient.post(`/places/${placeId}/like`);
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -70,16 +71,30 @@ const PlacesPage = () => {
     }
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
-    let action = newSavedIds.has(placeId) ? 'unsaved' : 'saved';
-    newSavedIds.has(placeId) ? newSavedIds.delete(placeId) : newSavedIds.add(placeId);
+    
+    // --- FIX: Removed the duplicate logic. This is the single, correct way to do it. ---
+    // First, determine the action based on the current state.
+    const action = newSavedIds.has(placeId) ? 'unsaved' : 'saved';
+
+    // Then, update the set based on that action.
+    if (action === 'unsaved') {
+      newSavedIds.delete(placeId);
+    } else {
+      newSavedIds.add(placeId);
+    }
+
+    // Finally, update the state to reflect the change immediately (optimistic update).
     setSavedIds(newSavedIds);
+
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: placeId,
         article_type: 'places',
       });
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
     } catch (error) {
       console.error(`Failed to ${action} place:`, error);
+      // If the API call fails, revert the state to what it was before the click.
       setSavedIds(originalSavedIds);
       alert('There was an issue saving this item. Please try again.');
     }

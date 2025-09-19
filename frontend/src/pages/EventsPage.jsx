@@ -10,6 +10,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
+
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
@@ -17,15 +18,15 @@ const EventsPage = () => {
       try {
         setLoading(true);
         const [eventsResponse, savedResponse] = await Promise.all([
-            axiosClient.get('/events'),
-            user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
+          axiosClient.get('/events'),
+          user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
         setEvents(eventsResponse.data);
-        
+
         const savedArticlesSet = new Set(
-            savedResponse.data
-                .filter(item => item.article_type === 'events')
-                .map(item => item.article_id)
+          savedResponse.data
+            .filter(item => item.article_type === 'events')
+            .map(item => item.article_id)
         );
         setSavedIds(savedArticlesSet);
         setError(null);
@@ -54,7 +55,12 @@ const EventsPage = () => {
       )
     );
     try {
+      // --- FIX: Removed the duplicate API call. It was being sent twice. ---
       await axiosClient.post(`/events/${eventId}/like`);
+      
+      // After a successful like, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -70,16 +76,34 @@ const EventsPage = () => {
     }
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
-    let action = newSavedIds.has(eventId) ? 'unsaved' : 'saved';
-    newSavedIds.has(eventId) ? newSavedIds.delete(eventId) : newSavedIds.add(eventId);
+    
+    // --- FIX: Removed the duplicate logic. This is the single, correct way to do it. ---
+    // First, determine the action based on the current state.
+    const action = newSavedIds.has(eventId) ? 'unsaved' : 'saved';
+
+    // Then, update the set based on that action.
+    if (action === 'unsaved') {
+      newSavedIds.delete(eventId);
+    } else {
+      newSavedIds.add(eventId);
+    }
+
+    // Finally, update the state to reflect the change immediately (optimistic update).
     setSavedIds(newSavedIds);
+
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: eventId,
         article_type: 'events',
       });
+
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} event:`, error);
+      // --- FIX: Removed duplicate call to setSavedIds. ---
+      // If the API call fails, revert the state to what it was before the click.
       setSavedIds(originalSavedIds);
       alert('There was an issue saving this item. Please try again.');
     }

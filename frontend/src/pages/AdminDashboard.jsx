@@ -1,114 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axiosClient from "../api/axiosClient";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosClient from '../api/axiosClient';
 
+// FIX: Renamed component to match the filename and its new purpose.
 const AdminDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("All");
+  const navigate = useNavigate();
 
+  // FIX: Added state management for the articles list, loading, and errors.
+  // This was missing but required for the table from the 'dev' branch to work.
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // You can add filter state later if needed, for now we'll just show all articles.
+  const filteredArticles = articles;
 
+  // FIX: Added useEffect to fetch all articles when the component loads.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      axiosClient.get('/articles')
-        .then(({ data }) => {
-          setArticles(data);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Failed to fetch articles:", err);
-          setError("Could not load articles from the server.");
-          setLoading(false);
-        });
-    }, 500);
-
-    return () => clearTimeout(timer);
+    setLoading(true);
+    axiosClient.get('/articles') // Assuming you have an endpoint that returns all articles
+      .then(({ data }) => {
+        setArticles(data);
+        setError(null);
+      })
+      .catch(err => {
+        console.error("Failed to fetch articles:", err);
+        setError("Could not load articles. Please try again later.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const handleSearchChange = (event) => setSearchTerm(event.target.value);
-  const handleFilterChange = (event) => setFilter(event.target.value);
+  // FIX: Added the handleDelete function that was being called in the 'dev' branch code.
+  const handleDelete = async (id, type) => {
+    if (window.confirm('Are you sure you want to delete this article? This action cannot be undone.')) {
+      const typeEndpointMap = {
+        FIGURES: 'figures',
+        PLACES: 'places',
+        EVENTS: 'events'
+      };
+      const endpoint = typeEndpointMap[type];
 
-  const handleDelete = async (articleId, articleType) => {
-    if (!window.confirm("Are you sure you want to permanently delete this article?")) {
-      return;
-    }
-    const endpointMap = {
-      FIGURES: 'figures',
-      PLACES: 'places',
-      EVENTS: 'events'
-    };
-    const endpoint = `/${endpointMap[articleType]}/${articleId}`;
-    if (!endpointMap[articleType]) {
-        alert('Cannot delete: Unknown article type.');
+      if (!endpoint) {
+        alert("Error: Unknown article type.");
         return;
-    }
-    try {
-      await axiosClient.delete(endpoint);
-      setArticles(currentArticles =>
-        currentArticles.filter(article => !(article.id === articleId && article.type === articleType))
-      );
-      alert("Article deleted successfully.");
-    } catch (error) {
-      console.error("Failed to delete the article:", error);
-      alert("An error occurred. The article could not be deleted.");
+      }
+      
+      try {
+        await axiosClient.delete(`/${endpoint}/${id}`);
+        // Refresh the list by removing the deleted article from state
+        setArticles(prevArticles => prevArticles.filter(article => !(article.id === id && article.type === type)));
+        alert('Article deleted successfully.');
+      } catch (err) {
+        console.error('Failed to delete article:', err);
+        alert('There was an error deleting the article.');
+      }
     }
   };
 
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === "All" || article.type === filter;
-    return matchesSearch && matchesFilter;
-  });
-
   if (loading) return <div>Loading articles...</div>;
-  if (error) return <div style={{ padding: "20px", color: "red" }}>{error}</div>;
+  if (error) return <div style={{ color: "red", padding: "20px" }}>Error: {error}</div>;
 
   return (
-    <div className="admin-page-container">
-      <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
-        <button onClick={toggleSidebar} className="sidebar-toggle-button">
-          {isSidebarOpen ? "◀" : "▶"}
+    // FIX: Changed the main container to be more descriptive of a dashboard.
+    <div className="admin-dashboard-container">
+      <header className="admin-dashboard-header">
+        <h1>Admin Dashboard</h1>
+        {/* The "Add New" button should navigate to a separate form page */}
+        <button onClick={() => navigate('/admin/add')} className="form-button">
+          Add New Article
         </button>
-        <div className="sidebar-content">
-          <h3>ADMIN</h3>
-          <ul className="admin-nav-list">
-            <li><Link to="/admin">ALL ARTICLES</Link></li>
-            <li><Link to="/">VIEW SITE</Link></li>
-            {/* --- THIS IS THE CORRECTED LINE --- */}
-            <li><Link to="/logout">LOG OUT</Link></li>
-          </ul>
-        </div>
-      </aside>
-
-      <main className={`admin-main-content ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-        <div className="admin-header-welcome">
-          <h2>WELCOME.</h2>
-          <Link to="/admin/add-article" className="add-new-article-button">+ ADD NEW ARTICLE</Link>
-        </div>
-
-        <div className="admin-search-filter-container">
-          <input
-            type="text"
-            placeholder="SEARCH BY NAME..."
-            className="admin-search-input"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <div className="admin-filter-dropdown-wrapper">
-            <select className="admin-filter-dropdown" onChange={handleFilterChange} value={filter}>
-              <option value="All">SEARCH BY FILTER</option>
-              <option value="FIGURES">Figures</option>
-              <option value="EVENTS">Events</option>
-              <option value="PLACES">Places</option>
-            </select>
-            <span className="admin-filter-arrow"></span>
-          </div>
-        </div>
-
+      </header>
+      
+      <main>
+        {/* --- MERGE FIX: This is the code block from the 'dev' branch that we are keeping. --- */}
         <div className="admin-articles-table-container">
           <table className="admin-articles-table">
             <thead>
@@ -127,8 +93,9 @@ const AdminDashboard = () => {
                     PLACES: 'places',
                     EVENTS: 'events'
                   };
-                  const articleUrlType = typeUrlMap[article.type];
-                  
+                  // A safe mapping from the article type to the URL segment
+                  const articleUrlType = typeUrlMap[article.type]?.toLowerCase().replace(' ', '');
+
                   return (
                     <tr key={`${article.type}-${article.id}`}>
                       <td><input type="checkbox" /></td>
@@ -174,8 +141,10 @@ const AdminDashboard = () => {
           </table>
         </div>
       </main>
+      {/* --- MERGE FIX: The conflict markers and the code from the 'HEAD' branch have been removed. --- */}
     </div>
   );
 };
 
+// FIX: Exporting the correct component name.
 export default AdminDashboard;

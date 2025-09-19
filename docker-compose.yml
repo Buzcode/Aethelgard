@@ -26,6 +26,8 @@ services:
     volumes:
       # Mount the compiled frontend files into Nginx's default web root
       - ./frontend/dist:/usr/share/nginx/html
+      # vvv ADD THIS LINE vvv
+      - ./backend:/var/www  # <-- This gives Nginx access to Laravel's files
     networks:
       - app-network
     depends_on:

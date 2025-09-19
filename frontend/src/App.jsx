@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // Import Layout and Page components
 import MainLayout from "./components/MainLayout";
 import HomePage from "./pages/HomePage";
-import PeoplePage from "./pages/PeoplePage"; // This should be FiguresPage to be consistent
+import PeoplePage from "./pages/PeoplePage";
 import PlacesPage from "./pages/PlacesPage";
 import EventsPage from "./pages/EventsPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -35,13 +35,14 @@ function App() {
         <Route path="/saved-articles" element={<ProtectedRoute><SavedArticlesPage /></ProtectedRoute>} />
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
+        {/* --- CORRECTED ROUTES --- */}
         {/* Routes for listing all items */}
-        <Route path="figures" element={<PeoplePage />} />
+        <Route path="people" element={<PeoplePage />} />
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 
         {/* Detail Page Routes */}
-        <Route path="figures/:id" element={<DetailPage />} />
+        <Route path="people/:id" element={<DetailPage />} />
         <Route path="places/:id" element={<DetailPage />} />
         <Route path="events/:id" element={<DetailPage />} />
 

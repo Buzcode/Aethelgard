@@ -22,7 +22,7 @@ const PeoplePage = () => {
           user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        // FIX: Kept the safer version that ensures 'is_liked' exists.
+        // --- MERGE FIX: Kept the safer version that ensures 'is_liked' always exists. ---
         const peopleWithLikeStatus = peopleResponse.data.map(person => ({
           ...person,
           is_liked: person.is_liked || false,
@@ -46,7 +46,6 @@ const PeoplePage = () => {
     fetchData();
   }, [user]);
 
-  // FIX: Merged the two function definitions into one correct function.
   const handleLikeClick = async (e, personId) => {
     e.stopPropagation(); // Prevents navigating when clicking the button
 
@@ -63,7 +62,6 @@ const PeoplePage = () => {
           : person
       )
     );
-    // FIX: Corrected the broken try/catch block.
     try {
       await axiosClient.post(`/people/${personId}/like`);
       window.dispatchEvent(new CustomEvent('recommendations-changed'));
@@ -74,7 +72,6 @@ const PeoplePage = () => {
     }
   };
 
-  // FIX: Merged the two function definitions into one correct function.
   const handleSaveClick = async (e, personId) => {
     e.stopPropagation(); // Prevents navigating when clicking the button
 
@@ -118,9 +115,8 @@ const PeoplePage = () => {
           {people.map((person) => {
             const isSaved = savedIds.has(person.id);
             return (
-              // FIX: Merged the two <li> tags. This one is clickable and navigates.
+              // --- MERGE FIX: Kept the clickable <li> with correct image path and placeholder. ---
               <li key={person.id} className="list-item-card" onClick={() => navigate(`/figures/${person.id}`)}>
-                {/* FIX: Combined the best of both image tags: relative path and a placeholder. */}
                 {person.picture ? (
                   <img
                     className="item-image"
@@ -137,7 +133,6 @@ const PeoplePage = () => {
                 </div>
                 
                 <div className="item-actions">
-                  {/* FIX: Merged the two sets of action buttons. These ones pass the event (e) to stop propagation. */}
                   <div className="save-action" onClick={(e) => handleSaveClick(e, person.id)}>
                     {isSaved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />}
                   </div>
@@ -149,14 +144,14 @@ const PeoplePage = () => {
                     <div className="like-warning">{warning.message}</div>
                   )}
                 </div>
-              </li> // FIX: All tags are now properly closed.
+              </li>
             );
           })}
-        </ul> // FIX: Added missing closing tag.
+        </ul>
       ) : (
         <p>No historical figures found. An admin needs to add some!</p>
       )}
-    </div> // FIX: Added missing closing tag.
+    </div>
   );
 };
 

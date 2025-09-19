@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // --- LIKES & SAVES ROUTES (MUST STAY PROTECTED) ---
-    Route::post('/figures/{person}/like', [PersonController::class, 'updateLikes']);
+    Route::post('/people/{person}/like', [PersonController::class, 'updateLikes']);
     Route::post('/events/{event}/like', [EventController::class, 'updateLikes']);
     Route::post('/places/{place}/like', [PlaceController::class, 'updateLikes']);
     Route::get('/saved-articles', [SavedArticleController::class, 'index']);
@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {
         Route::get('/articles', [DashboardController::class, 'index']);
-        Route::apiResource('figures', PersonController::class)->except(['index', 'show']);
+        Route::apiResource('people', PersonController::class)->except(['index', 'show']);
         Route::apiResource('places', PlaceController::class)->except(['index', 'show']);
         Route::apiResource('events', EventController::class)->except(['index', 'show']);
     });

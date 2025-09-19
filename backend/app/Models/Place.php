@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Loggable; // <-- 1. IMPORT THE TRAIT
+use App\Models\Traits\Loggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Place extends Model
 {
-    // 2. USE THE TRAIT
     use HasFactory, Loggable;
 
     protected $fillable = [
@@ -25,11 +25,6 @@ class Place extends Model
         return $this->belongsToMany(User::class, 'place_likes', 'place_id', 'user_id');
     }
 
-    /*
-     * The searchLogs() method has been removed from here
-     * because it is now provided by the Loggable trait.
-     */
-
     public function getIsLikedAttribute()
     {
         if (array_key_exists('is_liked', $this->attributes)) {
@@ -42,9 +37,24 @@ class Place extends Model
     }
 
     public function saves(): MorphMany
-{
-    // The name 'article' must match the name of the method
-    // in your SavedArticle model (public function article()).
-    return $this->morphMany(SavedArticle::class, 'article');
-}
+    {
+        return $this->morphMany(SavedArticle::class, 'article');
+    }
+
+    // vvv ADD THIS METHOD vvv
+    /**
+     * Get the full URL for the place's picture.
+     * This is an accessor that automatically converts the stored
+     * relative path into a full, publicly accessible URL.
+     *
+     * @param  string|null  $value The raw value from the 'picture' column.
+     * @return string|null
+     */
+    public function getPictureAttribute($value)
+    {
+        // If a picture path exists in the database, create a full URL to it.
+        // Otherwise, return null.
+        return $value ? Storage::disk('public')->url($value) : null;
+    }
+    // ^^^ ADD THIS METHOD ^^^
 }

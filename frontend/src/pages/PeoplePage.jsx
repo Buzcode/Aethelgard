@@ -1,4 +1,3 @@
-// Correctly merged code for PeoplePage.jsx
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
@@ -21,7 +20,6 @@ const PeoplePage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        // This is the CORRECT line
         setPeople(peopleResponse.data);
 
         const savedArticlesSet = new Set(
@@ -56,6 +54,7 @@ const PeoplePage = () => {
       )
     );
     try {
+      // This route should now work after adding it to api.php
       await axiosClient.post(`/people/${personId}/like`);
     } catch (error) {
       console.error('Failed to update like status:', error);
@@ -99,7 +98,9 @@ const PeoplePage = () => {
             const isSaved = savedIds.has(person.id);
             return (
               <li key={person.id} className="list-item-card">
-                {person.picture && <img className="item-image" src={`/storage/${person.picture}`} alt={`Portrait of ${person.name}`} />}
+                {/* --- THIS IS THE CORRECTED LINE --- */}
+                {person.picture && <img className="item-image" src={person.picture} alt={`Portrait of ${person.name}`} />}
+                
                 <div className="item-content">
                   <h3>{person.name}</h3>
                   <p>{person.bio}</p>

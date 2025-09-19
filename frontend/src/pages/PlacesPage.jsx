@@ -20,7 +20,6 @@ const PlacesPage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-       // --- THIS IS THE CORRECT, SIMPLIFIED LINE ---
         setPlaces(placesResponse.data);
 
         const savedArticlesSet = new Set(
@@ -98,7 +97,9 @@ const PlacesPage = () => {
             const isSaved = savedIds.has(place.id);
             return (
               <li key={place.id} className="list-item-card">
-                {place.picture && <img className="item-image" src={`/storage/${place.picture}`} alt={`View of ${place.name}`} />}
+                {/* --- THIS IS THE CORRECTED LINE --- */}
+                {place.picture && <img className="item-image" src={place.picture} alt={`View of ${place.name}`} />}
+                
                 <div className="item-content">
                   <h3>{place.name}</h3>
                   <p>{place.description}</p>

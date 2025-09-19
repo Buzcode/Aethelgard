@@ -1,181 +1,250 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
-const AdminDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("All");
+const categories = {
+  "FIGURES": [
+    { name: "Politics & Leadership", value: "politics_leadership" },
+    { name: "Science & Technology", value: "science_technology" },
+    { name: "Arts & Culture", value: "arts_culture" },
+  ],
+  "EVENTS": [
+    { name: "Conflicts & Warfare", value: "conflicts_warfare" },
+    { name: "Political & Social Transformations", value: "political_social_transformations" },
+    { name: "Exploration & Discovery", value: "exploration_discovery" },
+  ],
+  "PLACES": [
+    { name: "Ancient Cities", value: "ancient_cities" },
+    { name: "Monuments & Structures", value: "monuments_structures" },
+    { name: "Lost Civilizations", value: "lost_civilizations" },
+  ],
+};
 
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
+const findParentCategory = (subcategoryValue) => {
+  for (const parent in categories) {
+    if (categories[parent].some(sub => sub.value === subcategoryValue)) {
+      return parent;
+    }
+  }
+  return "";
+};
+
+
+const AddArticlePage = () => {
+  const { type, id } = useParams();
+  
+  // --- DEBUGGING MESSAGE 1 ---
+  console.log(`DEBUG 1: The 'type' parameter from the URL is: "${type}"`);
+
+  const isEditMode = !!id;
+
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    category: "",
+  });
+  const [image, setImage] = useState(null);
+  const [status, setStatus] = useState("DRAFT");
+  const [loading, setLoading] = useState(isEditMode);
   const [error, setError] = useState(null);
+  
+  const navigate = useNavigate();
+
+  const [selectedParentCategory, setSelectedParentCategory] = useState("");
+  const [availableSubcategories, setAvailableSubcategories] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      axiosClient.get('/articles')
+    if (isEditMode) {
+      const endpointMap = { people: 'people', places: 'places', events: 'events' };
+      const endpoint = endpointMap[type];
+
+      // --- DEBUGGING MESSAGE 2 ---
+      console.log(`DEBUG 2: The result of looking up "${type}" in endpointMap is:`, endpoint);
+
+      if (!endpoint) {
+          setError("Invalid article type in URL.");
+          setLoading(false);
+          return;
+      }
+      
+      setLoading(true);
+      axiosClient.get(`/${endpoint}/${id}`)
         .then(({ data }) => {
-          setArticles(data);
+          const descriptionOrBio = data.bio || data.description;
+
+          setFormData({
+            name: data.name,
+            description: descriptionOrBio,
+            category: data.category
+          });
+
+          const parentCat = findParentCategory(data.category);
+          if (parentCat) {
+            setSelectedParentCategory(parentCat);
+            setAvailableSubcategories(categories[parentCat]);
+          }
+
           setLoading(false);
         })
         .catch(err => {
-          console.error("Failed to fetch articles:", err);
-          setError("Could not load articles from the server.");
+          console.error("Failed to fetch article data:", err);
+          setError("Could not load article data. It may have been deleted.");
           setLoading(false);
         });
-    }, 500);
+    }
+  }, [id, type, isEditMode]);
 
-    return () => clearTimeout(timer);
-  }, []);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const handleSearchChange = (event) => setSearchTerm(event.target.value);
-  const handleFilterChange = (event) => setFilter(event.target.value);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-  const handleDelete = async (articleId, articleType) => {
-    if (!window.confirm("Are you sure you want to permanently delete this article?")) {
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleParentCategoryChange = (e) => {
+    const parentValue = e.target.value;
+    setSelectedParentCategory(parentValue);
+
+    if (parentValue) {
+      setAvailableSubcategories(categories[parentValue]);
+    } else {
+      setAvailableSubcategories([]);
+    }
+    setFormData(prev => ({ ...prev, category: "" }));
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.category) {
+      alert("Please select a subcategory.");
       return;
     }
+    
     const endpointMap = {
       FIGURES: 'people',
       PLACES: 'places',
       EVENTS: 'events'
     };
-    const endpoint = `/${endpointMap[articleType]}/${articleId}`;
-    if (!endpointMap[articleType]) {
-        alert('Cannot delete: Unknown article type.');
-        return;
+    const endpoint = endpointMap[selectedParentCategory];
+
+    const submissionData = new FormData();
+    submissionData.append('name', formData.name);
+    submissionData.append('category', formData.category);
+    
+    if (image) {
+      submissionData.append('picture', image);
     }
+    
+    if (endpoint === 'people') {
+      submissionData.append('bio', formData.description); 
+    } else {
+      submissionData.append('description', formData.description);
+    }
+    
     try {
-      await axiosClient.delete(endpoint);
-      setArticles(currentArticles =>
-        currentArticles.filter(article => !(article.id === articleId && article.type === articleType))
-      );
-      alert("Article deleted successfully.");
+      if (isEditMode) {
+        submissionData.append('_method', 'PUT');
+        await axiosClient.post(`/${endpoint}/${id}`, submissionData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        alert("Article updated successfully!");
+      } else {
+        await axiosClient.post(`/${endpoint}`, submissionData, {
+          headers: { 'Content-Type': 'multipart-form-data' }
+        });
+        alert("Article submitted successfully!");
+      }
+      navigate("/admin");
+
     } catch (error) {
-      console.error("Failed to delete the article:", error);
-      alert("An error occurred. The article could not be deleted.");
+      console.error("Failed to submit article:", error);
+      if (error.response) {
+        console.error("Error data:", error.response.data);
+      }
+      alert("Error submitting article. Check the console for details.");
     }
   };
 
-  const filteredArticles = articles.filter((article) => {
-    const matchesSearch = article.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === "All" || article.type === filter;
-    return matchesSearch && matchesFilter;
-  });
-
-  if (loading) return <div>Loading articles...</div>;
-  if (error) return <div style={{ padding: "20px", color: "red" }}>{error}</div>;
+  if (loading) return <div>Loading article details...</div>;
+  if (error) return <div style={{ color: "red", padding: "20px" }}>Error: {error}</div>;
 
   return (
-    <div className="admin-page-container">
-      <aside className={`admin-sidebar ${isSidebarOpen ? "open" : "closed"}`}>
-        <button onClick={toggleSidebar} className="sidebar-toggle-button">
-          {isSidebarOpen ? "◀" : "▶"}
-        </button>
-        <div className="sidebar-content">
-          <h3>ADMIN</h3>
-          <ul className="admin-nav-list">
-            <li><Link to="/admin">ALL ARTICLES</Link></li>
-            <li><Link to="/">VIEW SITE</Link></li>
-            {/* --- THIS IS THE CORRECTED LINE --- */}
-            <li><Link to="/logout">LOG OUT</Link></li>
-          </ul>
+    <div className="form-container">
+      <h1>{isEditMode ? "EDIT ARTICLE" : "ADD NEW ARTICLE"}</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">Title</label>
+          <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
         </div>
-      </aside>
-
-      <main className={`admin-main-content ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
-        <div className="admin-header-welcome">
-          <h2>WELCOME.</h2>
-          <Link to="/admin/add-article" className="add-new-article-button">+ ADD NEW ARTICLE</Link>
+        <div className="form-group">
+          <label htmlFor="description">Description</label>
+          <textarea id="description" name="description" value={formData.description} onChange={handleInputChange} rows="5" required className="form-textarea" />
         </div>
 
-        <div className="admin-search-filter-container">
-          <input
-            type="text"
-            placeholder="SEARCH BY NAME..."
-            className="admin-search-input"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <div className="admin-filter-dropdown-wrapper">
-            <select className="admin-filter-dropdown" onChange={handleFilterChange} value={filter}>
-              <option value="All">SEARCH BY FILTER</option>
-              <option value="FIGURES">Figures</option>
-              <option value="EVENTS">Events</option>
-              <option value="PLACES">Places</option>
+        <div className="form-group">
+          <label htmlFor="parent-category">Category</label>
+          <select
+            id="parent-category"
+            value={selectedParentCategory}
+            onChange={handleParentCategoryChange}
+            required
+            disabled={isEditMode} 
+            className="form-select"
+          >
+            <option value="">Select a Category</option>
+            {Object.keys(categories).map(parentName => (
+              <option key={parentName} value={parentName}>
+                {parentName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {selectedParentCategory && (
+          <div className="form-group">
+            <label htmlFor="category">Subcategory</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
+              disabled={isEditMode} 
+              className="form-select"
+            >
+              <option value="">Select a Subcategory</option>
+              {availableSubcategories.map(subcategory => (
+                <option key={subcategory.value} value={subcategory.value}>
+                  {subcategory.name}
+                </option>
+              ))}
             </select>
-            <span className="admin-filter-arrow"></span>
           </div>
+        )}
+
+        <div className="form-group">
+          <label htmlFor="image">Image {isEditMode && "(Leave blank to keep existing)"}</label>
+          <input type="file" id="image" accept="image/*" onChange={handleImageChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="status">Status</label>
+          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} className="form-select">
+            <option value="DRAFT">DRAFT</option>
+            <option value="PUBLISHED">PUBLISHED</option>
+          </select>
         </div>
 
-        <div className="admin-articles-table-container">
-          <table className="admin-articles-table">
-            <thead>
-              <tr>
-                <th><input type="checkbox" /></th>
-                <th>TITLE</th>
-                <th>CATEGORY</th>
-                <th>ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredArticles.length > 0 ? (
-                filteredArticles.map((article) => {
-                  const typeUrlMap = {
-                    FIGURES: 'people',
-                    PLACES: 'places',
-                    EVENTS: 'events'
-                  };
-                  const articleUrlType = typeUrlMap[article.type];
-                  
-                  return (
-                    <tr key={`${article.type}-${article.id}`}>
-                      <td><input type="checkbox" /></td>
-                      <td>{article.name}</td>
-                      <td>{article.type}</td>
-                      <td className="action-cell">
-                        <Link
-                          to={`/admin/edit/${articleUrlType}/${article.id}`}
-                          className="action-icon edit-icon"
-                          title="Edit"
-                        >
-                          ✏️
-                        </Link>
-                        <span
-                          className="action-icon delete-icon"
-                          onClick={() => handleDelete(article.id, article.type)}
-                          style={{ cursor: 'pointer' }}
-                          title="Delete"
-                        >
-                          🗑️
-                        </span>
-                        <Link
-                          to={`/${articleUrlType}/${article.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="action-icon view-icon"
-                          title="View Public Page"
-                        >
-                          👁️
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
-                    No articles found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </main>
+        <button type="submit" className="form-button">
+          {isEditMode ? "Update Article" : "Submit Article"}
+        </button>
+      </form>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default AddArticlePage;

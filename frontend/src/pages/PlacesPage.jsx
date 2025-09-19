@@ -86,7 +86,7 @@ const handleLikeClick = async (placeId) => { // It receives placeId
               {place.picture && (
                 <img
                   className="item-image"
-                  src={`http://127.0.0.1:8000/storage/${place.picture}`}
+                  src={`/storage/${place.picture}`}
                   alt={`View of ${place.name}`}
                 />
               )}

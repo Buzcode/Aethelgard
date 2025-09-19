@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
+
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\PlaceController;
@@ -14,6 +18,8 @@ use App\Http\Controllers\Api\TrendingController;
 use App\Http\Controllers\Api\SuggestionController; 
 use App\Http\Controllers\Api\TrackingController; 
 
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +29,11 @@ use App\Http\Controllers\Api\TrackingController;
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'API is working']);
+});
 
 // --- Other Public Routes ---
 Route::get('/search', [SearchController::class, 'search']);

@@ -79,7 +79,7 @@ const PeoplePage = () => {
               {person.picture && (
                 <img
                   className="item-image"
-                  src={`http://127.0.0.1:8000/storage/${person.picture}`}
+                  src={`/storage/${person.picture}`}
                   alt={`Portrait of ${person.name}`}
                 />
               )}

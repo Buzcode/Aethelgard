@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+
+import axiosClient from '../api/axiosClient';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -26,10 +27,9 @@ const MostPopular = () => {
     useEffect(() => {
         const fetchPopularItems = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/api/popular-items`);
+                const response = await axiosClient.get('/popular-items');
                 setPopularItems(response.data);
-            } catch (err) { // <-- THE FIX IS HERE
-                // We now use the 'err' variable to log the specific error.
+            } catch (err) { 
                 console.error('Failed to fetch popular items:', err);
                 setError('Failed to fetch popular items.');
             } finally {
@@ -77,7 +77,7 @@ const MostPopular = () => {
                     {popularItems.map(item => (
                         <Link to={`/${linkPaths[item.type]}/${item.id}`} key={`${item.type}-${item.id}`} className="carousel-card">
                             <img
-                                src={`${API_BASE_URL}${item.image}`}
+                                src={item.image}
                                 alt={item.name}
                                 className="carousel-card-image"
                             />

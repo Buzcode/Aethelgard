@@ -9,26 +9,27 @@ const PlacesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
-
-  // 1. Add state to track saved article IDs
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // 2. Fetch both places and the user's saved articles in parallel
         const [placesResponse, savedResponse] = await Promise.all([
             axiosClient.get('/places'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        setPlaces(placesResponse.data);
+        // Process places to determine if they are liked by the current user
+        const processedPlaces = placesResponse.data.map(place => ({
+            ...place,
+            is_liked: user ? place.users.some(u => u.id === user.id) : false
+        }));
+        setPlaces(processedPlaces);
 
-        // Create a Set of saved IDs for quick lookups
         const savedArticlesSet = new Set(
             savedResponse.data
-                .filter(item => item.article_type === 'places') // Filter for this page's type
+                .filter(item => item.article_type === 'places')
                 .map(item => item.article_id)
         );
         setSavedIds(savedArticlesSet);
@@ -50,8 +51,6 @@ const PlacesPage = () => {
       return;
     }
     const originalPlaces = [...places];
-    const placeToUpdate = originalPlaces.find(p => p.id === placeId);
-    if (!placeToUpdate) return;
     setPlaces(currentPlaces =>
       currentPlaces.map(place =>
         place.id === placeId
@@ -68,7 +67,6 @@ const PlacesPage = () => {
     }
   };
 
-  // 3. Implement the new handleSaveClick logic
   const handleSaveClick = async (placeId) => {
     if (!user) {
       setWarning({ id: placeId, message: 'Please log in to save posts' });
@@ -80,7 +78,6 @@ const PlacesPage = () => {
     const newSavedIds = new Set(savedIds);
     let action = '';
 
-    // Optimistic UI Update
     if (newSavedIds.has(placeId)) {
         newSavedIds.delete(placeId);
         action = 'unsaved';
@@ -90,15 +87,14 @@ const PlacesPage = () => {
     }
     setSavedIds(newSavedIds);
 
-    // API Call
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: placeId,
-        article_type: 'places', // Correct type for this page
+        article_type: 'places',
       });
     } catch (error) {
       console.error(`Failed to ${action} place:`, error);
-      setSavedIds(originalSavedIds); // Revert on failure
+      setSavedIds(originalSavedIds);
       alert('There was an issue saving this item. Please try again.');
     }
   };
@@ -112,14 +108,15 @@ const PlacesPage = () => {
       {places.length > 0 ? (
         <ul className="item-list">
           {places.map((place) => {
-            // 4. Check if the current place is saved
+            // Check if the current place is saved
             const isSaved = savedIds.has(place.id);
             return (
               <li key={place.id} className="list-item-card">
                 {place.picture && (
                   <img
                     className="item-image"
-                    src={`http://127.0.0.1:8000/storage/${place.picture}`}
+                    // Corrected, Docker-friendly image URL
+                    src={`/storage/${place.picture}`}
                     alt={`View of ${place.name}`}
                   />
                 )}
@@ -129,7 +126,7 @@ const PlacesPage = () => {
                 </div>
                 <div className="item-actions">
                   <div className="save-action" onClick={() => handleSaveClick(place.id)}>
-                    {/* Render filled or empty bookmark based on isSaved status */}
+                    {/* Collaborator's new feature logic */}
                     {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
                   <div className="like-action">

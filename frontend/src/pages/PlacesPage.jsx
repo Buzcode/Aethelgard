@@ -21,6 +21,7 @@ const PlacesPage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
+       // --- THIS IS THE CORRECT, SIMPLIFIED LINE ---
         setPlaces(placesResponse.data);
 
         const savedArticlesSet = new Set(
@@ -47,8 +48,6 @@ const PlacesPage = () => {
       return;
     }
     const originalPlaces = [...places];
-    const placeToUpdate = originalPlaces.find(p => p.id === placeId);
-    if (!placeToUpdate) return;
     setPlaces(currentPlaces =>
       currentPlaces.map(place =>
         place.id === placeId
@@ -76,9 +75,9 @@ const PlacesPage = () => {
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
+
     let action = '';
 
     if (newSavedIds.has(placeId)) {
@@ -88,6 +87,10 @@ const PlacesPage = () => {
         newSavedIds.add(placeId);
         action = 'saved';
     }
+    setSavedIds(newSavedIds);
+
+    let action = newSavedIds.has(placeId) ? 'unsaved' : 'saved';
+    newSavedIds.has(placeId) ? newSavedIds.delete(placeId) : newSavedIds.add(placeId);
     setSavedIds(newSavedIds);
 
     try {
@@ -119,13 +122,7 @@ const PlacesPage = () => {
             const isSaved = savedIds.has(place.id);
             return (
               <li key={place.id} className="list-item-card">
-                {place.picture && (
-                  <img
-                    className="item-image"
-                    src={`http://127.0.0.1:8000/storage/${place.picture}`}
-                    alt={`View of ${place.name}`}
-                  />
-                )}
+                {place.picture && <img className="item-image" src={`/storage/${place.picture}`} alt={`View of ${place.name}`} />}
                 <div className="item-content">
                   <h3>{place.name}</h3>
                   <p>{place.description}</p>
@@ -139,11 +136,7 @@ const PlacesPage = () => {
                       {place.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
                       {place.likes > 0 && <span className="like-count">{place.likes}</span>}
                     </div>
-                    {warning.id === place.id && (
-                      <div className="like-warning">
-                        {warning.message}
-                      </div>
-                    )}
+                    {warning.id === place.id && <div className="like-warning">{warning.message}</div>}
                   </div>
                 </div>
               </li>

@@ -1,0 +1,67 @@
+
+services:
+  # The Laravel Application (PHP-FPM Service)
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aethelgard_app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./backend:/var/www
+    command: sh -c "chown -R www-data:www-data storage bootstrap/cache && php-fpm"
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  # The Nginx Web Server Service
+  nginx:
+    build: ./docker/nginx
+    container_name: aethelgard_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      # Mount the compiled frontend files into Nginx's default web root
+      - ./frontend/dist:/usr/share/nginx/html
+    networks:
+      - app-network
+    depends_on:
+      - app
+      - frontend-builder
+
+  # The MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: aethelgard_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  # A temporary service just for building the React app
+  frontend-builder:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aethelgard_frontend_builder
+    command: npm run build
+    volumes:
+      - ./frontend/dist:/app/dist
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

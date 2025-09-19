@@ -1,3 +1,4 @@
+// Correctly merged code for EventsPage.jsx
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
@@ -9,7 +10,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
-  
+
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
@@ -20,7 +21,6 @@ const EventsPage = () => {
             axiosClient.get('/events'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
-
         setEvents(eventsResponse.data);
         
         const savedArticlesSet = new Set(
@@ -40,15 +40,13 @@ const EventsPage = () => {
     fetchData();
   }, [user]);
 
-  const handleLikeClick = (eventId) => {
+  const handleLikeClick = async (eventId) => {
     if (!user) {
       setWarning({ id: eventId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
     const originalEvents = [...events];
-    const eventToUpdate = originalEvents.find(e => e.id === eventId);
-    if (!eventToUpdate) return;
     setEvents(currentEvents =>
       currentEvents.map(event =>
         event.id === eventId
@@ -57,11 +55,15 @@ const EventsPage = () => {
       )
     );
     try {
+
       axiosClient.post(`/events/${eventId}/like`);
       
       // --- RECOMMENDATION LOGIC ADDED ---
       // After a successful like, tell the app to refresh recommendations.
       window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
+
+      await axiosClient.post(`/events/${eventId}/like`);
 
     } catch (error) {
       console.error('Failed to update like status:', error);
@@ -76,9 +78,9 @@ const EventsPage = () => {
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
+
     let action = '';
 
     if (newSavedIds.has(eventId)) {
@@ -88,6 +90,11 @@ const EventsPage = () => {
         newSavedIds.add(eventId);
         action = 'saved';
     }
+    setSavedIds(newSavedIds);
+
+
+    let action = newSavedIds.has(eventId) ? 'unsaved' : 'saved';
+    newSavedIds.has(eventId) ? newSavedIds.delete(eventId) : newSavedIds.add(eventId);
     setSavedIds(newSavedIds);
 
     try {
@@ -102,7 +109,10 @@ const EventsPage = () => {
 
     } catch (error) {
       console.error(`Failed to ${action} event:`, error);
+
       setSavedIds(originalSavedIds); 
+      setSavedIds(originalSavedIds);
+
       alert('There was an issue saving this item. Please try again.');
     }
   };
@@ -119,13 +129,7 @@ const EventsPage = () => {
             const isSaved = savedIds.has(event.id);
             return (
               <li key={event.id} className="list-item-card">
-                {event.picture && (
-                  <img
-                    className="item-image"
-                    src={`http://127.0.0.1:8000/storage/${event.picture}`}
-                    alt={`Depiction of ${event.name}`}
-                  />
-                )}
+                {event.picture && <img className="item-image" src={`/storage/${event.picture}`} alt={`View of ${event.name}`} />}
                 <div className="item-content">
                   <h3>{event.name}</h3>
                   <p>{event.description}</p>
@@ -139,11 +143,7 @@ const EventsPage = () => {
                       {event.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
                       {event.likes > 0 && <span className="like-count">{event.likes}</span>}
                     </div>
-                    {warning.id === event.id && (
-                      <div className="like-warning">
-                        {warning.message}
-                      </div>
-                    )}
+                    {warning.id === event.id && <div className="like-warning">{warning.message}</div>}
                   </div>
                 </div>
               </li>

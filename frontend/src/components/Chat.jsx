@@ -27,7 +27,7 @@ const Chat = () => {
         setIsLoading(true);
 
         try {
-            const apiUrl = 'http://127.0.0.1:8000/api/chat';
+            const apiUrl = '/api/chat';
             
             // *** THE IMPORTANT CHANGE ***
             // We now send the full conversation history every time

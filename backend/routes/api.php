@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
+
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PersonController;
 use App\Http\Controllers\Api\PlaceController;
@@ -16,6 +20,8 @@ use App\Http\Controllers\Api\TrackingController;
 use App\Http\Controllers\Api\SavedArticleController;
 use App\Http\Controllers\Api\RecommendationController;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +31,11 @@ use App\Http\Controllers\Api\RecommendationController;
 // --- Public Authentication Routes ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'API is working']);
+});
 
 // --- Other Public Routes ---
 Route::get('/search', [SearchController::class, 'search']);
@@ -36,9 +47,15 @@ Route::get('/recommendations', [RecommendationController::class, 'index']);
 
 
 // --- Public Read-Only Content Routes ---
+// Guests can view these, and logged-in users will be recognized.
 Route::middleware('auth.optional')->group(function () {
+
     Route::get('/figures', [PersonController::class, 'index']);
     Route::get('/figures/{person}', [PersonController::class, 'show']);
+
+    Route::get('/people', [PersonController::class, 'index']); // <-- ENSURE THIS LINE EXISTS
+    Route::get('/people/{person}', [PersonController::class, 'show']);
+
     Route::get('/places', [PlaceController::class, 'index']);
     Route::get('/places/{place}', [PlaceController::class, 'show']);
     Route::get('/events', [EventController::class, 'index']);

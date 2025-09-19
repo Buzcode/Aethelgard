@@ -1,39 +1,23 @@
+.body {
+  margin: 0;
+  padding: 0;
+  background-color: #EAE0C8; /* Set the background color here */
+}
 .page-container {
   display: flex;
-
-
-  background-color: #EAE0C8;
-
   background-color: #eae0c8;
-
   height: calc(100vh - 70px); /* CHANGE: Use height instead of min-height */
-
-  background-color: #eae0c8;
-  height: calc(100vh - 70px); 
-
-  background-color: #eae0c8;
-  height: calc(100vh - 70px); 
-
 }
-
 /* Add this new rule */
 .page-body-wrapper {
   display: flex; /* This is the key to the side-by-side layout */
   align-items: flex-start; /* Align items to the top */
   height: calc(100vh - 70px); /* Fill the height below the 70px header */
 }
-
-.main-content-area {
-  flex-grow: 1;
-  padding: 2rem;
-  overflow-y: auto; 
-}
-
 .main-content-area--full-width {
   width: 100%;
-  padding-left: 2rem; 
+  padding-left: rem;
 }
-
 /* --- Sidebar Component --- */
 .sidebar {
   width: 280px;
@@ -46,11 +30,9 @@
   top: 0; /* CHANGE: Stick to the top of its parent container */
   overflow-y: auto;
 }
-
 .sidebar-section {
   margin-bottom: 2rem;
 }
-
 .sidebar-section h3 {
   font-family: "Lora", serif;
   font-size: 1rem;
@@ -61,13 +43,11 @@
   padding-bottom: 0.5rem;
   text-transform: uppercase;
 }
-
 .sidebar-section ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .sidebar-section ul li a {
   color: #4a403a;
   text-decoration: none;
@@ -76,24 +56,20 @@
   padding: 0.5rem 0;
   transition: background-color 0.2s ease;
 }
-
 .sidebar-section ul li a:hover {
   background-color: rgba(74, 64, 58, 0.05);
 }
-
 .saved-placeholder {
   background-color: #dcd6c5;
   border-radius: 8px;
   height: 120px;
 }
-
 .topic-placeholder {
   background-color: #dcd6c5;
   border-radius: 4px;
   height: 30px;
   margin-bottom: 1rem;
 }
-
 /* --- Main container for the form --- */
 .form-container {
   max-width: 500px;
@@ -104,26 +80,22 @@
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
-
 .form-container h1 {
   text-align: center;
   margin-top: 0;
   margin-bottom: 2rem;
   font-family: "Lora", serif;
 }
-
 /* --- each label + input pair --- */
 .form-group {
   margin-bottom: 1.5rem;
 }
-
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
   color: #4a403a;
 }
-
 .form-group input {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -135,7 +107,6 @@
   font-family: "Lato", sans-serif;
   box-sizing: border-box;
 }
-
 /* --- The main action button --- */
 .form-button {
   display: block;
@@ -151,11 +122,9 @@
   transition: background-color 0.2s ease-in-out;
   text-transform: uppercase;
 }
-
 .form-button:hover {
   background-color: #600018;
 }
-
 /* --- The error message --- */
 .form-error {
   color: #800020;
@@ -163,9 +132,7 @@
   margin-top: 1rem;
   font-weight: bold;
 }
-
 /* --- 6. Chat Widget Styles --- */
-
 /* The floating icon button */
 .chat-widget-button {
   position: fixed;
@@ -180,11 +147,9 @@
   transition: transform 0.2s ease-in-out;
   z-index: 1000;
 }
-
 .chat-widget-button:hover {
   transform: scale(1.1);
 }
-
 /* The main chatbox container that appears */
 .chatbox {
   position: fixed;
@@ -200,7 +165,6 @@
   z-index: 1000;
   overflow: hidden;
 }
-
 /* The header of the chatbox */
 .chatbox-header {
   padding: 1rem;
@@ -210,13 +174,11 @@
   align-items: center;
   border-bottom: 1px solid rgba(74, 64, 58, 0.1);
 }
-
 .chatbox-header h3 {
   margin: 0;
   font-size: 1.2rem;
   color: #4a403a;
 }
-
 .chatbox-close-button {
   background: none;
   border: none;
@@ -225,7 +187,6 @@
   cursor: pointer;
   color: #4a403a;
 }
-
 /* The scrollable area for messages */
 .chat-history {
   flex: 1;
@@ -235,7 +196,6 @@
   flex-direction: column;
   gap: 0.75rem;
 }
-
 /* Styling for an individual message bubble */
 .message-bubble {
   display: inline-block;
@@ -244,11 +204,9 @@
   max-width: 80%;
   word-wrap: break-word;
 }
-
 .message-container {
   display: flex;
 }
-
 /* User's message (right-aligned, burgundy) */
 .message-container.user {
   justify-content: flex-end;
@@ -258,7 +216,6 @@
   color: #ffffff;
   border-bottom-right-radius: 4px; /* "Tail" effect */
 }
-
 /* AI's message (left-aligned, sepia) */
 .message-container.model {
   justify-content: flex-start;
@@ -268,7 +225,6 @@
   color: #4a403a;
   border-bottom-left-radius: 4px; /* "Tail" effect */
 }
-
 /* The form at the bottom of the chatbox */
 .chat-form {
   display: flex;
@@ -276,7 +232,6 @@
   border-top: 1px solid rgba(74, 64, 58, 0.1);
   gap: 0.5rem;
 }
-
 .chat-form input {
   flex: 1; /* Take up remaining space */
   padding: 0.75rem;
@@ -285,7 +240,6 @@
   background-color: #eae0c8; /* Parchment background */
   font-size: 1rem;
 }
-
 .chat-form button {
   padding: 0.75rem 1rem;
   border: none;
@@ -295,12 +249,10 @@
   font-weight: bold;
   cursor: pointer;
 }
-
 .chat-form button:disabled {
   background-color: #a7a19e;
   cursor: not-allowed;
 }
-
 /*8. Header Redesign*/
 .main-header {
   display: flex;
@@ -311,7 +263,6 @@
   background-color: #f5f0e1;
   border-bottom: 1px solid rgba(74, 64, 58, 0.2);
 }
-
 .header-brand a {
   font-family: "Lora", serif;
   font-size: 1.8rem;
@@ -319,7 +270,6 @@
   color: #4a403a;
   text-decoration: none;
 }
-
 .header-search input {
   border: 1px solid rgba(74, 64, 58, 0.2);
   background-color: #dcd6c5;
@@ -330,7 +280,6 @@
   font-family: "Lato", sans-serif;
   font-weight: bold;
 }
-
 .main-nav a,
 .auth-links a {
   margin: 0 1rem;
@@ -342,11 +291,9 @@
   position: relative;
   padding-bottom: 8px;
 }
-
 .main-nav a.active-link {
   color: #4a403a;
 }
-
 .main-nav a.active-link::after {
   content: "";
   position: absolute;
@@ -356,7 +303,6 @@
   height: 4px;
   background-color: #4a403a;
 }
-
 /*9. Homepage Specific Styles */
 .home-section {
   background-color: #f5f0e1;
@@ -365,7 +311,6 @@
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
-
 .home-section h2 {
   font-family: "Lora", serif;
   font-size: 1.2rem;
@@ -374,14 +319,12 @@
   font-weight: bold;
   text-transform: uppercase;
 }
-
 .card-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
-
 .category-card {
   text-decoration: none;
   color: white;
@@ -392,22 +335,18 @@
   display: block;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-
 .figures-card img {
   object-position: center 20%;
 }
-
 .category-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
-
 .category-card:hover img {
   transform: scale(1.05);
 }
-
 .category-card .card-label {
   position: absolute;
   bottom: 0;
@@ -420,13 +359,11 @@
   font-size: 1.2rem;
   text-transform: uppercase;
 }
-
 .items-container {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
 }
-
 .item-card {
   display: flex;
   align-items: center;
@@ -436,19 +373,16 @@
   border-radius: 8px;
   min-width: 250px;
 }
-
 .item-card img {
   width: 80px;
   height: 80px;
   border-radius: 8px;
   object-fit: cover;
 }
-
 .item-card span {
   font-weight: bold;
   color: #4a403a;
 }
-
 .item-placeholder {
   background-color: #dcd6c5;
   border-radius: 8px;
@@ -456,9 +390,7 @@
   flex-grow: 1;
   min-width: 200px;
 }
-
 /*10. Sidebar Interactive Styles*/
-
 .sidebar-section h3 {
   display: flex;
   justify-content: space-between;
@@ -466,20 +398,16 @@
   cursor: pointer;
   user-select: none;
 }
-
 .sidebar-section ul {
   overflow: hidden;
   transition: max-height 0.3s ease-in-out;
 }
-
 .sidebar-section ul.closed {
   max-height: 0;
 }
-
 .sidebar-section ul.open {
   max-height: 500px;
 }
-
 .arrow {
   border: solid #4a403a;
   border-width: 0 3px 3px 0;
@@ -487,30 +415,23 @@
   padding: 3px;
   transition: transform 0.3s ease-in-out;
 }
-
 .arrow.right {
   transform: rotate(-45deg);
 }
-
 .arrow.down {
   transform: rotate(45deg);
 }
-
 /*11. Profile Dropdown Styles*/
-
 .header-right-nav {
   display: flex;
   align-items: center;
 }
-
 .auth-section {
   margin-left: 1.5rem;
 }
-
 .profile-container {
   position: relative;
 }
-
 .profile-icon {
   width: 40px;
   height: 40px;
@@ -525,7 +446,6 @@
   border: 2px solid #fff;
   user-select: none;
 }
-
 .profile-dropdown {
   position: absolute;
   top: 50px;
@@ -539,7 +459,6 @@
   z-index: 1001;
   color: #333;
 }
-
 .dropdown-item {
   display: block;
   width: 100%;
@@ -552,26 +471,21 @@
   font-size: 1rem;
   color: #333;
   text-decoration: none;
-  font-weight: normal; 
+  font-weight: normal;
 }
-
 .dropdown-item:hover {
   background-color: #f0f0f0;
 }
-
 .dropdown-item.logout {
   background-color: #dc3545;
   color: #fff;
 }
-
 .dropdown-item.logout:hover {
   background-color: #c82333;
 }
-
 .dropdown-info {
   padding: 0.5rem;
 }
-
 .dropdown-back {
   background: none;
   border: none;
@@ -581,26 +495,21 @@
   padding: 0.5rem;
   margin-bottom: 0.5rem;
 }
-
 .info-item {
   margin-bottom: 0.75rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 0.5rem;
 }
-
 .info-item span {
   font-size: 0.8rem;
   color: #666;
   display: block;
 }
-
 .info-item p {
   margin: 0.25rem 0 0 0;
   font-weight: bold;
 }
-
 /* --- 12. Category Page Styles (Figma Inspired) --- */
-
 /* This is the main title of the page (e.g., "Politics Leadership") */
 .category-page-container h1 {
   text-align: center;
@@ -608,14 +517,12 @@
   font-family: "Lora", serif;
   font-size: 2.5rem;
 }
-
 /* This is the container for EACH item (image + text) */
 .item-card-simple {
   /* --- CHANGE IS HERE --- */
   max-width: 800px; /* Reduced from 900px */
   margin: 0 auto 4rem auto;
 }
-
 /* This styles the image to match the Figma design */
 .item-card-simple img {
   width: 100%;
@@ -627,33 +534,28 @@
   border: 4px solid #ffffff;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
-
 /* ... (the rest of the styles for h2, p, etc. remain the same) ... */
 .item-card-simple .item-details {
   text-align: center;
   padding: 1.5rem 1rem 0 1rem;
 }
-
 .item-card-simple h2 {
   font-family: "Lora", serif;
   font-size: 2.2rem;
   color: #4a403a;
   margin-bottom: 1rem;
 }
-
 .item-card-simple p {
   font-size: 1.1rem;
   line-height: 1.7;
   color: #4a403a;
 }
 /* Admin Dashboard Specific Styles */
-
 .admin-page-container {
   display: flex;
   height: 100vh; /* Full viewport height */
   background-color: #eae0c8;
 }
-
 .admin-sidebar {
   width: 280px;
   flex-shrink: 0;
@@ -665,22 +567,18 @@
   transition: width 0.3s ease-in-out;
   overflow-x: hidden; /* Hide content when collapsed */
 }
-
 .admin-sidebar.closed {
   width: 60px; /* Adjust based on your toggle button size */
 }
-
 .sidebar-content {
   padding: 1.5rem;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
-
 .admin-sidebar.closed .sidebar-content {
   opacity: 0;
   pointer-events: none; /* Disable interaction when hidden */
 }
-
 .admin-sidebar h3 {
   font-family: "Lora", serif;
   font-size: 1rem;
@@ -691,13 +589,11 @@
   padding-bottom: 0.5rem;
   text-transform: uppercase;
 }
-
 .admin-nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .admin-nav-list li a {
   color: #4a403a;
   text-decoration: none;
@@ -706,11 +602,9 @@
   padding: 0.5rem 0;
   transition: background-color 0.2s ease;
 }
-
 .admin-nav-list li a:hover {
   background-color: rgba(74, 64, 58, 0.05);
 }
-
 .sidebar-toggle-button {
   position: absolute;
   top: 1.5rem; /* Adjust as needed */
@@ -729,35 +623,29 @@
   z-index: 10;
   transition: transform 0.3s ease-in-out;
 }
-
 .admin-sidebar.closed .sidebar-toggle-button {
   right: -15px; /* Adjust to keep it visible when sidebar is closed */
   transform: rotate(180deg); /* Flip arrow */
 }
-
 .admin-main-content {
   flex-grow: 1;
   padding: 2rem;
   overflow-y: auto;
   transition: margin-left 0.3s ease-in-out;
 }
-
 /* Adjust main content margin when sidebar is closed if needed */
 /* .admin-main-content.sidebar-closed removed because empty rulesets are not allowed */
-
 .admin-header-welcome {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
 }
-
 .admin-header-welcome h2 {
   font-family: "Lora", serif;
   color: #4a403a;
   margin: 0;
 }
-
 .add-new-article-button {
   background-color: #5cb85c; /* Green */
   color: white;
@@ -769,18 +657,15 @@
   transition: background-color 0.2s ease-in-out;
   white-space: nowrap; /* Prevent text wrapping */
 }
-
 .add-new-article-button:hover {
   background-color: #4cae4c;
 }
-
 .admin-search-filter-container {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
   justify-content: flex-start; /* Align to the left */
 }
-
 .admin-search-input {
   flex-grow: 1; /* Allow it to take up available space */
   max-width: 300px; /* Limit its width */
@@ -793,13 +678,11 @@
   text-align: left; /* Align text to left inside input */
   outline: none;
 }
-
 /* Custom styling for the dropdown to match the image */
 .admin-filter-dropdown-wrapper {
   position: relative;
   display: inline-block; /* Or flex item */
 }
-
 .admin-filter-dropdown {
   width: 200px; /* Fixed width as in the image */
   padding: 0.75rem 1rem;
@@ -814,7 +697,6 @@
   cursor: pointer;
   outline: none;
 }
-
 .admin-filter-arrow {
   position: absolute;
   right: 15px;
@@ -825,19 +707,16 @@
   border-right: 5px solid transparent;
   border-top: 5px solid #4a403a; /* Custom arrow */
 }
-
 .admin-articles-table-container {
   background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
   border-radius: 12px;
   overflow: hidden; /* Ensures rounded corners for table */
 }
-
 .admin-articles-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .admin-articles-table th,
 .admin-articles-table td {
   padding: 0.8rem 1rem;
@@ -846,28 +725,23 @@
   color: #4a403a;
   font-family: "Lato", sans-serif;
 }
-
 .admin-articles-table th {
   background-color: rgba(74, 64, 58, 0.05); /* Lighter header background */
   font-weight: bold;
   text-transform: uppercase;
   font-size: 0.85rem;
 }
-
 .admin-articles-table tbody tr:last-child td {
   border-bottom: none;
 }
-
 .admin-articles-table tbody tr:nth-child(even) {
   background-color: #eae0c8; /* Alternating row color */
 }
-
 .admin-articles-table .action-icon {
   margin-right: 0.5rem;
   cursor: pointer;
   font-size: 1.1rem;
 }
-
 /* Styles for the textarea and select on the Add Article page */
 .form-textarea,
 .form-select {
@@ -881,86 +755,277 @@
   font-family: "Lato", sans-serif;
   box-sizing: border-box;
 }
-
 .category-selection-display {
   margin-top: 8px;
   font-size: 0.9em;
-  color: #555; 
+  color: #555;
 }
-
-
 .action-cell {
   display: flex;
   align-items: center;
-  justify-content: flex-start; 
-  gap: 16px; 
+  justify-content: flex-start;
+  gap: 16px;
 }
-
 .action-cell a.action-icon {
-  text-decoration: none; 
-  color: inherit; 
+  text-decoration: none;
+  color: inherit;
 }
-
 .action-icon {
-  font-size: 1.2rem; 
-  transition: transform 0.2s ease, opacity 0.2s ease; 
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
-
 .action-icon:hover {
   opacity: 0.7;
-  transform: scale(1.1); 
+  transform: scale(1.1);
 }
 /* --- NEW SEARCH SUGGESTIONS STYLES --- */
 .header-search {
-    position: relative; /* Essential for positioning the suggestions dropdown */
-    z-index: 1050; /* Ensure search suggestions appear above other content */
-    /* Adjust width as needed for your design */
+  position: relative; /* Essential for positioning the suggestions dropdown */
+  z-index: 1050; /* Ensure search suggestions appear above other content */
+  /* Adjust width as needed for your design */
 }
-
 .search-suggestions {
-    position: absolute;
-    top: 100%; /* Position right below the search input */
-    left: 0;
-    right: 0;
-    background-color: #f5f0e1; /* Light Parchment background, matching header */
-    border: 1px solid rgba(74, 64, 58, 0.2);
-    border-top: none; /* No top border, as it visually connects to the input */
-    border-radius: 0 0 8px 8px; /* Rounded bottom corners */
-    max-height: 300px; /* Limit height to prevent suggestions from going off-screen */
-    overflow-y: auto; /* Add scrollbar if content exceeds max-height */
-    list-style: none; /* Remove default list bullets */
-    padding: 0;
-    margin: 0;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  position: absolute;
+  top: 100%; /* Position right below the search input */
+  left: 0;
+  right: 0;
+  background-color: #f5f0e1; /* Light Parchment background, matching header */
+  border: 1px solid rgba(74, 64, 58, 0.2);
+  border-top: none; /* No top border, as it visually connects to the input */
+  border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+  max-height: 300px; /* Limit height to prevent suggestions from going off-screen */
+  overflow-y: auto; /* Add scrollbar if content exceeds max-height */
+  list-style: none; /* Remove default list bullets */
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
-
 .search-suggestions li {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    color: #4a403a; /* Dark sepia text color */
-    transition: background-color 0.2s ease;
-    display: flex; /* To align title and category horizontally */
-    justify-content: space-between; /* Pushes category to the right */
-    align-items: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: #4a403a; /* Dark sepia text color */
+  transition: background-color 0.2s ease;
+  display: flex; /* To align title and category horizontally */
+  justify-content: space-between; /* Pushes category to the right */
+  align-items: center;
 }
-
 .search-suggestions li:hover {
-    background-color: rgba(74, 64, 58, 0.05); /* Subtle hover effect */
+  background-color: rgba(74, 64, 58, 0.05); /* Subtle hover effect */
 }
-
 /* Ensure the last item has rounded corners if the list doesn't scroll */
 .search-suggestions li:last-child {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
-
 .suggestion-title {
-    font-weight: bold;
-    margin-right: 0.5rem; /* Space between title and category */
+  font-weight: bold;
+  margin-right: 0.5rem; /* Space between title and category */
+}
+.suggestion-category {
+  font-size: 0.85rem;
+  color: #888; /* Lighter color for category */
+  text-transform: capitalize; /* Makes category names (e.g., 'arts_culture' -> 'Arts Culture') look nicer */
+}
+/* General styling for the About Page */
+.about-page-container {
+  max-width: full;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Times New Roman', serif;
+  color: #5C4033;
+  background-color: #F8F4E3;
+  background-color: #eae0c8;
+}
+/* About Us Heading */
+.about-heading {
+  font-size: 2.5em;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #5C4033;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 2px;
+  font-weight: bold;
+  
+}
+/* Quote Section */
+.quote-section {
+  border-bottom: 1px solid #5C4033;
+  padding: 30px 0;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
-.suggestion-category {
-    font-size: 0.85rem;
-    color: #888; /* Lighter color for category */
-    text-transform: capitalize; /* Makes category names (e.g., 'arts_culture' -> 'Arts Culture') look nicer */
+.quote-mlk {
+    font-size: 1.5em;
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #5C4033;
+}
+.quote-obama {
+    font-size: 1.5em;
+    font-style: italic;
+    margin-top: 0;
+    line-height: 1.6;
+    color: #5C4033;
+    font-weight: normal;
+}
+
+/* Single Image Section */
+.single-image-section {
+    text-align: center; /* Center the image and caption */
+    margin-bottom: 40px; /* Space below the image and line */
+}
+
+.main-about-image {
+    width: 100%; /* Image fills its container */
+    max-width: 600px; /* Max width to prevent it from getting too large */
+    height: auto;
+    display: block; /* Remove extra space below image */
+    margin: 0 auto 10px auto; /* Center image and add space below */
+    border: 1px solid #5C4033; /* Border for the single image */
+}
+
+.image-caption-single {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #5C4033;
+    margin-top: 0;
+    margin-bottom: 20px; /* Space between caption and line */
+}
+
+.horizontal-line {
+    border-top: 1px solid #5C4033; /* The straight line */
+    width: 100%; /* Full width */
+    margin: 0 auto; /* Center the line */
+}
+
+/* MISSION, VISION, GOAL sections (no icons, no border on last) */
+.section-mission-vision-goal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px; /* Space above these sections */
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #5C4033; /* Dark brown separator */
+    text-align: center;
+}
+
+.section-mission-vision-goal.no-border { /* New class for the last section */
+    border-bottom: none;
+    margin-bottom: 40px; /* Add more space before the closing statement */
+}
+
+.content-wrapper {
+    max-width: 900px;
+}
+
+.section-title-new { /* No icon styling needed here anymore */
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #5C4033;
+}
+
+.section-paragraph {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #5C4033;
+    margin-bottom: 0;
+}
+
+/* Closing Statement */
+.closing-statement-new {
+    border-top: 1px solid #5C4033;
+    padding-top: 30px;
+    text-align: center;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #5C4033;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+/* Contact us part starts here */
+body {
+    font-family: Arial, sans-serif; /* Or any preferred font */
+    margin: 0;
+    padding: 10px;
+    max-width: full;
+    display: flex; /* Change 'full' to 'flex' */
+    justify-content: center;
+    align-items: center; /* Change 'flex-start' to 'center' to vertically center */
+    min-height: 100vh;
+    background-color: #eae0c8; /* Ensure white background as in the image */
+    max-width: full;
+}
+
+.contact-container {
+    /*max-width: 1200px;*/
+    text-align: center;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 3em; /* Larger font for "Contact Us" */
+    font-weight: bold;
+    margin-bottom: 5px; /* Adjust spacing */
+    text-decoration: underline; /* Underline as in the image */
+    color: #65370f; /* Black color */
+}
+
+.tagline {
+    font-size: 1.2em;
+    margin-top: 20px;
+    margin-bottom: 40px; /* Space before the first line */
+    line-height: 1.5; /* Improve readability */
+    color: #88501f; /* Black color */
+}
+
+.divider {
+    border-top: 1px solid #000; /* Black line */
+    margin: 30px 0; /* Space around the divider */
+}
+
+.contact-info {
+    margin-top: 40px; /* Space after the first divider */
+    margin-bottom: 40px; /* Space before the second divider */
+}
+
+.contact-info p {
+    font-size: 1.5em;
+    font-weight: bold; /* Make "Reach out to us on:" bold */
+    margin-bottom: 20px; /* Space before email/phone */
+    color: #884c23; 
+}
+
+.contact-info ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.contact-info li {
+    margin-bottom: 10px; /* Space between email and phone */
+    font-size: 1.5em;
+    color: #824c11; 
+}
+
+.contact-info li strong {
+    font-weight: normal; /* Make "Email:" and "Phone:" normal weight */
+}
+
+.contact-info li a {
+    color: #090400; /* Black color for links */
+    text-decoration: none; /* Remove underline from links */
+}
+
+.bottom-tagline {
+    font-size: 1.2em;
+    margin-top: 40px; /* Space after the second divider */
+    font-weight: normal; /* Make the bottom tagline bold */
+    color: #8e4a16; /* Black color */
 }

@@ -108,7 +108,7 @@ const SearchResultsPage = () => {
                 {(item.picture || item.portrait_url) && (
                   <img
                     className="item-image"
-                    src={`http://127.0.0.1:8000/storage/${item.picture || item.portrait_url}`}
+                    src={`/storage/${item.picture || item.portrait_url}`}
                     alt={`Depiction of ${item.name}`}
                   />
                 )}

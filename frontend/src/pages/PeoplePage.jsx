@@ -1,13 +1,10 @@
+// Correctly merged code for PeoplePage.jsx
 import { useState, useEffect } from 'react';
-// --- FIX 1: Import useNavigate ---
-import { useNavigate } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 
 const PeoplePage = () => {
-  // --- FIX 2: Initialize the navigate function ---
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,10 +17,16 @@ const PeoplePage = () => {
       try {
         setLoading(true);
         const [peopleResponse, savedResponse] = await Promise.all([
-            axiosClient.get('/figures'),
+            axiosClient.get('/people'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
-        setPeople(peopleResponse.data);
+
+        const processedPeople = peopleResponse.data.map(person => ({
+            ...person,
+            is_liked: user ? person.users.some(u => u.id === user.id) : false
+        }));
+        setPeople(processedPeople);
+
         const savedArticlesSet = new Set(
             savedResponse.data
                 .filter(item => item.article_type === 'people')
@@ -32,8 +35,8 @@ const PeoplePage = () => {
         setSavedIds(savedArticlesSet);
         setError(null);
       } catch (err) {
-        setError('Failed to fetch historical figures.');
-        console.error(err);
+        setError('Failed to fetch historical people.');
+        console.error('API Error fetching people:', err);
       } finally {
         setLoading(false);
       }
@@ -41,9 +44,7 @@ const PeoplePage = () => {
     fetchData();
   }, [user]);
 
-  // handleLikeClick and handleSaveClick functions remain the same
-  const handleLikeClick = async (e, personId) => {
-    e.stopPropagation(); // Prevent the card's onClick from firing
+  const handleLikeClick = async (personId) => {
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
@@ -58,16 +59,15 @@ const PeoplePage = () => {
       )
     );
     try {
-      await axiosClient.post(`/figures/${personId}/like`);
-    } catch (error)  {
+      await axiosClient.post(`/people/${personId}/like`);
+    } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
       setPeople(originalPeople);
     }
   };
 
-  const handleSaveClick = async (e, personId) => {
-    e.stopPropagation(); // Prevent the card's onClick from firing
+  const handleSaveClick = async (personId) => {
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
@@ -75,11 +75,8 @@ const PeoplePage = () => {
     }
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
-    if (newSavedIds.has(personId)) {
-        newSavedIds.delete(personId);
-    } else {
-        newSavedIds.add(personId);
-    }
+    let action = newSavedIds.has(personId) ? 'unsaved' : 'saved';
+    newSavedIds.has(personId) ? newSavedIds.delete(personId) : newSavedIds.add(personId);
     setSavedIds(newSavedIds);
     try {
       await axiosClient.post('/saved-articles/toggle', {
@@ -87,7 +84,7 @@ const PeoplePage = () => {
         article_type: 'people',
       });
     } catch (error) {
-      console.error(`Failed to save/unsave person:`, error);
+      console.error(`Failed to ${action} person:`, error);
       setSavedIds(originalSavedIds);
       alert('There was an issue saving this item. Please try again.');
     }
@@ -104,29 +101,22 @@ const PeoplePage = () => {
           {people.map((person) => {
             const isSaved = savedIds.has(person.id);
             return (
-              // --- FIX 3: Add onClick to the entire list item and remove the <Link> component ---
-              <li key={person.id} className="list-item-card" onClick={() => navigate(`/figures/${person.id}`)}>
-                {person.picture ? (
-                  <img
-                    className="item-image"
-                    src={`http://127.0.0.1:8000/storage/${person.picture}`}
-                    alt={`Portrait of ${person.name}`}
-                  />
-                ) : (
-                  <div className="item-image-placeholder"></div>
-                )}
+              <li key={person.id} className="list-item-card">
+                {person.picture && <img className="item-image" src={`/storage/${person.picture}`} alt={`Portrait of ${person.name}`} />}
                 <div className="item-content">
                   <h3>{person.name}</h3>
-                  <p>{person.bio}</p>
+                  <p>{person.description}</p>
                 </div>
                 <div className="item-actions">
-                  {/* Pass the event 'e' and stop propagation */}
-                  <div className="save-action" onClick={(e) => handleSaveClick(e, person.id)}>
-                    {isSaved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />}
+                  <div className="save-action" onClick={() => handleSaveClick(person.id)}>
+                    {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
-                  <div className="like-action" onClick={(e) => handleLikeClick(e, person.id)}>
-                    {person.is_liked ? <FaHeart size={20} color="red" /> : <FaRegHeart size={20} />}
-                    <span className="like-count">{person.likes}</span>
+                  <div className="like-action">
+                    <div className="like-button" onClick={() => handleLikeClick(person.id)}>
+                      {person.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
+                      {person.likes > 0 && <span className="like-count">{person.likes}</span>}
+                    </div>
+                    {warning.id === person.id && <div className="like-warning">{warning.message}</div>}
                   </div>
                 </div>
               </li>
@@ -134,7 +124,7 @@ const PeoplePage = () => {
           })}
         </ul>
       ) : (
-        <p>No historical figures found.</p>
+        <p>No historical figures found. An admin needs to add some!</p>
       )}
     </div>
   );

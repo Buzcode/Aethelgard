@@ -1,0 +1,17 @@
+# Ignore local environment file
+.env
+
+# Ignore Composer's vendor directory (we install it inside the container)
+/vendor
+
+# Ignore Node.js dependencies if any
+/node_modules
+
+# THE FIX: Ignore the problematic storage symlink
+/public/storage
+
+# Ignore runtime storage files
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*.log

@@ -1,3 +1,4 @@
+// Correctly merged code for PlacesPage.jsx
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
@@ -20,7 +21,6 @@ const PlacesPage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        // Process places to determine if they are liked by the current user
         const processedPlaces = placesResponse.data.map(place => ({
             ...place,
             is_liked: user ? place.users.some(u => u.id === user.id) : false
@@ -73,20 +73,11 @@ const PlacesPage = () => {
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
       return;
     }
-
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
-    let action = '';
-
-    if (newSavedIds.has(placeId)) {
-        newSavedIds.delete(placeId);
-        action = 'unsaved';
-    } else {
-        newSavedIds.add(placeId);
-        action = 'saved';
-    }
+    let action = newSavedIds.has(placeId) ? 'unsaved' : 'saved';
+    newSavedIds.has(placeId) ? newSavedIds.delete(placeId) : newSavedIds.add(placeId);
     setSavedIds(newSavedIds);
-
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: placeId,
@@ -108,25 +99,16 @@ const PlacesPage = () => {
       {places.length > 0 ? (
         <ul className="item-list">
           {places.map((place) => {
-            // Check if the current place is saved
             const isSaved = savedIds.has(place.id);
             return (
               <li key={place.id} className="list-item-card">
-                {place.picture && (
-                  <img
-                    className="item-image"
-                    // Corrected, Docker-friendly image URL
-                    src={`/storage/${place.picture}`}
-                    alt={`View of ${place.name}`}
-                  />
-                )}
+                {place.picture && <img className="item-image" src={`/storage/${place.picture}`} alt={`View of ${place.name}`} />}
                 <div className="item-content">
                   <h3>{place.name}</h3>
                   <p>{place.description}</p>
                 </div>
                 <div className="item-actions">
                   <div className="save-action" onClick={() => handleSaveClick(place.id)}>
-                    {/* Collaborator's new feature logic */}
                     {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
                   <div className="like-action">
@@ -134,11 +116,7 @@ const PlacesPage = () => {
                       {place.is_liked ? <FaHeart size={24} color="red" /> : <FaRegHeart size={24} />}
                       {place.likes > 0 && <span className="like-count">{place.likes}</span>}
                     </div>
-                    {warning.id === place.id && (
-                      <div className="like-warning">
-                        {warning.message}
-                      </div>
-                    )}
+                    {warning.id === place.id && <div className="like-warning">{warning.message}</div>}
                   </div>
                 </div>
               </li>

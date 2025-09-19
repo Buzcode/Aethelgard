@@ -450,18 +450,18 @@ body {
   cursor: not-allowed;
 }
 
-/* ================================== */
-/* === 8. HEADER REDESIGN (START) === */
-/* ================================== */
 
 .main-header {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* This is the key change */
+  justify-content: space-between;
   height: 70px;
   padding: 0 2rem;
   background-color: #f5f0e1;
   border-bottom: 1px solid rgba(74, 64, 58, 0.2);
+  position: sticky;
+  top: 0; 
+  z-index: 1000; 
 }
 
 /* This is the new container for all right-side elements */
@@ -488,6 +488,24 @@ body {
   text-align: center;
   font-family: "Lato", sans-serif;
   font-weight: bold;
+}
+
+.main-footer {
+  padding: 2rem 1rem;
+  background-color: #edeae1;
+  text-align: center;
+  color: #5d5d5d;
+  border-top: 1px solid #dcd9cf;
+}
+
+.main-footer .footer-links a {
+  color: #3e3e3e;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.main-footer .footer-links a:hover {
+  text-decoration: underline;
 }
 
 .search-container {
@@ -1608,4 +1626,67 @@ body {
   font-weight: bold;
   font-size: 0.9rem;
   line-height: 1.2;
+}
+
+/* --- GUEST BANNER STYLES --- */
+
+.guest-banner {
+  position: relative;
+  width: 100%;
+  height: 450px; /* You can adjust this height */
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2.5rem; /* Creates space between the banner and the card gallery below it */
+  color: white;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  filter: brightness(0.6); /* Darkens the image a bit so the white text is more readable */
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.banner-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.banner-subtitle {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+.banner-cta {
+  padding: 12px 24px;
+  background-color: #c5a47e; /* A color that should fit your existing theme */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.banner-cta:hover {
+  background-color: #b38f65;
+  transform: translateY(-2px);
 }

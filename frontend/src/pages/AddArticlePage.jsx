@@ -32,17 +32,11 @@ const findParentCategory = (subcategoryValue) => {
 
 const AddArticlePage = () => {
   const { type, id } = useParams();
-
-  // =======================================================================
-  // --- THIS IS THE LINE ADDED FOR DEBUGGING ---
-  console.log("Value of 'id' from useParams:", id);
-  // =======================================================================
-
-  const isEditMode = !!id; 
+  const isEditMode = !!id;
 
   const [formData, setFormData] = useState({
     name: "",
-    description: "", 
+    description: "",
     category: "",
   });
   const [image, setImage] = useState(null);
@@ -57,7 +51,8 @@ const AddArticlePage = () => {
 
   useEffect(() => {
     if (isEditMode) {
-      const endpointMap = { people: 'people', places: 'places', events: 'events' };
+      // --- FIX #1: Change 'people' to 'figures' to match the new API route ---
+      const endpointMap = { figures: 'figures', places: 'places', events: 'events' };
       const endpoint = endpointMap[type];
 
       if (!endpoint) {
@@ -124,8 +119,9 @@ const AddArticlePage = () => {
       return;
     }
     
+    // --- FIX #2: Change 'people' to 'figures' to match the new API route ---
     const endpointMap = {
-      FIGURES: 'people',
+      FIGURES: 'figures',
       PLACES: 'places',
       EVENTS: 'events'
     };
@@ -138,8 +134,9 @@ const AddArticlePage = () => {
     if (image) {
       submissionData.append('picture', image);
     }
-
-    if (endpoint === 'people') {
+    
+    // Note: The logic for 'bio' vs 'description' needs a small change
+    if (endpoint === 'figures') {
       submissionData.append('bio', formData.description); 
     } else {
       submissionData.append('description', formData.description);
@@ -176,6 +173,7 @@ const AddArticlePage = () => {
     <div className="form-container">
       <h1>{isEditMode ? "EDIT ARTICLE" : "ADD NEW ARTICLE"}</h1>
       <form onSubmit={handleSubmit}>
+        {/* The rest of your JSX form remains exactly the same */}
         <div className="form-group">
           <label htmlFor="name">Title</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />

@@ -66,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Admin-Only "Write" Routes ---
     Route::middleware('is.admin')->group(function () {
         Route::get('/articles', [DashboardController::class, 'index']);
-        Route::apiResource('people', PersonController::class)->except(['index', 'show']);
+        Route::apiResource('figures', PersonController::class)->except(['index', 'show']);
         Route::apiResource('places', PlaceController::class)->except(['index', 'show']);
         Route::apiResource('events', EventController::class)->except(['index', 'show']);
     });

@@ -21,8 +21,6 @@ const Sidebar = ({ isOpen }) => {
   return (
   
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-    {/* === END OF MODIFICATION === */}
-
       {/* --- FIGURES SECTION --- */}
       <div className="sidebar-section">
         <h3 onClick={() => toggleSection('figures')}>
@@ -31,9 +29,13 @@ const Sidebar = ({ isOpen }) => {
         </h3>
         <ul className={openSections.figures ? 'open' : 'closed'}>
           
-          <li><Link to="/people/category/politics_leadership">Politics & Leadership</Link></li>
-          <li><Link to="/people/category/science_technology">Science & Technology</Link></li>
-          <li><Link to="/people/category/arts_culture">Arts & Culture</Link></li>
+          {/* --- START: FIX --- */}
+          {/* The links must point to '/figures/' to match your API and frontend routes */}
+          <li><Link to="/figures/category/politics_leadership">Politics & Leadership</Link></li>
+          <li><Link to="/figures/category/science_technology">Science & Technology</Link></li>
+          <li><Link to="/figures/category/arts_culture">Arts & Culture</Link></li>
+          {/* --- END: FIX --- */}
+
         </ul>
       </div>
 

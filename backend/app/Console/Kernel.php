@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // This is the line you are adding.
         // It tells the scheduler to run your recommendation command every week.
-        $schedule->command('recommendations:generate')->weekly();
+        //$schedule->command('recommendations:generate')->weekly();
     }
 
     /**

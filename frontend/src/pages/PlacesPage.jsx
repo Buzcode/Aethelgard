@@ -9,6 +9,7 @@ const PlacesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
+
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
@@ -56,6 +57,11 @@ const PlacesPage = () => {
     );
     try {
       await axiosClient.post(`/places/${placeId}/like`);
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful like, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -71,14 +77,32 @@ const PlacesPage = () => {
     }
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
+
+    let action = '';
+
+    if (newSavedIds.has(placeId)) {
+        newSavedIds.delete(placeId);
+        action = 'unsaved';
+    } else {
+        newSavedIds.add(placeId);
+        action = 'saved';
+    }
+    setSavedIds(newSavedIds);
+
     let action = newSavedIds.has(placeId) ? 'unsaved' : 'saved';
     newSavedIds.has(placeId) ? newSavedIds.delete(placeId) : newSavedIds.add(placeId);
     setSavedIds(newSavedIds);
+
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: placeId,
         article_type: 'places',
       });
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} place:`, error);
       setSavedIds(originalSavedIds);

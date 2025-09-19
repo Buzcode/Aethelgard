@@ -43,15 +43,19 @@ Route::get('/suggestions', [SuggestionController::class, 'fetch']);
 Route::post('/track-click', [TrackingController::class, 'logClick']);
 Route::get('/trending-topics', [TrendingController::class, 'index']);
 Route::get('/popular-items', [PopularityController::class, 'index']);
-Route::post('/chat', [ChatController::class, 'handleChat']);
 Route::get('/recommendations', [RecommendationController::class, 'index']);
 
 
 // --- Public Read-Only Content Routes ---
 // Guests can view these, and logged-in users will be recognized.
 Route::middleware('auth.optional')->group(function () {
+
+    Route::get('/figures', [PersonController::class, 'index']);
+    Route::get('/figures/{person}', [PersonController::class, 'show']);
+
     Route::get('/people', [PersonController::class, 'index']); // <-- ENSURE THIS LINE EXISTS
     Route::get('/people/{person}', [PersonController::class, 'show']);
+
     Route::get('/places', [PlaceController::class, 'index']);
     Route::get('/places/{place}', [PlaceController::class, 'show']);
     Route::get('/events', [EventController::class, 'index']);
@@ -65,6 +69,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::post('/chat', [ChatController::class, 'handleChat']);
 
     // --- LIKES & SAVES ROUTES (MUST STAY PROTECTED) ---
     Route::post('/figures/{person}/like', [PersonController::class, 'updateLikes']);

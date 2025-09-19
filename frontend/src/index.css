@@ -1,7 +1,8 @@
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #EAE0C8; /* Set the background color here */
+  background-color: #EAE0C8;
 }
 
 .page-container {
@@ -10,35 +11,27 @@ body {
   min-height: calc(100vh - 70px); 
 }
 
-/* Add this new rule */
 .page-body-wrapper {
-  display: flex; /* This is the key to the side-by-side layout */
-  align-items: flex-start; /* Align items to the top */
-  height: calc(100vh - 70px); /* Fill the height below the 70px header */
+  display: flex;
+  align-items: flex-start;
+  height: calc(100vh - 70px);
 }
-
-
 
 .main-content-area--full-width {
   width: 100%;
   padding-left: 2rem; 
 }
 
-/* --- Sidebar Component --- */
-
-/* === START: ADD THIS ENTIRE BLOCK TO THE END OF INDEX.CSS === */
-
-/* 1. Styles for the new "Hamburger" Menu Button */
 .header-brand-group {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Space between icon and brand name */
+    gap: 1rem;
 }
 
 .menu-toggle {
     background: none;
     border: none;
-    color: #4a403a; /* Match your brand color */
+    color: #4a403a;
     cursor: pointer;
     font-size: 24px;
     padding: 0;
@@ -47,70 +40,46 @@ body {
     justify-content: center;
 }
 
-
-/* Styles for the new Sidebar Backdrop */
 .sidebar-backdrop {
-  position: fixed; /* Cover the entire viewport */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-
   background-color: rgba(0, 0, 0, 0.5); 
-  
-  z-index: 999; /* Sidebar has z-index: 1000 */
-  
-  cursor: pointer; /* Show a pointer to indicate it's clickable */
+  z-index: 999;
+  cursor: pointer;
 }
 
-
 .sidebar {
-    position: fixed; /* Takes the sidebar out of the document flow to act as an overlay */
+    position: fixed;
     top: 0;
     left: 0;
     width: 280px;
     height: 100%;
-    background-color: #f5f0e1; /* Your existing sidebar color */
+    background-color: #f5f0e1;
     border-right: 1px solid rgba(74, 64, 58, 0.2);
-    z-index: 1000; /* Ensure it's on top of other content */
-    
-    /* Hide it by default by pushing it off-screen to the left */
+    z-index: 1000;
     transform: translateX(-100%); 
-    
-    /* Add a smooth transition for the slide-in/out effect */
     transition: transform 0.3s ease-in-out;
-    
-    /* Add back original padding and scrolling behavior */
     padding: 1.5rem;
     overflow-y: auto;
 }
 
-/* This class will be added via React to make the sidebar visible */
 .sidebar.open {
-    transform: translateX(0); /* Moves it back into view */
-    box-shadow: 5px 0 15px rgba(0,0,0,0.1); /* Optional: add a shadow when open */
+    transform: translateX(0);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
 }
 
-
-/* 3. Simplification of Page Container */
-/* This will OVERRIDE your old .page-container rule */
 .page-container {
-  /* We no longer need flex here as the sidebar is an overlay */
   background-color: #eae0c8;
   min-height: calc(100vh - 70px); 
 }
 
-
-/* 4. Simplification of Main Content Area */
-/* This will OVERRIDE your old .main-content-area and .main-content-area--full-width rules */
 .main-content-area {
-  width: 100%; /* The main content can always be full width now */
-  padding: 2rem;
+  width: 100%;
   overflow-y: auto; 
 }
-
-
-/* === END: OF NEW CSS BLOCK === */
 
 .sidebar-section {
   margin-bottom: 2rem;
@@ -145,15 +114,12 @@ body {
 .sidebar-section ul li a:hover {
   background-color: rgba(74, 64, 58, 0.05);
 }
-/* === Styles for Saved Articles Page === */
-
-/* === Styles for Saved Articles Page === */
 
 .saved-articles-container {
     max-width: 1100px;
     margin: 2rem auto;
     padding: 2rem;
-    background-color: #fdfdfa; /* This is the main page background color */
+    background-color: #fdfdfa;
     border-radius: 8px;
 }
 
@@ -174,10 +140,9 @@ body {
     gap: 2rem;
 }
 
-/* --- THIS IS THE UPDATED RULE --- */
 .saved-item-card {
-    background-color: #fdfdfa; /* CHANGED: Match the container background */
-    border: 1px solid #e0e0e0; /* ADDED: A subtle border for definition */
+    background-color: #fdfdfa;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     overflow: hidden;
@@ -201,7 +166,7 @@ body {
 .saved-item-image {
     width: 100%;
     height: 200px; 
-    object-fit: contain; /* Was 'cover', 'contain' prevents cropping */
+    object-fit: contain;
     background-color: #f0f2f5; 
 }
 
@@ -230,7 +195,6 @@ body {
     text-transform: capitalize;
 }
 
-/* For the empty state message */
 .saved-articles-container > p {
     text-align: center;
     padding: 3rem;
@@ -245,7 +209,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* --- Main container for the form --- */
 .form-container {
   max-width: 500px;
   margin: 3rem auto;
@@ -263,7 +226,6 @@ body {
   font-family: "Lora", serif;
 }
 
-/* --- each label + input pair --- */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -287,7 +249,6 @@ body {
   box-sizing: border-box;
 }
 
-/* --- The main action button --- */
 .form-button {
   display: block;
   width: 100%;
@@ -307,7 +268,6 @@ body {
   background-color: #600018;
 }
 
-/* --- The error message --- */
 .form-error {
   color: #800020;
   text-align: center;
@@ -315,9 +275,6 @@ body {
   font-weight: bold;
 }
 
-/* --- 6. Chat Widget Styles --- */
-
-/* The floating icon button */
 .chat-widget-button {
   position: fixed;
   bottom: 2rem;
@@ -334,7 +291,6 @@ body {
   transform: scale(1.1);
 }
 
-/* The main chatbox container that appears */
 .chatbox {
   position: fixed;
   bottom: calc(2rem + 70px); 
@@ -350,7 +306,6 @@ body {
   overflow: hidden;
 }
 
-/* The header of the chatbox */
 .chatbox-header {
   padding: 1rem;
   background-color: rgba(74, 64, 58, 0.05); 
@@ -375,7 +330,6 @@ body {
   color: #4a403a;
 }
 
-/* The scrollable area for messages */
 .chat-history {
   flex: 1;
   overflow-y: auto;
@@ -385,7 +339,6 @@ body {
   gap: 0.75rem;
 }
 
-/* Styling for an individual message bubble */
 .message-bubble {
   display: inline-block;
   padding: 0.5rem 1rem;
@@ -398,7 +351,6 @@ body {
   display: flex;
 }
 
-/* User's message (right-aligned, burgundy) */
 .message-container.user {
   justify-content: flex-end;
 }
@@ -408,7 +360,6 @@ body {
   border-bottom-right-radius: 4px; 
 }
 
-/* AI's message (left-aligned, sepia) */
 .message-container.model {
   justify-content: flex-start;
 }
@@ -418,7 +369,6 @@ body {
   border-bottom-left-radius: 4px; 
 }
 
-/* The form at the bottom of the chatbox */
 .chat-form {
   display: flex;
   padding: 1rem;
@@ -450,7 +400,6 @@ body {
   cursor: not-allowed;
 }
 
-
 .main-header {
   display: flex;
   align-items: center;
@@ -464,11 +413,10 @@ body {
   z-index: 1000; 
 }
 
-/* This is the new container for all right-side elements */
 .header-right-group {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* Space between search, nav, and profile */
+  gap: 1.5rem;
 }
 
 .header-brand a {
@@ -577,12 +525,6 @@ body {
   background-color: #4a403a;
 }
 
-/* ================================ */
-/* === 8. HEADER REDESIGN (END) === */
-/* ================================ */
-
-
-/*9. Homepage Specific Styles */
 .home-section {
   background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
@@ -600,16 +542,14 @@ body {
   text-transform: uppercase;
 }
 
-
-/* Main container for the 4-card layout */
 .card-gallery {
   display: flex; 
   gap: 1.5rem;   
   margin-bottom: 2rem;
   align-items: stretch; 
+  margin-top: 2.5rem; /* <-- ADD THIS LINE */
 }
 
-/* --- Styling for the first three IMAGE cards --- */
 .category-card {
   flex: 1; 
   text-decoration: none;
@@ -646,7 +586,6 @@ body {
   text-transform: uppercase;
 }
 
-/* Specific image crop for the Figures card */
 .figures-card img {
   object-position: center 20%;
 }
@@ -728,8 +667,6 @@ body {
   min-width: 200px;
 }
 
-/*10. Sidebar Interactive Styles*/
-
 .sidebar-section h3 {
   display: flex;
   justify-content: space-between;
@@ -766,8 +703,6 @@ body {
 .arrow.down {
   transform: rotate(45deg);
 }
-
-/*11. Profile Dropdown Styles*/
 
 .header-right-nav {
   display: flex;
@@ -870,8 +805,6 @@ body {
   font-weight: bold;
 }
 
-/* --- 12. Category Page Styles (Figma Inspired) --- */
-
 .category-page-container h1 {
   text-align: center;
   margin-bottom: 2rem;
@@ -911,7 +844,6 @@ body {
   line-height: 1.7;
   color: #4a403a;
 }
-/* Admin Dashboard Specific Styles */
 
 .admin-page-container {
   display: flex;
@@ -1148,7 +1080,6 @@ body {
   color: #555; 
 }
 
-
 .action-cell {
   display: flex;
   align-items: center;
@@ -1171,12 +1102,10 @@ body {
   transform: scale(1.1); 
 }
 
-/* --- List Page Styles (Figures, Places, Events) --- */
-
 .list-page-container {
-  max-width: 900px; 
-  margin: 2rem auto; 
-  padding: 0 1rem; 
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .list-page-container h1 {
@@ -1194,12 +1123,12 @@ body {
 
 .list-item-card {
   display: flex;
-  align-items: flex-start; 
-  background-color: #f5f0e1; 
+  align-items: flex-start;
+  background-color: #f5f0e1;
   border: 1px solid rgba(74, 64, 58, 0.1);
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 2rem; 
+  margin-bottom: 2rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1209,17 +1138,28 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
+.list-item-card .card-link-wrapper {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-grow: 1;
+}
+
+.list-item-card:hover h3 {
+  text-decoration: underline;
+}
+
 .item-image {
   width: 120px;
   height: 120px;
   object-fit: cover;
   border-radius: 8px;
   margin-right: 1.5rem;
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
 .item-content {
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .item-content h3 {
@@ -1236,19 +1176,43 @@ body {
   margin: 0;
 }
 
+/* --- FIXED STYLES FOR VERTICAL ALIGNMENT --- */
+
+/* The main container for the save/like icons */
 .item-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
   margin-left: 1.5rem;
-  gap: 1rem; 
+  width: 40px;
+  flex-shrink: 0;
+  padding-top: 10px;
 }
 
-.item-actions div {
+.save-action {
   cursor: pointer;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.like-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  color: #333;
+  position: relative;
 }
 
 .item-actions svg {
+  font-size: 1.5rem;
   transition: transform 0.2s ease;
 }
 
@@ -1256,53 +1220,32 @@ body {
   transform: scale(1.15);
 }
 
-.item-actions {
-  display: flex;
-  justify-content: space-between; 
-  align-items: flex-start; 
-  width: 100%;
-  margin-top: auto; 
-  padding-top: 16px;
-}
-
-.like-action {
-  position: relative; 
-  display: flex;
-  flex-direction: column;
-}
-
-.like-button {
+.like-count {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
   display: flex;
   align-items: center;
-  gap: 8px; 
-  cursor: pointer;
-  color: #333; 
+  justify-content: center;
+  min-width: 20px;
 }
 
 .like-warning {
   position: absolute;
-  top: 100%; 
+  top: 100%;
   left: 50%;
-  transform: translateX(-50%); 
-  
-  margin-top: 8px; 
+  transform: translateX(-50%);
+  margin-top: 8px;
   padding: 6px 12px;
-  background-color: #fff0f0; 
-  color: #c53030; 
+  background-color: #fff0f0;
+  color: #c53030;
   border: 1px solid #f9c6c6;
   border-radius: 6px;
   font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap; 
-  z-index: 10; 
+  white-space: nowrap;
+  z-index: 10;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
-.save-action {
-  cursor: pointer;
-  color: #333;
-}
-
 
 .back-arrow-link {
   position: absolute;
@@ -1340,20 +1283,6 @@ body {
   cursor: pointer;
   color: #777; 
 }
-
-.list-item-card .card-link-wrapper {
-  text-decoration: none; 
-  color: inherit;       
-  display: flex;        
-  flex-grow: 1;         
-}
-
-
-.list-item-card:hover h3 {
-  text-decoration: underline;
-}
-
-/* === NEW STYLES FOR THE CAROUSEL === */
 
 .most-popular-section {
     width: 100%;
@@ -1487,11 +1416,9 @@ body {
     width: 100%;
     height: auto;
     max-height: 70vh;
-    object-fit: contain; /* <--- THIS IS THE FIX */
+    object-fit: contain;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    
-    /* Optional but recommended: Add a subtle background for any empty space */
     background-color: #f8f5ed; 
 }
 
@@ -1554,36 +1481,27 @@ body {
     white-space: pre-wrap;
 }
 
-/* === Styles for Recommendations Section (Carousel Version) === */
-
-/* This is the main container that will scroll */
 .recommendations-grid {
-  display: flex; /* Use flexbox for horizontal layout */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  padding-bottom: 1.5rem; /* Add space for the scrollbar */
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 1.5rem;
   gap: 1.5rem;
-
-  /* Hide the scrollbar for a cleaner look */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .recommendations-grid::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, and Opera */
+  display: none;
 }
-
 
 .recommendation-card {
   position: relative;
   display: block;
-  /* This is key: prevents cards from shrinking */
   flex: 0 0 220px; 
   height: 140px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
-  /* Add a background color for the letterboxing effect */
   background-color: #f0f0f0; 
 }
 
@@ -1606,7 +1524,6 @@ body {
 .recommendation-image {
   width: 100%;
   height: 100%;
-  /* --- FIX: Change 'cover' to 'contain' --- */
   object-fit: contain;
 }
 
@@ -1628,23 +1545,58 @@ body {
   line-height: 1.2;
 }
 
-/* --- GUEST BANNER STYLES --- */
+.recommendations-wrapper {
+  margin-bottom: 2.5rem; 
+}
+
+.recommendations-empty-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f9f9f9; /* A slightly different background */
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  color: #666;
+  font-style: italic;
+  max-width: 750px; /* This stops the box from growing too wide */
+  margin: 0 auto;    /* This centers the box horizontally */
+}
+
+.recommendations-section-box {
+  /* Sizing and Centering */
+  max-width: 1400px; /* This should match your .content-container max-width */
+  margin: 2.5rem auto; /* Adds space above/below and centers it horizontally */
+  padding: 2rem;
+  box-sizing: border-box;
+
+  /* Visual Styling */
+  background-color: #f5f0e1; /* Gives it the light background */
+  border: 1px solid rgba(74, 64, 58, 0.1); /* Adds a subtle border */
+  border-radius: 12px; /* Rounds the corners */
+}
+
 
 .guest-banner {
   position: relative;
   width: 100%;
-  height: 450px; /* You can adjust this height */
-  border-radius: 12px;
+  /* This is the key change: 100vh is the full viewport height, 
+     and we subtract the 70px height of your sticky header. */
+  height: calc(100vh - 70px);
   overflow: hidden;
-  margin-bottom: 2.5rem; /* Creates space between the banner and the card gallery below it */
   color: white;
+
+  /* We'll use flexbox to ensure the text overlay is perfectly centered */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the image covers the area without distortion */
-  filter: brightness(0.6); /* Darkens the image a bit so the white text is more readable */
+  object-fit: cover;
+  filter: brightness(0.6);
 }
 
 .banner-overlay {
@@ -1678,7 +1630,7 @@ body {
 
 .banner-cta {
   padding: 12px 24px;
-  background-color: #c5a47e; /* A color that should fit your existing theme */
+  background-color: #c5a47e;
   color: white;
   text-decoration: none;
   border-radius: 5px;
@@ -1689,4 +1641,169 @@ body {
 .banner-cta:hover {
   background-color: #b38f65;
   transform: translateY(-2px);
+}
+
+.chat-login-prompt {
+  position: fixed;
+  bottom: calc(2rem + 70px);
+  right: 2rem;
+  z-index: 1000;
+  background-color: #f5f0e1;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  width: 320px;
+  border: 1px solid rgba(74, 64, 58, 0.1);
+  animation: slide-up 0.3s ease-out;
+}
+
+.prompt-box {
+  padding: 20px;
+  text-align: center;
+}
+
+.prompt-box h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #4a403a;
+}
+
+.prompt-box p {
+  color: #6a5d55;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.prompt-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.prompt-login, .prompt-signup {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.prompt-login {
+  background-color: rgba(74, 64, 58, 0.15);
+  color: #4a403a;
+  border: 1px solid rgba(74, 64, 58, 0.2);
+}
+
+.prompt-login:hover {
+  background-color: rgba(74, 64, 58, 0.25);
+  transform: translateY(-1px);
+}
+
+.prompt-signup {
+  background-color: #4a403a;
+  color: white;
+  border: 1px solid #4a403a;
+}
+
+.prompt-signup:hover {
+  background-color: #332d28;
+  transform: translateY(-1px);
+}
+
+.prompt-cancel {
+  margin-top: 5px;
+  background: none;
+  border: none;
+  color: #8a7d75;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 0.85rem;
+}
+
+.prompt-cancel:hover {
+  text-decoration: underline;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* --- START: NEW STYLES FOR FULL-WIDTH LAYOUT & UNIFIED TITLES --- */
+
+/* 1. The new container to keep content centered */
+.content-container {
+  width: 100%;
+  max-width: 1400px; /* Adjust this value to make content wider or narrower */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+}
+
+/* 2. The wrapper for full-width sections */
+.full-width-wrapper {
+  width: 100%;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+/* 3. Specific background for the recommendations section */
+.recommendations-wrapper {
+  background-color: #f5f0e1;
+  border-top: 1px solid rgba(74, 64, 58, 0.1);
+  border-bottom: 1px solid rgba(74, 64, 58, 0.1);
+}
+
+/* 4. The new, unified title style for all sections */
+.section-title {
+  font-family: "Lora", serif;
+  font-size: 1.2rem;
+  margin: 0 0 1.5rem 0;
+  color: #4a403a;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+/* 5. Override old, inconsistent styles */
+.home-section {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  margin-bottom: 0;
+}
+
+.home-section h2,
+.most-popular-section h2 {
+  /* Apply the new unified styles */
+  font-family: "Lora", serif !important;
+  font-size: 1.2rem !important;
+  margin: 0 0 1.5rem 0 !important;
+  color: #4a403a !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+}
+
+.explore-today-title {
+  font-family: "Lora", serif; /* Uses the same font as your other titles */
+  font-size: 1.8rem; /* A bit larger to make it stand out */
+  color: #4a403a;
+  text-align: center; /* Centers the text */
+  margin-top: 2.5rem; /* Adds space above the text */
+  margin-bottom: 2rem; /* Adds space between the text and the cards */
 }

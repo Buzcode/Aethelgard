@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Person;
 use App\Models\Place;
 use App\Models\Event;
@@ -12,39 +14,69 @@ class RecommendationController extends Controller
 {
     public function index()
     {
-        // --- LOGIC TO SHOW RECOMMENDATIONS BASED ON LIKES AND SAVES ---
+        if (Auth::check()) {
+            
+            // ===================================================================
+            // --- NEW LOGIC: SHOW EXACTLY WHAT THE USER HAS LIKED ---
+            // ===================================================================
 
-        // 1. Get a pool of the MOST POPULAR items from each category.
-        $popularPeople = Person::withCount(['likers', 'saves'])->orderBy('likers_count', 'desc')->limit(15)->get();
-        $popularPlaces = Place::withCount(['likers', 'saves'])->orderBy('likers_count', 'desc')->limit(15)->get();
-        $popularEvents = Event::withCount(['likers', 'saves'])->orderBy('likers_count', 'desc')->limit(15)->get();
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
 
-        // 2. Combine all items into a single collection.
-        $allItems = $popularPeople->concat($popularPlaces)->concat($popularEvents);
+            // 1. Get all articles the user has liked, directly from the relationships.
+            $likedPeople = $user->likedPeople;
+            $likedPlaces = $user->likedPlaces;
+            $likedEvents = $user->likedEvents;
 
-        // 3. Sort the combined collection by the total popularity score.
-        // --- FIX: Explicitly cast counts to integers to prevent sorting errors with null values. ---
-        $sortedItems = $allItems->sortByDesc(function ($item) {
-            // This ensures we are always adding numbers (e.g., 4 + 0).
-            return (int)$item->likers_count + (int)$item->saves_count;
-        });
+            // 2. Combine all liked items into a single collection.
+            $allLikedItems = collect([])
+                ->concat($likedPeople)
+                ->concat($likedPlaces)
+                ->concat($likedEvents);
 
-        // 4. Take the top 7 most popular items from the final sorted list.
-        $recommendedItems = $sortedItems->take(7);
+            // 3. If the user has no liked items, return an empty array.
+            if ($allLikedItems->isEmpty()) {
+                return response()->json([]);
+            }
 
-        // 5. Format the final list for the frontend.
-        $formatted = $recommendedItems->map(function ($item) {
-            $type = strtolower(class_basename($item));
-            $linkType = ($type === 'person') ? 'figures' : $type . 's';
+            // 4. Shuffle the list and take a sample to display. This ensures the
+            //    order changes if the user has more than 7 liked items.
+            $finalRecommendations = $allLikedItems->shuffle()->take(7);
+            
+            // 5. Format the data for the frontend.
+            $formatted = $finalRecommendations->map(function ($item) {
+                $type = strtolower(class_basename($item));
+                $linkType = ($type === 'person') ? 'figures' : $type . 's';
+                return [
+                    'title' => $item->name,
+                    'image_url' => $item->picture ? asset('storage/' . $item->picture) : null,
+                    'link' => "/{$linkType}/{$item->id}",
+                ];
+            });
 
-            return [
-                'title' => $item->name,
-                'image_url' => $item->picture ? asset('storage/' . $item->picture) : null,
-                'link' => "/{$linkType}/{$item->id}",
-            ];
-        });
+            return response()->json($formatted->values());
 
-        // Return the formatted recommendations as a JSON response.
-        return response()->json($formatted->values());
+        } else {
+            // GUEST LOGIC (Remains unchanged)
+            $popularPeople = Person::withCount('likers')->orderBy('likers_count', 'desc')->limit(15)->get();
+            $popularPlaces = Place::withCount('likers')->orderBy('likers_count', 'desc')->limit(15)->get();
+            $popularEvents = Event::withCount('likers')->orderBy('likers_count', 'desc')->limit(15)->get();
+            
+            $allItems = $popularPeople->concat($popularPlaces)->concat($popularEvents);
+            $sortedItems = $allItems->sortByDesc(function ($item) { return (int)$item->likers_count; });
+            $recommendedItems = $sortedItems->take(7);
+            
+            $formatted = $recommendedItems->map(function ($item) {
+                $type = strtolower(class_basename($item));
+                $linkType = ($type === 'person') ? 'figures' : $type . 's';
+                return [
+                    'title' => $item->name,
+                    'image_url' => $item->picture ? asset('storage/' . $item->picture) : null,
+                    'link' => "/{$linkType}/{$item->id}",
+                ];
+            });
+
+            return response()->json($formatted->values());
+        }
     }
 }

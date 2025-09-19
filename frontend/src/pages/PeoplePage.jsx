@@ -1,10 +1,16 @@
 // Correctly merged code for PeoplePage.jsx
 import { useState, useEffect } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 
 const PeoplePage = () => {
+
+  const navigate = useNavigate();
+
   const { user } = useAuth();
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,8 +27,16 @@ const PeoplePage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
+        const peopleWithLikeStatus = peopleResponse.data.map(person => ({
+            ...person,
+            is_liked: person.is_liked || false,
+        }));
+        setPeople(peopleWithLikeStatus);
+
+
         // This is the CORRECT line
         setPeople(peopleResponse.data);
+
 
         const savedArticlesSet = new Set(
             savedResponse.data
@@ -41,6 +55,9 @@ const PeoplePage = () => {
     fetchData();
   }, [user]);
 
+  const handleLikeClick = async (e, personId) => {
+    e.stopPropagation();
+
   const handleLikeClick = async (personId) => {
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to like posts' });
@@ -56,15 +73,29 @@ const PeoplePage = () => {
       )
     );
     try {
+
+      await axiosClient.post(`/figures/${personId}/like`);
+      
+      // This was already here and is correct!
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+      
+    } catch (error)  {
+
       await axiosClient.post(`/people/${personId}/like`);
     } catch (error) {
+
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
       setPeople(originalPeople);
     }
   };
 
+
+  const handleSaveClick = async (e, personId) => {
+    e.stopPropagation();
+
   const handleSaveClick = async (personId) => {
+
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
@@ -80,6 +111,11 @@ const PeoplePage = () => {
         article_id: personId,
         article_type: 'people',
       });
+      
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} person:`, error);
       setSavedIds(originalSavedIds);
@@ -98,13 +134,37 @@ const PeoplePage = () => {
           {people.map((person) => {
             const isSaved = savedIds.has(person.id);
             return (
+
+              <li key={person.id} className="list-item-card" onClick={() => navigate(`/figures/${person.id}`)}>
+                {person.picture ? (
+                  <img
+                    className="item-image"
+                    src={`http://127.0.0.1:8000/storage/${person.picture}`}
+                    alt={`Portrait of ${person.name}`}
+                  />
+                ) : (
+                  <div className="item-image-placeholder"></div>
+                )}
+
               <li key={person.id} className="list-item-card">
                 {person.picture && <img className="item-image" src={`/storage/${person.picture}`} alt={`Portrait of ${person.name}`} />}
+
                 <div className="item-content">
                   <h3>{person.name}</h3>
                   <p>{person.bio}</p>
                 </div>
                 <div className="item-actions">
+
+                  <div className="save-action" onClick={(e) => handleSaveClick(e, person.id)}>
+                    {isSaved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />}
+                  </div>
+                  <div className="like-action" onClick={(e) => handleLikeClick(e, person.id)}>
+                    {person.is_liked ? <FaHeart size={20} color="red" /> : <FaRegHeart size={20} />}
+                    {person.likes > 0 && <span className="like-count">{person.likes}</span>}
+                    {warning.id === person.id && (
+                      <div className="like-warning">{warning.message}</div>
+                    )}
+
                   <div className="save-action" onClick={() => handleSaveClick(person.id)}>
                     {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>

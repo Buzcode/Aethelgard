@@ -10,6 +10,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
+
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
@@ -54,7 +55,16 @@ const EventsPage = () => {
       )
     );
     try {
+
+      axiosClient.post(`/events/${eventId}/like`);
+      
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful like, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
+
       await axiosClient.post(`/events/${eventId}/like`);
+
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -70,17 +80,39 @@ const EventsPage = () => {
     }
     const originalSavedIds = new Set(savedIds);
     const newSavedIds = new Set(savedIds);
+
+    let action = '';
+
+    if (newSavedIds.has(eventId)) {
+        newSavedIds.delete(eventId);
+        action = 'unsaved';
+    } else {
+        newSavedIds.add(eventId);
+        action = 'saved';
+    }
+    setSavedIds(newSavedIds);
+
+
     let action = newSavedIds.has(eventId) ? 'unsaved' : 'saved';
     newSavedIds.has(eventId) ? newSavedIds.delete(eventId) : newSavedIds.add(eventId);
     setSavedIds(newSavedIds);
+
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: eventId,
         article_type: 'events',
       });
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} event:`, error);
+
+      setSavedIds(originalSavedIds); 
       setSavedIds(originalSavedIds);
+
       alert('There was an issue saving this item. Please try again.');
     }
   };

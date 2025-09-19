@@ -10,14 +10,12 @@ const PlacesPage = () => {
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
 
-  // 1. Add state to track saved article IDs
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // 2. Fetch both places and the user's saved articles in parallel
         const [placesResponse, savedResponse] = await Promise.all([
             axiosClient.get('/places'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
@@ -25,10 +23,9 @@ const PlacesPage = () => {
 
         setPlaces(placesResponse.data);
 
-        // Create a Set of saved IDs for quick lookups
         const savedArticlesSet = new Set(
             savedResponse.data
-                .filter(item => item.article_type === 'places') // Filter for this page's type
+                .filter(item => item.article_type === 'places')
                 .map(item => item.article_id)
         );
         setSavedIds(savedArticlesSet);
@@ -61,6 +58,11 @@ const PlacesPage = () => {
     );
     try {
       await axiosClient.post(`/places/${placeId}/like`);
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful like, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -68,7 +70,6 @@ const PlacesPage = () => {
     }
   };
 
-  // 3. Implement the new handleSaveClick logic
   const handleSaveClick = async (placeId) => {
     if (!user) {
       setWarning({ id: placeId, message: 'Please log in to save posts' });
@@ -80,7 +81,6 @@ const PlacesPage = () => {
     const newSavedIds = new Set(savedIds);
     let action = '';
 
-    // Optimistic UI Update
     if (newSavedIds.has(placeId)) {
         newSavedIds.delete(placeId);
         action = 'unsaved';
@@ -90,15 +90,19 @@ const PlacesPage = () => {
     }
     setSavedIds(newSavedIds);
 
-    // API Call
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: placeId,
-        article_type: 'places', // Correct type for this page
+        article_type: 'places',
       });
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} place:`, error);
-      setSavedIds(originalSavedIds); // Revert on failure
+      setSavedIds(originalSavedIds);
       alert('There was an issue saving this item. Please try again.');
     }
   };
@@ -112,7 +116,6 @@ const PlacesPage = () => {
       {places.length > 0 ? (
         <ul className="item-list">
           {places.map((place) => {
-            // 4. Check if the current place is saved
             const isSaved = savedIds.has(place.id);
             return (
               <li key={place.id} className="list-item-card">
@@ -129,7 +132,6 @@ const PlacesPage = () => {
                 </div>
                 <div className="item-actions">
                   <div className="save-action" onClick={() => handleSaveClick(place.id)}>
-                    {/* Render filled or empty bookmark based on isSaved status */}
                     {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
                   <div className="like-action">

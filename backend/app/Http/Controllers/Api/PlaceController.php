@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB; // <-- ADDED FOR TRANSACTIONS
 
 class PlaceController extends Controller
 {
@@ -36,26 +37,37 @@ class PlaceController extends Controller
     }
 
     /**
-     * Toggle a like and return the new state.
+     * THIS FUNCTION HAS BEEN UPDATED FOR RELIABILITY
+     * Toggles the like status and ensures data consistency with a transaction.
      */
     public function updateLikes(Request $request, Place $place)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
-        $user->likedPlaces()->toggle($place->id);
-        $newLikesCount = $place->likers()->count();
-        $place->update(['likes' => $newLikesCount]);
-        $isLiked = $user->likedPlaces()->where('place_id', $place->id)->exists();
 
-        return response()->json([
-            'new_likes_count' => $newLikesCount,
-            'is_liked' => $isLiked,
-        ]);
+        return DB::transaction(function () use ($user, $place) {
+            // 1. Toggle the relationship in the pivot table.
+            $user->likedPlaces()->toggle($place->id);
+            
+            // 2. Recalculate the count.
+            $newLikesCount = $place->likers()->count();
+            
+            // 3. Update the cached 'likes' column.
+            $place->update(['likes' => $newLikesCount]);
+            
+            // 4. Check the new "liked" status.
+            $isLiked = $user->likedPlaces()->where('place_id', $place->id)->exists();
+            
+            // 5. Return the fresh data.
+            return response()->json([
+                'new_likes_count' => $newLikesCount,
+                'is_liked' => $isLiked,
+            ]);
+        });
     }
 
     /**
      * Store a newly created resource in storage.
-     * THIS IS THE CORRECTED METHOD.
      */
     public function store(Request $request)
     {
@@ -91,11 +103,10 @@ class PlaceController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * THIS METHOD IS ALSO IMPROVED.
-     */    public function update(Request $request, Place $place)
+     */
+    public function update(Request $request, Place $place)
     {
         try {
-            // Validate text-based fields
             $validatedData = $request->validate([
                 'name' => 'sometimes|required|string|max:255',
                 'description' => 'nullable|string',
@@ -103,31 +114,18 @@ class PlaceController extends Controller
                 'latitude' => 'nullable|numeric',
                 'longitude' => 'nullable|numeric',
             ]);
-
-            // Validate the image separately
             $request->validate([
                 'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
             $dataToUpdate = $validatedData;
-
-            // Handle the file upload if a new picture is provided
             if ($request->hasFile('picture')) {
-                // Delete the old picture if it exists
                 if ($place->picture) {
                     Storage::disk('public')->delete($place->picture);
                 }
-                
-                // Store the new picture in the 'places' folder
                 $path = $request->file('picture')->store('places', 'public');
-                
-                // Add the new picture path to our data array
                 $dataToUpdate['picture'] = $path;
             }
-
-            // Perform the update
             $place->update($dataToUpdate);
-
             return response()->json($place);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);
@@ -138,7 +136,6 @@ class PlaceController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * THIS METHOD IS ALSO IMPROVED.
      */
     public function destroy(Place $place)
     {

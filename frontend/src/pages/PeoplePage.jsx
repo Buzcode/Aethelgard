@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-// --- FIX 1: Import useNavigate ---
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 
 const PeoplePage = () => {
-  // --- FIX 2: Initialize the navigate function ---
   const navigate = useNavigate();
   const { user } = useAuth();
   const [people, setPeople] = useState([]);
@@ -23,7 +21,11 @@ const PeoplePage = () => {
             axiosClient.get('/figures'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
-        setPeople(peopleResponse.data);
+        const peopleWithLikeStatus = peopleResponse.data.map(person => ({
+            ...person,
+            is_liked: person.is_liked || false,
+        }));
+        setPeople(peopleWithLikeStatus);
         const savedArticlesSet = new Set(
             savedResponse.data
                 .filter(item => item.article_type === 'people')
@@ -41,9 +43,8 @@ const PeoplePage = () => {
     fetchData();
   }, [user]);
 
-  // handleLikeClick and handleSaveClick functions remain the same
   const handleLikeClick = async (e, personId) => {
-    e.stopPropagation(); // Prevent the card's onClick from firing
+    e.stopPropagation();
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to like posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
@@ -59,6 +60,10 @@ const PeoplePage = () => {
     );
     try {
       await axiosClient.post(`/figures/${personId}/like`);
+      
+      // This was already here and is correct!
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+      
     } catch (error)  {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -67,7 +72,7 @@ const PeoplePage = () => {
   };
 
   const handleSaveClick = async (e, personId) => {
-    e.stopPropagation(); // Prevent the card's onClick from firing
+    e.stopPropagation();
     if (!user) {
       setWarning({ id: personId, message: 'Please log in to save posts' });
       setTimeout(() => setWarning({ id: null, message: '' }), 3000);
@@ -86,6 +91,11 @@ const PeoplePage = () => {
         article_id: personId,
         article_type: 'people',
       });
+      
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to save/unsave person:`, error);
       setSavedIds(originalSavedIds);
@@ -104,7 +114,6 @@ const PeoplePage = () => {
           {people.map((person) => {
             const isSaved = savedIds.has(person.id);
             return (
-              // --- FIX 3: Add onClick to the entire list item and remove the <Link> component ---
               <li key={person.id} className="list-item-card" onClick={() => navigate(`/figures/${person.id}`)}>
                 {person.picture ? (
                   <img
@@ -120,13 +129,15 @@ const PeoplePage = () => {
                   <p>{person.bio}</p>
                 </div>
                 <div className="item-actions">
-                  {/* Pass the event 'e' and stop propagation */}
                   <div className="save-action" onClick={(e) => handleSaveClick(e, person.id)}>
                     {isSaved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />}
                   </div>
                   <div className="like-action" onClick={(e) => handleLikeClick(e, person.id)}>
                     {person.is_liked ? <FaHeart size={20} color="red" /> : <FaRegHeart size={20} />}
-                    <span className="like-count">{person.likes}</span>
+                    {person.likes > 0 && <span className="like-count">{person.likes}</span>}
+                    {warning.id === person.id && (
+                      <div className="like-warning">{warning.message}</div>
+                    )}
                   </div>
                 </div>
               </li>

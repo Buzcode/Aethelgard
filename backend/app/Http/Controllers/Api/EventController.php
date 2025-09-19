@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB; // <-- ADDED FOR TRANSACTIONS
 
 class EventController extends Controller
 {
@@ -23,11 +24,8 @@ class EventController extends Controller
             $query->where('category', $request->input('category'));
         }
 
-        // Always get the true likes count from the relationship.
-        // We alias it to 'likes' to match your frontend's expectation.
         $query->withCount('likers as likes');
 
-        // If a user is logged in, efficiently check if they have liked each event.
         if (Auth::check()) {
             $query->withExists(['likers as is_liked' => function ($query) {
                 $query->where('user_id', Auth::id());
@@ -40,31 +38,35 @@ class EventController extends Controller
     }
 
     /**
-     * Toggle a like and return the new state.
-     * This is now safe from race conditions and uses the source of truth for counts.
+     * THIS FUNCTION HAS BEEN UPDATED FOR RELIABILITY
+     * Toggles the like status and ensures data consistency with a transaction.
      */
-      public function updateLikes(Request $request, Event $event)
+    public function updateLikes(Request $request, Event $event)
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
 
-        // Toggle the relationship in the pivot table (the source of truth)
-        $user->likedEvents()->toggle($event->id);
+        // Using a transaction ensures that both the pivot table and the cached
+        // likes count are updated together, or not at all if an error occurs.
+        return DB::transaction(function () use ($user, $event) {
+            // 1. Toggle the relationship in the pivot table (the source of truth).
+            $user->likedEvents()->toggle($event->id);
 
-        // Recalculate the count from the source of truth
-        $newLikesCount = $event->likers()->count();
-        
-        // Save the new count to our cached 'likes' column
-        $event->update(['likes' => $newLikesCount]);
+            // 2. Recalculate the count directly from the relationship.
+            $newLikesCount = $event->likers()->count();
+            
+            // 3. Update the cached 'likes' column on the events table.
+            $event->update(['likes' => $newLikesCount]);
 
-        // Determine the new liked status
-        $isLiked = $user->likedEvents()->where('event_id', $event->id)->exists();
+            // 4. Check the new "liked" status for the current user.
+            $isLiked = $user->likedEvents()->where('event_id', $event->id)->exists();
 
-        // Return the fresh data to the frontend
-        return response()->json([
-            'new_likes_count' => $newLikesCount,
-            'is_liked' => $isLiked,
-        ]);
+            // 5. Return the fresh, reliable data to the frontend.
+            return response()->json([
+                'new_likes_count' => $newLikesCount,
+                'is_liked' => $isLiked,
+            ]);
+        });
     }
 
     /**
@@ -72,9 +74,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        // Add the 'likes' count and let the model accessor handle 'is_liked'.
         $event->loadCount('likers as likes');
-
         return response()->json($event);
     }
 
@@ -105,48 +105,26 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-       /**
-     * Update the specified resource in storage.
-     * THIS IS THE CORRECTED VERSION.
-     */
     public function update(Request $request, Event $event)
     {
         try {
-            // First, validate the text-based fields.
             $validatedData = $request->validate([
                 'name' => 'sometimes|required|string|max:255',
                 'description' => 'nullable|string',
                 'category' => 'nullable|string|max:255',
-                // Add any other text/select fields here (e.g., subcategory, status)
             ]);
-
-            // Validate the image separately.
             $request->validate([
                 'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
-            // Start building the data array with the text fields.
             $dataToUpdate = $validatedData;
-
-            // Now, handle the file upload with explicit logic.
-            // This block will only run if a new file is actually chosen.
             if ($request->hasFile('picture')) {
-                // 1. Delete the old picture if it exists to save space.
                 if ($event->picture) {
                     Storage::disk('public')->delete($event->picture);
                 }
-                
-                // 2. Store the new picture and get its path.
                 $path = $request->file('picture')->store('events', 'public');
-                
-                // 3. Only add the 'picture' key to our data array if a new file was stored.
                 $dataToUpdate['picture'] = $path;
             }
-
-            // Perform the update. The 'picture' field is only updated if a new file was uploaded.
-            // Otherwise, it remains untouched in the database.
             $event->update($dataToUpdate);
-
             return response()->json($event);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation Failed', 'errors' => $e->errors()], 422);

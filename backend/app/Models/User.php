@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserRecommendation; // Correctly imported for the relationship
+use Illuminate\Database\Eloquent\Relations\HasMany; // Correctly imported
 
 class User extends Authenticatable
 {
@@ -98,19 +99,29 @@ class User extends Authenticatable
 
     /*
     |--------------------------------------------------------------------------
+    | SAVE RELATIONSHIP --- (THIS IS THE FIX) ---
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get all of the articles saved by the user.
+     */
+    public function savedArticles(): HasMany
+    {
+        return $this->hasMany(SavedArticle::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | RECOMMENDATION RELATIONSHIP
     |--------------------------------------------------------------------------
     */
 
     /**
-     * Get the recommendations for the user.
-     * This is the function that fixes the error.
+     * Get the pre-calculated recommendations for the user.
      */
- /**
- * Get the recommendations for the user.
- */
-public function recommendations()
-{
-    return $this->hasMany(UserRecommendation::class);
-}
+    public function recommendations(): HasMany
+    {
+        return $this->hasMany(UserRecommendation::class);
+    }
 }

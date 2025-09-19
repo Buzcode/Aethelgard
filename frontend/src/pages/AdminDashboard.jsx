@@ -37,7 +37,7 @@ const AdminDashboard = () => {
       return;
     }
     const endpointMap = {
-      FIGURES: 'people',
+      FIGURES: 'figures',
       PLACES: 'places',
       EVENTS: 'events'
     };
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
               {filteredArticles.length > 0 ? (
                 filteredArticles.map((article) => {
                   const typeUrlMap = {
-                    FIGURES: 'people',
+                    FIGURES: 'figures',
                     PLACES: 'places',
                     EVENTS: 'events'
                   };

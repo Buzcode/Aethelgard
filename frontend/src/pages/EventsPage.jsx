@@ -10,14 +10,12 @@ const EventsPage = () => {
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState({ id: null, message: '' });
   
-  // 1. Add state to track saved article IDs
   const [savedIds, setSavedIds] = useState(new Set());
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // 2. Fetch both events and the user's saved articles in parallel
         const [eventsResponse, savedResponse] = await Promise.all([
             axiosClient.get('/events'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
@@ -25,10 +23,9 @@ const EventsPage = () => {
 
         setEvents(eventsResponse.data);
         
-        // Create a Set of saved IDs for quick lookups
         const savedArticlesSet = new Set(
             savedResponse.data
-                .filter(item => item.article_type === 'events') // Filter for this page's type
+                .filter(item => item.article_type === 'events')
                 .map(item => item.article_id)
         );
         setSavedIds(savedArticlesSet);
@@ -61,6 +58,11 @@ const EventsPage = () => {
     );
     try {
       axiosClient.post(`/events/${eventId}/like`);
+      
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful like, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error('Failed to update like status:', error);
       alert('There was an issue saving your like. Please try again.');
@@ -68,7 +70,6 @@ const EventsPage = () => {
     }
   };
 
-  // 3. Implement the new handleSaveClick logic
   const handleSaveClick = async (eventId) => {
     if (!user) {
       setWarning({ id: eventId, message: 'Please log in to save posts' });
@@ -80,7 +81,6 @@ const EventsPage = () => {
     const newSavedIds = new Set(savedIds);
     let action = '';
 
-    // Optimistic UI Update
     if (newSavedIds.has(eventId)) {
         newSavedIds.delete(eventId);
         action = 'unsaved';
@@ -90,15 +90,19 @@ const EventsPage = () => {
     }
     setSavedIds(newSavedIds);
 
-    // API Call
     try {
       await axiosClient.post('/saved-articles/toggle', {
         article_id: eventId,
-        article_type: 'events', // Correct type for this page
+        article_type: 'events',
       });
+
+      // --- RECOMMENDATION LOGIC ADDED ---
+      // After a successful save, tell the app to refresh recommendations.
+      window.dispatchEvent(new CustomEvent('recommendations-changed'));
+
     } catch (error) {
       console.error(`Failed to ${action} event:`, error);
-      setSavedIds(originalSavedIds); // Revert on failure
+      setSavedIds(originalSavedIds); 
       alert('There was an issue saving this item. Please try again.');
     }
   };
@@ -112,7 +116,6 @@ const EventsPage = () => {
       {events.length > 0 ? (
         <ul className="item-list">
           {events.map((event) => {
-            // 4. Check if the current event is saved
             const isSaved = savedIds.has(event.id);
             return (
               <li key={event.id} className="list-item-card">
@@ -129,7 +132,6 @@ const EventsPage = () => {
                 </div>
                 <div className="item-actions">
                   <div className="save-action" onClick={() => handleSaveClick(event.id)}>
-                    {/* Render filled or empty bookmark based on isSaved status */}
                     {isSaved ? <FaBookmark size={24} /> : <FaRegBookmark size={24} />}
                   </div>
                   <div className="like-action">

@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo; // <-- 1. IMPORT THIS
 
 class SavedArticle extends Model
 {
@@ -23,4 +24,9 @@ class SavedArticle extends Model
         'article_id',
         'article_type',
     ];
+
+        public function article(): MorphTo // <-- 2. ADD THIS ENTIRE METHOD
+    {
+        return $this->morphTo();
+    }
 }

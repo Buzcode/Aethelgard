@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // Import Layout and Page components
 import MainLayout from "./components/MainLayout";
 import HomePage from "./pages/HomePage";
-import PeoplePage from "./pages/PeoplePage";
+import PeoplePage from "./pages/PeoplePage"; // This should be FiguresPage to be consistent
 import PlacesPage from "./pages/PlacesPage";
 import EventsPage from "./pages/EventsPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -14,19 +14,11 @@ import ContactPage from "./pages/ContactPage";
 import CategoryPage from "./pages/CategoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddArticlePage from "./pages/AddArticlePage";
-
 import AdminRoute from "./components/AdminRoute";
-
-import DetailPage from "./pages/DetailPage"; 
-
+import DetailPage from "./pages/DetailPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
-
-import PersonalInformationPage from "./pages/PersonalInformationPage"; 
-
+import PersonalInformationPage from "./pages/PersonalInformationPage";
 import SavedArticlesPage from './pages/SavedArticlesPage';
-
-// --- THIS IS THE FIX ---
-// You need to import the ProtectedRoute component before you can use it.
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
@@ -38,10 +30,9 @@ function App() {
 
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
-         <Route path="personal-information" element={<PersonalInformationPage />} />
-         <Route path="/search" element={<SearchResultsPage />} />
-         {/* This line will now work correctly */}
-         <Route path="/saved-articles" element={<ProtectedRoute><SavedArticlesPage /></ProtectedRoute>} /> 
+        <Route path="personal-information" element={<PersonalInformationPage />} />
+        <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/saved-articles" element={<ProtectedRoute><SavedArticlesPage /></ProtectedRoute>} />
         <Route path="/:type/category/:categorySlug" element={<CategoryPage />} />
         
         {/* Routes for listing all items */}
@@ -49,8 +40,8 @@ function App() {
         <Route path="places" element={<PlacesPage />} />
         <Route path="events" element={<EventsPage />} />
 
-        {/* --- ADD THESE 3 NEW ROUTES FOR DETAIL PAGES --- */}
-        <Route path="people/:id" element={<DetailPage />} />
+        {/* Detail Page Routes */}
+        <Route path="figures/:id" element={<DetailPage />} />
         <Route path="places/:id" element={<DetailPage />} />
         <Route path="events/:id" element={<DetailPage />} />
 

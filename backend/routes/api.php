@@ -11,9 +11,10 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\PopularityController;
 use App\Http\Controllers\Api\TrendingController;
-use App\Http\Controllers\Api\SuggestionController; 
-use App\Http\Controllers\Api\TrackingController; 
-use App\Http\Controllers\Api\SavedArticleController; 
+use App\Http\Controllers\Api\SuggestionController;
+use App\Http\Controllers\Api\TrackingController;
+use App\Http\Controllers\Api\SavedArticleController;
+use App\Http\Controllers\Api\RecommendationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,12 +33,15 @@ Route::post('/track-click', [TrackingController::class, 'logClick']);
 Route::get('/trending-topics', [TrendingController::class, 'index']);
 Route::get('/popular-items', [PopularityController::class, 'index']);
 Route::post('/chat', [ChatController::class, 'handleChat']);
+Route::get('/recommendations', [RecommendationController::class, 'index']);
+
 
 // --- Public Read-Only Content Routes ---
-// Guests can view these, and logged-in users will be recognized.
 Route::middleware('auth.optional')->group(function () {
-    Route::get('/people', [PersonController::class, 'index']);
-    Route::get('/people/{person}', [PersonController::class, 'show']);
+    // --- This is the correct fix ---
+    Route::get('/figures', [PersonController::class, 'index']);
+    Route::get('/figures/{person}', [PersonController::class, 'show']);
+
     Route::get('/places', [PlaceController::class, 'index']);
     Route::get('/places/{place}', [PlaceController::class, 'show']);
     Route::get('/events', [EventController::class, 'index']);
@@ -46,19 +50,17 @@ Route::middleware('auth.optional')->group(function () {
 
 
 // --- Protected User and Admin Routes ---
-// These routes REQUIRE authentication.
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    // --- LIKES ROUTES (MUST STAY PROTECTED) ---
-    Route::post('/people/{person}/like', [PersonController::class, 'updateLikes']);
+    // --- LIKES & SAVES ROUTES (MUST STAY PROTECTED) ---
+    Route::post('/figures/{person}/like', [PersonController::class, 'updateLikes']);
     Route::post('/events/{event}/like', [EventController::class, 'updateLikes']);
     Route::post('/places/{place}/like', [PlaceController::class, 'updateLikes']);
     Route::get('/saved-articles', [SavedArticleController::class, 'index']);
-    // Route to save or unsave an article
     Route::post('/saved-articles/toggle', [SavedArticleController::class, 'toggleSave']);
 
     // --- Admin-Only "Write" Routes ---

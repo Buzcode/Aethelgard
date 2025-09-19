@@ -18,7 +18,7 @@ const MostPopular = () => {
     const totalPages = popularItems.length > 0 ? Math.ceil(popularItems.length / itemsPerPage) : 0;
 
     const linkPaths = {
-        figure: 'people',
+        figure: 'figures',
         event: 'events',
         place: 'places'
     };

@@ -29,7 +29,7 @@ class SuggestionController extends Controller
         $people = Person::where('name', 'LIKE', "%{$searchTerm}%")
             ->limit(4) // Limit the number of results to keep the response fast
             ->get(['id', 'name'])
-            ->map(fn($item) => ['id' => $item->id, 'title' => $item->name, 'type' => 'people']);
+            ->map(fn($item) => ['id' => $item->id, 'title' => $item->name, 'type' => 'figures']);
 
         // Search for events
         $events = Event::where('name', 'LIKE', "%{$searchTerm}%")

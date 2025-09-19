@@ -1,14 +1,10 @@
-// src/pages/HomePage.jsx
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext"; // <-- 1. Import the useAuth hook
 
-// --- START: MODIFICATIONS ---
-// 1. Import the Recommendations component (useAuth is no longer needed here)
+// --- Import Components ---
+import GuestBanner from "../components/GuestBanner"; // <-- 2. Import your new banner component
 import Recommendations from "../components/Recommendations";
-// --- END: MODIFICATIONS ---
-
-// Other Component Imports
 import MostPopular from "../components/MostPopular";
 
 // Image Imports
@@ -17,15 +13,11 @@ import eventsImg from "../assets/images/events.jpg";
 import placesImg from "../assets/images/places.jpg";
 
 const HomePage = () => {
+  const { user } = useAuth(); // <-- 3. Get the current user's status
   const [trendingTopics, setTrendingTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- START: MODIFICATIONS ---
-  // 2. The useAuth hook has been removed as it's no longer necessary.
-  // --- END: MODIFICATIONS ---
-
   useEffect(() => {
-    // This fetch logic for trending topics remains unchanged.
     fetch("/api/trending-topics")
       .then((response) => {
         if (!response.ok) {
@@ -46,6 +38,11 @@ const HomePage = () => {
 
   return (
     <div className="homepage-container">
+
+      {/* --- 4. CONDITIONAL BANNER LOGIC --- */}
+      {/* This line checks: "Is there NO user?" If true, it renders the banner. */}
+      {!user && <GuestBanner />}
+
       <div className="card-gallery">
         {/* The top card gallery section remains unchanged. */}
         <Link to="/figures" className="category-card figures-card">
@@ -81,14 +78,11 @@ const HomePage = () => {
 
       <MostPopular />
 
-      {/* --- START: MODIFICATIONS --- */}
-      {/* 3. The conditional check has been removed. */}
-      {/* This section will now appear for all users (guests and logged-in). */}
       <section className="home-section">
         <h2>RECOMMENDATIONS</h2>
         <Recommendations />
       </section>
-      {/* --- END: MODIFICATIONS --- */}
+
     </div>
   );
 };

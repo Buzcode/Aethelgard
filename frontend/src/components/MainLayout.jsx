@@ -7,29 +7,32 @@ import ChatWidget from './ChatWidget';
 import axiosClient from '../api/axiosClient';
 import debounce from 'lodash.debounce';
 
+// The reusable footer component (no changes here)
+const Footer = () => {
+  return (
+    <footer className="main-footer">
+      <p>&copy; {new Date().getFullYear()} Aethelgard. All rights reserved.</p>
+      <div className="footer-links">
+        <Link to="/about">About Us</Link> | 
+        <Link to="/contact">Contact</Link> | 
+        <Link to="/privacy-policy">Privacy Policy</Link>
+      </div>
+    </footer>
+  );
+};
+
+
 const MainLayout = () => {
   // --- State and Hooks Setup ---
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // --- LOGIC FOR COLLAPSIBLE SIDEBAR ---
+  const location = useLocation(); // This hook gives us the current URL
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // === START OF THE CHANGE ===
+  // --- Sidebar Logic for All Users (No changes here) ---
+  const canShowSidebar = true; 
 
-  // 1. Create a list of all paths that should NOT have a sidebar.
-  //    Add any other paths here in the future (e.g., '/about', '/contact')
-  const pathsWithoutSidebar = ['/saved-articles'];
-
-  // 2. The new logic: The sidebar can be shown if a user is logged in AND
-  //    the current page is NOT in our list of excluded paths.
-  const canShowSidebar = user && !pathsWithoutSidebar.includes(location.pathname);
-
-  // === END OF THE CHANGE ===
-
-
-  // --- Component State (The rest of your state remains unchanged) ---
+  // --- Component State (No changes here) ---
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -37,7 +40,7 @@ const MainLayout = () => {
   const [dropdownView, setDropdownView] = useState('main');
   const dropdownRef = useRef(null);
 
-  // --- Functions and Effects (All your other functions remain the same) ---
+  // --- Functions and Effects (No changes here) ---
   const fetchSuggestions = async (query) => {
     if (query.length < 2) {
       setSuggestions([]); return;
@@ -116,7 +119,6 @@ const MainLayout = () => {
     <>
       <header className="main-header">
         <div className="header-brand-group">
-          {/* This rendering logic now works for all allowed pages */}
           {canShowSidebar && (
             <button className="menu-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
               <FaBars />
@@ -238,7 +240,6 @@ const MainLayout = () => {
           ></div>
         )}
 
-        {/* This will now render the sidebar on all pages where it's allowed */}
         {canShowSidebar && <Sidebar isOpen={isSidebarOpen} />}
 
         <main className="main-content-area">
@@ -246,6 +247,10 @@ const MainLayout = () => {
         </main>
       </div>
       <ChatWidget />
+
+     
+      {location.pathname === '/' && <Footer />}
+    
     </> 
   );
 };

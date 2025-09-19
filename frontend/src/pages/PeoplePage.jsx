@@ -21,11 +21,8 @@ const PeoplePage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        const processedPeople = peopleResponse.data.map(person => ({
-            ...person,
-            is_liked: user ? person.users.some(u => u.id === user.id) : false
-        }));
-        setPeople(processedPeople);
+        // This is the CORRECT line
+        setPeople(peopleResponse.data);
 
         const savedArticlesSet = new Set(
             savedResponse.data
@@ -105,7 +102,7 @@ const PeoplePage = () => {
                 {person.picture && <img className="item-image" src={`/storage/${person.picture}`} alt={`Portrait of ${person.name}`} />}
                 <div className="item-content">
                   <h3>{person.name}</h3>
-                  <p>{person.description}</p>
+                  <p>{person.bio}</p>
                 </div>
                 <div className="item-actions">
                   <div className="save-action" onClick={() => handleSaveClick(person.id)}>

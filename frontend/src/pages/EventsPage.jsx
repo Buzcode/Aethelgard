@@ -20,13 +20,8 @@ const EventsPage = () => {
             axiosClient.get('/events'),
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
-
-        const processedEvents = eventsResponse.data.map(event => ({
-            ...event,
-            is_liked: user ? event.users.some(u => u.id === user.id) : false
-        }));
-        setEvents(processedEvents);
-
+        setEvents(eventsResponse.data);
+        
         const savedArticlesSet = new Set(
             savedResponse.data
                 .filter(item => item.article_type === 'events')

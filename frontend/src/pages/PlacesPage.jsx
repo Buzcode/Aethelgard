@@ -1,4 +1,3 @@
-// Correctly merged code for PlacesPage.jsx
 import { useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
@@ -21,11 +20,8 @@ const PlacesPage = () => {
             user ? axiosClient.get('/saved-articles') : Promise.resolve({ data: [] })
         ]);
 
-        const processedPlaces = placesResponse.data.map(place => ({
-            ...place,
-            is_liked: user ? place.users.some(u => u.id === user.id) : false
-        }));
-        setPlaces(processedPlaces);
+       // --- THIS IS THE CORRECT, SIMPLIFIED LINE ---
+        setPlaces(placesResponse.data);
 
         const savedArticlesSet = new Set(
             savedResponse.data

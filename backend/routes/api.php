@@ -48,11 +48,10 @@ Route::get('/recommendations', [RecommendationController::class, 'index']);
 
 
 // --- Public Read-Only Content Routes ---
+// Guests can view these, and logged-in users will be recognized.
 Route::middleware('auth.optional')->group(function () {
-    // --- This is the correct fix ---
-    Route::get('/figures', [PersonController::class, 'index']);
-    Route::get('/figures/{person}', [PersonController::class, 'show']);
-
+    Route::get('/people', [PersonController::class, 'index']); // <-- ENSURE THIS LINE EXISTS
+    Route::get('/people/{person}', [PersonController::class, 'show']);
     Route::get('/places', [PlaceController::class, 'index']);
     Route::get('/places/{place}', [PlaceController::class, 'show']);
     Route::get('/events', [EventController::class, 'index']);

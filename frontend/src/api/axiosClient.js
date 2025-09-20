@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: '/api' 
+  baseURL: import.meta.env.VITE_API_BASE_URL
 });
 
 // This interceptor is the ONLY thing needed to add the auth token.

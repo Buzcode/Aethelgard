@@ -1,0 +1,17 @@
+# Git files
+.git
+.gitignore
+
+# Node dependencies
+node_modules
+
+# Laravel vendor dependencies
+backend/vendor
+
+# Laravel storage and environment files
+backend/storage
+backend/public/storage
+backend/.env
+
+# Frontend node modules
+frontend/node_modules
